@@ -12,7 +12,7 @@ Abstract classes may be implemented with Python's `abc` (abstract base class) or
 
 ## Manager/Driver Design Pattern
 
-The design pattern in use here can be called the Manager/Driver pattern. In this pattern, manager classes are responsible for implementing the main logic of the program, with the core control loop having access to all the manager classes it needs to acomplish its tasks, and deferring most of the logic to them. Driver classes focus on  Manager classes focus more on high-level orchestration logic such as coordinating tasks whereas driver classes focus on low-level logic such as interfacing with hardware.
+The design pattern in use here can be called the Manager/Driver pattern. In this pattern, manager classes are responsible for implementing the main logic of the program, with the core control loop having access to all the manager classes it needs to acomplish its tasks, and deferring most of the logic to them. Manager classes focus more on high-level orchestration logic such as coordinating tasks whereas driver classes focus on low-level logic such as interfacing with hardware.
 
 Manager classes may contain multiple driver classes which it uses to complete tasks. If required, the driver classes may be made to implement an abstract interface, such that the manager need not know the underlying workings of the driver. For example, the SensorManager class is what the main control loop of the program uses to retrieve sensor data. The SensorManager contains multiple SensorDriver classes, which each implement an AbstractSensorDriver interface. Because of this, if a new sensor is to be supported, this should not involve any changes to the SensorManager class, as it is only responsible for coordinating instances of classes which implement the AbstractSensorDriver interface. Therefore, only a new implementation of the AbstractSensorDriver interface would need to be created.
 
@@ -37,7 +37,7 @@ This section gives an overview of the components of the system.
 
 The `SensorManager` class is responsible for controlling each `SensorDriver` class it is connected to, and constructing a `SensorReport` object. This will involve the following methods:
 - `SensorManager.init()`: Given a `CollectorConfig` object, initializes a `SensorDriver` class for every sensor in the config. There will be a lookup table mapping types of sensor configurations to implementations of the `AbstractSensorDriver` interface which the `SensorManager` can use.
-- `SensorManager.poll()`: Calls the `poll()` method on each of the underlying drivers, retrieving the data, catching and exceptions, and constructing a `SensorReport` object to return to the main control loop.
+- `SensorManager.poll()`: Calls the `poll()` method on each of the underlying drivers, retrieving the data, catching any exceptions, and constructing a `SensorReport` object to return to the main control loop.
 
 The `AbstractSensorDriver` class is resposible for collecting data from the hardware and will contain the following methods:
 - `SensorDriver.init()`: Given a `SensorConfig` object, initializes any underlying library with the configured values.
@@ -70,7 +70,7 @@ The `ConfigManager` serves to make changes to the configuration file in a consis
 - `ConfigManager.delete_sensor()`: Removes a `SensorConfig` from the configuration file.
 - `ConfigManager.add_target()`: Adds a `TargetConfig` to the configuration file.
 - `ConfigManager.update_target()`: Updates a `TargetConfig` in the configuration file.
-- `ConfigManager.remove_target()`: Adds a `TargetConfig` from the configuration file.
+- `ConfigManager.remove_target()`: Removes a `TargetConfig` from the configuration file.
 
 ### Data Structures
 
@@ -80,18 +80,18 @@ This section outlines the data structures that will need to be used and passed a
 
 These datastructures may utilize Python's dataclasses.
 
-`SensorData`: Generic data type for data returned by a sensor. May just be an alias for `Dict[str, Any]`.
-`SensorRecord`: Contains a `SensorData`, the ID of the associated sensor, and a `datetime` timestamp.
-`SensorError`: Contains an error code, an error message, the ID of the associated sensor, and a `datetime` timestamp.
-`SensorReport`: Contains a list of `SensorRecord`, a list of `SensorError`, the ID of the collector node, and a list of target storage node IDs the data has yet to be sent to.
+- `SensorData`: Generic data type for data returned by a sensor. May just be an alias for `Dict[str, Any]`.
+- `SensorRecord`: Contains a `SensorData`, the ID of the associated sensor, and a `datetime` timestamp.
+- `SensorError`: Contains an error code, an error message, the ID of the associated sensor, and a `datetime` timestamp.
+- `SensorReport`: Contains a list of `SensorRecord`, a list of `SensorError`, the ID of the collector node, and a list of target storage node IDs the data has yet to be sent to.
 
 #### Configuration Data
 
 These datastructures may utilize the Pydantic library to make declarative validation easy. 
 
-`SensorConfig`: Contains an enumerated value describing the type of sensor, a sensor ID, and a dictionary containing any device-specific configuration values, such as GPIO pins and settings passed into the underlying sensor library.
-`TargetConfig`: Contains an ID of a storage node that data is to be sent to, and an endpoint where the data can be sent over the network.
-`CollectorConfig`: Contains a list of `SensorConfig`, a list of `TargetConfig`, and a collector node ID.
+- `SensorConfig`: Contains an enumerated value describing the type of sensor, a sensor ID, and a dictionary containing any device-specific configuration values, such as GPIO pins and settings passed into the underlying sensor library.
+- `TargetConfig`: Contains an ID of a storage node that data is to be sent to, and an endpoint where the data can be sent over the network.
+- `CollectorConfig`: Contains a list of `SensorConfig`, a list of `TargetConfig`, and a collector node ID.
 
 ### Program Logic
 
@@ -101,7 +101,7 @@ There will likely be two processes/threads required to run the collector node. T
 
 Upon program startup, the main control loop does the following:
 1. Instances of all required Manager classes are created.
-2. The `SensorManager` retrieves the device configuration by calling `ConfigManager.get_device_config()`. This configuration data contains all sensors that are currently configured on the device. For each sensor, the `SensorManager` initializes the corresponding `SensorDriver` class.
+2. The main control loop retrieves the device configuration by calling `ConfigManager.get_device_config()`. This configuration data contains all sensors that are currently configured on the device. For each sensor, the `SensorManager` initializes the corresponding `SensorDriver` class.
 
 #### Polling
 
