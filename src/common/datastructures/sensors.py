@@ -48,11 +48,7 @@ class SensorReport:
             as contained within the CollectorConfig.
         records (list[SensorRecord]): The collected sensor data.
         errors (list[SensorError]): The collected sensor errors.
-        unsent_targets (list[UUID]): A list of IDs associated with
-            targets configured in the associated TargetConfigs which
-            the data has yet to be sent to.
     """
     collector_id: UUID
     records: list[SensorRecord]
     errors: list[SensorError]
-    unsent_targets: list[UUID]
