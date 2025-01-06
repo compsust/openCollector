@@ -1,8 +1,7 @@
-from collector.datastructures import SensorConfig, TargetConfig, SensorReport
+from common.datastructures import SensorConfig, SensorReport, TargetConfig
 
 
 class SensorManager:
-
     def __init__(
         self, sensors: list[SensorConfig], targets: list[TargetConfig]
     ) -> None:

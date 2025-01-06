@@ -1,10 +1,11 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 from uuid import UUID
-from datetime import datetime
 
 type SensorData = dict[str, Any]
 """Alias for data returned by a sensor."""
+
 
 @dataclass
 class SensorRecord:
@@ -16,11 +17,13 @@ class SensorRecord:
             as contained in the associated SensorConfig.
         data (SensorData): The data returned by the sensor.
         timestamp (datetime): The time at which the data was
-            collected. 
+            collected.
     """
+
     sensor_id: UUID
     data: SensorData
-    timestamp: datetime 
+    timestamp: datetime
+
 
 @dataclass
 class SensorError:
@@ -30,13 +33,15 @@ class SensorError:
     Attributes:
         sensor_id (UUID): The ID of the associated sensor,
             as contained in the associated SensorConfig.
-        error_message (str): A description of the exception 
+        error_message (str): A description of the exception
             raised by the sensor.
-        timestamp (datetime): The time at which the error occurred. 
+        timestamp (datetime): The time at which the error occurred.
     """
+
     sensor_id: UUID
     error_message: str
     timestamp: datetime
+
 
 @dataclass
 class SensorReport:
@@ -49,6 +54,7 @@ class SensorReport:
         records (list[SensorRecord]): The collected sensor data.
         errors (list[SensorError]): The collected sensor errors.
     """
+
     collector_id: UUID
     records: list[SensorRecord]
     errors: list[SensorError]

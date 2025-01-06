@@ -1,6 +1,7 @@
-from uuid import UUID
-from collector.sensors import SensorCodeEnum
 from typing import Any
+from uuid import UUID
+
+from collector.sensors import SensorCodeEnum
 
 # TODO: Use Pydantic for config object validation
 

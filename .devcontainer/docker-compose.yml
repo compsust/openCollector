@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  open-collector:
+    init: true
+    expose:
+      - 8000
+    build:
+      context: ../
+      dockerfile: ./.devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: exampleuser
+      POSTGRES_PASSWORD: examplepass
+      POSTGRES_DB: exampledb
+    expose:
+      - 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  memcached:
+    image: memcached
+    command:
+      - --conn-limit=1024
+      - --memory-limit=64
+      - --threads=4
+
+
+volumes:
+  db_data:
