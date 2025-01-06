@@ -20,7 +20,13 @@
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
-			"extensions": []
+			"extensions": [
+				"pomdtr.excalidraw-editor",
+				"njpwerner.autodocstring",
+				"mgesbert.python-path",
+				"ms-python.python",
+				"ms-python.vscode-pylance"
+			]
 		}
 	},
 

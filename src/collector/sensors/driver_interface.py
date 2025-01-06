@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from collector.datastructures import SensorData
+from common.datastructures import SensorData
 
 
 class AbstractSensorDriver(Protocol):

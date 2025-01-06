@@ -1,4 +1,4 @@
-from collector.datastructures import SensorConfig, SensorReport, TargetConfig
+from common.datastructures import SensorConfig, SensorReport, TargetConfig
 
 
 class SensorManager:
