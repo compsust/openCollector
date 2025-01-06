@@ -1,0 +1,12 @@
+[project]
+name = "collector"
+version = "0.1.0"
+description = "The component of openCollector which interfaces with sensors and uploads data to the cache."
+dependencies = ["common"]
+requires-python = ">= 3.12"
+
+[tool.uv]
+dev-dependencies = []
+
+[tool.uv.sources]
+collector = { workspace = true }

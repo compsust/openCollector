@@ -1,0 +1,16 @@
+[project]
+name = "sfu-compsust-open-collector"
+version = "0.1"
+dependencies = ["common", "collector", "storage"]
+requires-python = ">= 3.13"
+
+[tool.uv]
+dev-dependencies = []
+
+[tool.uv.sources]
+common = { workspace = true }
+collector = { workspace = true }
+storage = { workspace = true }
+
+[tool.uv.workspace]
+members = ["src/common", "src/collector", "src/storage"]
