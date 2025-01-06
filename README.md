@@ -29,3 +29,20 @@ Instructions for the use of Devcontainers on Linux should be simpler than on Win
 ## Non-devcontainer
 
 Instructions for manual setup of the environment have not yet been created. If you follow this path, please update this document.
+
+# Developing
+
+The [UV package manager](https://docs.astral.sh/uv/) is used to manage dependencies. A file called `pyproject.toml` is used to store all metadata about the project, including all Python packages that it requires to function.
+
+The project is split up into sections, each with one folder in the `src` directory:
+- `collector` for the collector node code.
+- `storage` for the storage node code.
+- `common` for code common to the two nodes.
+
+These folders are managed as seperate Python projects using the [UV workspaces feature](https://docs.astral.sh/uv/concepts/projects/workspaces/). This means that there is one `pyproject.toml` in the root of the repository, which holds the required UV workspace definitions, and a `pyproject.toml` in each of the workspace folders, which hold the dependencies for each part of the project. Both `collector` and `storage` workspaces specify a dependency to the `common` workspace.
+
+The UV package manager is used to manage dependencies and run any commands from tools. You can use the following commands.
+- `uv sync` - this installs the dependencies into the environment, and is run automatically after container creation.
+- `uv add` - this is used to add a dependency to the `pyproject.toml`. Note that it will add the dependency to the workspace the command is run in.
+- `uv run ruff format` this runs the code formatter.
+- `uv run ruff check --fix` this runs the code linter.

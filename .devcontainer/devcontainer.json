@@ -13,7 +13,9 @@
 	// "forwardPorts": [],
 
 	// Commands to be run after the container is created.
-	"postCreateCommand": {},
+	"postCreateCommand": {
+		"dependencies": ["uv", "sync"]
+	},
 
 	// Configure tool-specific properties.
 	"customizations": {

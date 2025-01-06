@@ -1,5 +1,6 @@
-from ..driver_interface import AbstractSensorDriver
 from collector.datastructures import SensorData
+
+from ..driver_interface import AbstractSensorDriver
 
 
 class ExampleSensorDriver(AbstractSensorDriver):

@@ -1,4 +1,5 @@
 from enum import Enum
+
 from .driver_interface import AbstractSensorDriver
 from .drivers.example import ExampleSensorDriver
 
