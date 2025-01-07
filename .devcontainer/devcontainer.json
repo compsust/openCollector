@@ -20,12 +20,17 @@
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
+			"settings": {
+				"python.analysis.typeCheckingMode": "basic",
+				"python.analysis.autoImportCompletions": true
+			},
 			"extensions": [
 				"pomdtr.excalidraw-editor",
 				"njpwerner.autodocstring",
 				"mgesbert.python-path",
 				"ms-python.python",
-				"ms-python.vscode-pylance"
+				"ms-python.vscode-pylance",
+				"njqdev.vscode-python-typehint"
 			]
 		}
 	},

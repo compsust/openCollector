@@ -1,22 +1,7 @@
-from enum import Enum
+from common.datastructures.sensors import SensorCodeEnum
 
 from .driver_interface import AbstractSensorDriver
 from .drivers.example import ExampleSensorDriver
-
-
-class SensorCodeEnum(Enum):
-    """
-    Contains an enumerated value
-    for all supported sensor types.
-
-    Each value will be mapped to a
-    specific implementation of
-    AbstractSensorDriver.
-    """
-
-    # TODO: Replace with the first implemented sensor
-    FIRST_SENSOR_EXAMPLE = 0
-
 
 """Maps all sensor types to an implementation."""
 sensor_drivers = {

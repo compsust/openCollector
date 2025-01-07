@@ -1,32 +1,27 @@
-from typing import Any
+from typing import Any, NamedTuple
 from uuid import UUID
 
-from collector.sensors import SensorCodeEnum
-
-# TODO: Use Pydantic for config object validation
+from .sensors import SensorCodeEnum
 
 
-class TargetConfig:
+class CacheConfig(NamedTuple):
     """
-    Configuration object which describes a storage node target.
-
+    Configuration object which describes a Memcached target.
     Attributes:
-        target_id (UUID): An ID associated with the target.
-            Must be consistent with the ID set on the target itself.
+        cache_id (UUID): An ID associated with the target.
         name (str): A descriptive name for the target.
-        endpoint (str): The URI through which the target node may
+        endpoint (str): The URI through which the cache target node may
             accept requests.
     """
 
-    target_id: UUID
+    cache_id: UUID
     name: str
     endpoint: str
 
 
-class SensorConfig:
+class SensorConfig(NamedTuple):
     """
     Configuration object which describes a sensor.
-
     Attributes:
         sensor_id (UUID): An ID associated with the sensor.
         sensor_code (SensorCodeEnum): Associated with
@@ -43,10 +38,9 @@ class SensorConfig:
     attributes: dict[str, Any]
 
 
-class CollectorConfig:
+class CollectorConfig(NamedTuple):
     """
     Configuration object which describes the collector node device.
-
     Attributes:
         collector_id (UUID): An ID associated with the node.
         device_name (str): A name associated with the node.
@@ -57,4 +51,4 @@ class CollectorConfig:
     collector_id: UUID
     device_name: str
     sensors: list[SensorConfig]
-    targets: list[TargetConfig]
+    targets: list[CacheConfig]

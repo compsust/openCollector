@@ -8,7 +8,7 @@ class AbstractSensorDriver(Protocol):
     Interface used to describe a type of sensor.
     """
 
-    def poll() -> SensorData:
+    def poll(self) -> SensorData:
         """
         Utilizes the underlying device driver to collect sensor data.
 
