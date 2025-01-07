@@ -1,4 +1,4 @@
-from collector.datastructures import SensorData
+from common.datastructures import SensorData
 
 from ..driver_interface import AbstractSensorDriver
 
@@ -10,7 +10,7 @@ class ExampleSensorDriver(AbstractSensorDriver):
     TODO: Replace with the actual first sensor used.
     """
 
-    def poll() -> SensorData:
+    def poll(self) -> SensorData:
         """
         Utilizes the underlying device driver to collect sensor data.
 

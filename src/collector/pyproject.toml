@@ -6,7 +6,9 @@ dependencies = ["common"]
 requires-python = ">= 3.12"
 
 [tool.uv]
-dev-dependencies = []
+dev-dependencies = [
+    "micropython-rp2-pico-stubs>=1.20.0.post5",
+]
 
 [tool.uv.sources]
 collector = { workspace = true }

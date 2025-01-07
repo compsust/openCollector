@@ -69,4 +69,10 @@ class SensorCodeEnum(Enum):
     """
 
     # TODO: Replace with the first implemented sensor
-    FIRST_SENSOR_EXAMPLE = 0
+    FIRST_SENSOR_EXAMPLE = "fisrt sensor"
+
+
+class SensorMetadata(NamedTuple):
+    code: SensorCodeEnum
+    name: str
+    unit: str

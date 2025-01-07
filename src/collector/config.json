@@ -1,0 +1,14 @@
+{
+    "collector_id": null,
+    "device_name": "Open Collector Node",
+    "device_type": "PI_NANO",
+    "polling_interval": 1000,
+    "targets": [
+        {
+            "cache_id": null,
+            "name": "Memcached Server",
+            "endpoint": "localhost:11211"
+        }
+    ],
+    "sensors": []
+}
