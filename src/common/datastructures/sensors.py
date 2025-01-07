@@ -1,14 +1,13 @@
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Any
+from typing import NamedTuple, Any
 from uuid import UUID
+
+# Note that NamedTuples are used instead of dataclasses for micropython compatibility
 
 type SensorData = dict[str, Any]
 """Alias for data returned by a sensor."""
 
 
-@dataclass
-class SensorRecord:
+class SensorRecord(NamedTuple):
     """
     Associates recorded sensor data with a sensor.
 
@@ -16,17 +15,16 @@ class SensorRecord:
         sensor_id (UUID): The ID of the associated sensor,
             as contained in the associated SensorConfig.
         data (SensorData): The data returned by the sensor.
-        timestamp (datetime): The time at which the data was
+        timestamp (int): The Unix timestamp at which the data was
             collected.
     """
 
     sensor_id: UUID
     data: SensorData
-    timestamp: datetime
+    timestamp: int
 
 
-@dataclass
-class SensorError:
+class SensorError(NamedTuple):
     """
     Associates a caught sensor exception with a sensor.
 
@@ -35,16 +33,15 @@ class SensorError:
             as contained in the associated SensorConfig.
         error_message (str): A description of the exception
             raised by the sensor.
-        timestamp (datetime): The time at which the error occurred.
+        timestamp (int): The Unix timestamp at which the error occurred.
     """
 
     sensor_id: UUID
     error_message: str
-    timestamp: datetime
+    timestamp: int
 
 
-@dataclass
-class SensorReport:
+class SensorReport(NamedTuple):
     """
     Packages sensor data to be sent to storage nodes.
 

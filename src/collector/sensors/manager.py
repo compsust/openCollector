@@ -1,16 +1,17 @@
-from common.datastructures import SensorConfig, SensorReport, TargetConfig
+from collector.config.manager import ConfigManager
+from common.datastructures import SensorConfig, SensorReport, CacheConfig
 
 
 class SensorManager:
     def __init__(
-        self, sensors: list[SensorConfig], targets: list[TargetConfig]
+        self, config_manager: ConfigManager
     ) -> None:
         """
         Initializes all SensorDrivers.
         """
         raise NotImplementedError
 
-    def poll() -> SensorReport:
+    def poll(self) -> SensorReport:
         """
         Polls all sensors.
 

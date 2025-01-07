@@ -1,2 +1,2 @@
-from config import CollectorConfig, SensorConfig, TargetConfig
+from config import CacheConfig, CollectorConfig, SensorConfig
 from sensors import SensorData, SensorError, SensorRecord, SensorReport
