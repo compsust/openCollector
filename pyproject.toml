@@ -19,3 +19,6 @@ members = ["src/common", "src/collector", "src/storage"]
 
 [tool.ruff.lint]
 extend-select = ["I"]
+exclude = [
+    "typings/*"
+]

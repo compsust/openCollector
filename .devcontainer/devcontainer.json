@@ -14,15 +14,24 @@
 
 	// Commands to be run after the container is created.
 	"postCreateCommand": {
-		"dependencies": ["uv", "sync"]
+		"dependencies": ["uv", "sync"],
 	},
 
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
 			"settings": {
+				"python.defaultInterpreterPath": ".venv/bin/python",
 				"python.analysis.typeCheckingMode": "basic",
-				"python.analysis.autoImportCompletions": true
+				"python.analysis.autoImportCompletions": true,
+				// https://micropython-stubs.readthedocs.io/en/main/22_vscode.html
+				"python.analysis.diagnosticSeverityOverrides": {
+						"reportMissingModuleSource": "none"
+				},
+				"python.analysis.extraPaths": [
+					".venv/lib/python3.13/site-packages",
+					"typings"
+				]
 			},
 			"extensions": [
 				"pomdtr.excalidraw-editor",

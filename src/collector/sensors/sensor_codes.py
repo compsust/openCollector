@@ -1,14 +1,12 @@
-from common.datastructures.sensors import SensorCodeEnum
+from common import SensorCodeEnum
 
 from .driver_interface import AbstractSensorDriver
-from .drivers.example import ExampleSensorDriver
+from .drivers.dht22 import Dht22SensorDriver
 
 """Maps all sensor types to an implementation."""
 sensor_drivers = {
-    # TODO: Replace with the first implemented sensor
-    SensorCodeEnum.FIRST_SENSOR_EXAMPLE: ExampleSensorDriver
+    SensorCodeEnum.DHT22: Dht22SensorDriver
 }
-
 
 def get_sensor_driver_from_code(
     sensor_code: SensorCodeEnum,
@@ -26,4 +24,6 @@ def get_sensor_driver_from_code(
     Returns:
         type[AbstractSensorDriver]: The class implementation.
     """
-    raise NotImplementedError
+    if sensor_code not in sensor_drivers or sensor_drivers[sensor_code] is None:
+        raise ValueError(f"Sensor code: {sensor_code} not contained within the list of implemented sensor drivers.")
+    return sensor_drivers[sensor_code]

@@ -1,14 +1,38 @@
 {
     "collector_id": null,
-    "device_name": "Open Collector Node",
-    "device_type": "PI_NANO",
+    "node_name": "Open Collector Node",
     "polling_interval": 1000,
-    "targets": [
+    "device": {
+        "model": "Raspberry Pi Pico",
+        "allowed_gpio": [1, 2, 3, 4],
+        "requires_micropython": true 
+    },
+    "caches": [
         {
-            "cache_id": null,
-            "name": "Memcached Server",
+            "name": "Our Memcached Server",
             "endpoint": "localhost:11211"
         }
     ],
-    "sensors": []
+    "sensors": [
+        {
+            "sensor_id": null,
+            "sensor_code": "DHT22",
+            "name": "Temperature Sensor",
+            "gpio": {
+                "pin": 34
+            }
+        },
+        {
+            "sensor_id": null,
+            "sensor_code": "PMS5003",
+            "name": "Air Quality Sensor",
+            "gpio": {
+                "uart_tx": 1,
+                "uart_rx": 2
+            },
+            "attributes": {
+                "baudrate": 9600
+            }
+        }
+    ]
 }

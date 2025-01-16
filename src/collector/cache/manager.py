@@ -1,5 +1,5 @@
 from collector.config.manager import ConfigManager
-from common.datastructures.sensors import SensorReport
+from common.sensors import SensorReport
 
 
 class CacheManager:
