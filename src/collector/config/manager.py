@@ -39,7 +39,7 @@ class ConfigManager:
         # Device config
         if "device" not in config:
             raise ValueError("Config missing device config.")
-        device_config = DeviceConfig(config["device"])
+        device_config = DeviceConfig(config["device"], self.micropython)
 
         # Cache configs
         if "caches" not in config:

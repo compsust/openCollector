@@ -16,14 +16,14 @@ class SensorRecord(NamedTuple):
         sensor_code (SensorCodeEnum): The code of the associated sensor,
             as contained in the associated SensorConfig.
         data (SensorData): The data returned by the sensor.
-        timestamp (int): The Unix timestamp at which the data was
+        timestamp (float): The Unix timestamp at which the data was
             collected.
     """
 
     sensor_id: str
     sensor_code: SensorCodeEnum
     data: SensorData
-    timestamp: int
+    timestamp: float
 
 
 class SensorError(NamedTuple):
@@ -37,13 +37,13 @@ class SensorError(NamedTuple):
             as contained in the associated SensorConfig.
         error_message (str): A description of the exception
             raised by the sensor.
-        timestamp (int): The Unix timestamp at which the error occurred.
+        timestamp (float): The Unix timestamp at which the error occurred.
     """
 
     sensor_id: str
     sensor_code: SensorCodeEnum
     error_message: str
-    timestamp: int
+    timestamp: float
 
 
 class SensorReport(NamedTuple):
