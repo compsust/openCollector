@@ -5,6 +5,7 @@ from collector.sensors.driver_interface import AbstractSensorDriver
 from collector.sensors.sensor_codes import get_sensor_driver_from_code
 from common import SensorError, SensorRecord, SensorReport
 
+
 class SensorManager:
     collector_id: str
     drivers: list[AbstractSensorDriver] = []
@@ -38,7 +39,10 @@ class SensorManager:
             try:
                 data = driver.poll()
                 record = SensorRecord(
-                    sensor_id=driver.config.sensor_id, sensor_code=driver.config.sensor_code, data=data, timestamp=timestamp
+                    sensor_id=driver.config.sensor_id,
+                    sensor_code=driver.config.sensor_code,
+                    data=data,
+                    timestamp=timestamp,
                 )
                 records.append(record)
             except Exception as e:

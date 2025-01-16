@@ -68,10 +68,14 @@ class DeviceConfig:
         """
         self.model = get_attribute_or_error(config, "model", "device")
         self.allowed_gpio = get_attribute_or_error(config, "allowed_gpio", "device")
-        self.requires_micropython = get_attribute_or_error(config, "requires_micropython", "device")
+        self.requires_micropython = get_attribute_or_error(
+            config, "requires_micropython", "device"
+        )
 
         if self.requires_micropython and not micropython:
-            raise ValueError(f"The current device {self.model} requires micropython but the environment is not micropython.")
+            raise ValueError(
+                f"The current device {self.model} requires micropython but the environment is not micropython."
+            )
 
 
 class CacheConfig:

@@ -21,7 +21,7 @@ def generate_unique_id(micropython: bool) -> str:
         return str(unique_id().hex()) + "".join(
             choice(chars) for _ in range(random_length)
         )
-        
+
     else:
         from uuid import uuid4
 

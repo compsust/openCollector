@@ -1,5 +1,6 @@
 try:
     import micropython
+
     IS_MICROPYTHON = True
 except ImportError:
     IS_MICROPYTHON = False
@@ -26,7 +27,13 @@ def main():
     # Loop
     while ():
         records, errors = sensor_manager.poll()
-        report = SensorReport(collector_id=config_manager.config.collector_id, node_name=config_manager.config.node_name, model=config_manager.config.device.model, records=records, errors=errors)
+        report = SensorReport(
+            collector_id=config_manager.config.collector_id,
+            node_name=config_manager.config.node_name,
+            model=config_manager.config.device.model,
+            records=records,
+            errors=errors,
+        )
         cache_manager.upload(report)
         time.sleep(config_manager.config.polling_interval)
 

@@ -4,9 +4,8 @@ from .driver_interface import AbstractSensorDriver
 from .drivers.dht22 import Dht22SensorDriver
 
 """Maps all sensor types to an implementation."""
-sensor_drivers = {
-    SensorCodeEnum.DHT22: Dht22SensorDriver
-}
+sensor_drivers = {SensorCodeEnum.DHT22: Dht22SensorDriver}
+
 
 def get_sensor_driver_from_code(
     sensor_code: SensorCodeEnum,
@@ -25,5 +24,7 @@ def get_sensor_driver_from_code(
         type[AbstractSensorDriver]: The class implementation.
     """
     if sensor_code not in sensor_drivers or sensor_drivers[sensor_code] is None:
-        raise ValueError(f"Sensor code: {sensor_code} not contained within the list of implemented sensor drivers.")
+        raise ValueError(
+            f"Sensor code: {sensor_code} not contained within the list of implemented sensor drivers."
+        )
     return sensor_drivers[sensor_code]
