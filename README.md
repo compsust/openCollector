@@ -46,3 +46,4 @@ The UV package manager is used to manage dependencies and run any commands from 
 - `uv add` - this is used to add a dependency to the `pyproject.toml`. Note that it will add the dependency to the workspace the command is run in.
 - `uv run ruff format` this runs the code formatter.
 - `uv run ruff check --fix` this runs the code linter.
+- `uv run litestar run` spins up the web server.

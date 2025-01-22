@@ -86,6 +86,19 @@ source = { virtual = "src/common" }
 dev = []
 
 [[package]]
+name = "croniter"
+version = "6.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "python-dateutil" },
+    { name = "pytz" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ad/2f/44d1ae153a0e27be56be43465e5cb39b9650c781e001e7864389deb25090/croniter-6.0.0.tar.gz", hash = "sha256:37c504b313956114a983ece2c2b07790b1f1094fe9d81cc94739214748255577", size = 64481 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/4b/290b4c3efd6417a8b0c284896de19b1d5855e6dbdb97d2a35e68fa42de85/croniter-6.0.0-py2.py3-none-any.whl", hash = "sha256:2f878c3856f17896979b2a4379ba1f09c83e374931ea15cc835c5dd2eee9b368", size = 25468 },
+]
+
+[[package]]
 name = "editorconfig"
 version = "0.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -254,6 +267,19 @@ wheels = [
 ]
 
 [[package]]
+name = "litestar-saq"
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "litestar" },
+    { name = "saq" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ed/31/edb3935fba108af0ec0d759419c70479864f0e19d471c8db7dac7e751e90/litestar_saq-0.4.0.tar.gz", hash = "sha256:2e49cb2cb6d413f27c1becff1fbe99a35ab986326eba91c1825a3e5cb5abf669", size = 125346 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/69/b1/fb86430a56c32a6bfcf96cf67280c1dcf318486fb39f972f77369d79ab9f/litestar_saq-0.4.0-py3-none-any.whl", hash = "sha256:38a6aede0c3e55e4fab5c175286e5c4f5237a3f2ef5dfd3bc0ab1f080db65c74", size = 14705 },
+]
+
+[[package]]
 name = "markdown-it-py"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -406,6 +432,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pytz"
+version = "2024.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3a/31/3c70bf7603cc2dca0f19bdc53b4537a797747a58875b552c8c413d963a3f/pytz-2024.2.tar.gz", hash = "sha256:2aa355083c50a0f93fa581709deac0c9ad65cca8a9e9beac660adcbd493c798a", size = 319692 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/c3/005fcca25ce078d2cc29fd559379817424e94885510568bc1bc53d7d5846/pytz-2024.2-py2.py3-none-any.whl", hash = "sha256:31c7c1817eb7fae7ca4b8c7ee50c72f93aa2dd863de768e1ef4245d426aa0725", size = 508002 },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -420,6 +455,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/0f/25911a9f080464c59fab9027482f822b86bf0608957a5fcc6eaac85aa515/PyYAML-6.0.2-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:68ccc6023a3400877818152ad9a1033e3db8625d899c72eacb5a668902e4d652", size = 751597 },
     { url = "https://files.pythonhosted.org/packages/14/0d/e2c3b43bbce3cf6bd97c840b46088a3031085179e596d4929729d8d68270/PyYAML-6.0.2-cp313-cp313-win32.whl", hash = "sha256:bc2fa7c6b47d6bc618dd7fb02ef6fdedb1090ec036abab80d4681424b84c1183", size = 140527 },
     { url = "https://files.pythonhosted.org/packages/fa/de/02b54f42487e3d3c6efb3f89428677074ca7bf43aae402517bc7cca949f3/PyYAML-6.0.2-cp313-cp313-win_amd64.whl", hash = "sha256:8388ee1976c416731879ac16da0aff3f63b286ffdd57cdeb95f3f2e085687563", size = 156446 },
+]
+
+[[package]]
+name = "redis"
+version = "5.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/da/d283a37303a995cd36f8b92db85135153dc4f7a8e4441aa827721b442cfb/redis-5.2.1.tar.gz", hash = "sha256:16f2e22dff21d5125e8481515e386711a34cbec50f0e44413dd7d9c060a54e0f", size = 4608355 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3c/5f/fa26b9b2672cbe30e07d9a5bdf39cf16e3b80b42916757c5f92bca88e4ba/redis-5.2.1-py3-none-any.whl", hash = "sha256:ee7e1056b9aea0f04c6c2ed59452947f34c4940ee025f5dd83e6a6418b6989e4", size = 261502 },
 ]
 
 [[package]]
@@ -475,6 +519,23 @@ wheels = [
 ]
 
 [[package]]
+name = "saq"
+version = "0.20.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "croniter" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fe/93/05a8405a6d403a88851f452ba815f7d2399f0acfee879a6a333f4668c2f4/saq-0.20.0.tar.gz", hash = "sha256:ab079d9cf9b067876624e6a1e7c74a75a13713fbdfb80cfa08b0166761b5c276", size = 57068 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ad/22/826e0831cf99e77e1661aa2512c3fdec16eef35a1d220f89edad12eff1e3/saq-0.20.0-py3-none-any.whl", hash = "sha256:02edee7d6ea9f20439ecf1ff6f9f6b584c03fcf1779b5524a7458e380b001e79", size = 60134 },
+]
+
+[package.optional-dependencies]
+redis = [
+    { name = "redis" },
+]
+
+[[package]]
 name = "sfu-compsust-open-collector"
 version = "0.1"
 source = { virtual = "." }
@@ -524,12 +585,16 @@ source = { virtual = "src/storage" }
 dependencies = [
     { name = "common" },
     { name = "litestar", extra = ["standard"] },
+    { name = "litestar-saq" },
+    { name = "saq", extra = ["redis"] },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "common", virtual = "src/common" },
     { name = "litestar", extras = ["standard"], specifier = ">=2.13.0" },
+    { name = "litestar-saq", specifier = ">=0.4.0" },
+    { name = "saq", extras = ["redis"], specifier = ">=0.20.0" },
 ]
 
 [package.metadata.requires-dev]
