@@ -1,3 +1,5 @@
+# 2025/01/31 - Michael Chen: Update DHT22 to DHT20, add all sensors
+
 from enum import Enum
 from typing import TypedDict
 
@@ -12,7 +14,7 @@ class SensorCodeEnum(Enum):
     AbstractSensorDriver.
     """
 
-    DHT22 = "DHT22"
+    DHT20 = "DHT20"
     TSL2561 = "TSL2561"
     PMS5003 = "PMS5003"
     MHZ19B = "MH-Z19B"
@@ -50,11 +52,29 @@ class SensorMetadata(TypedDict):
 
 
 sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
-    SensorCodeEnum.DHT22: {
-        "name": "DHT22",
+    SensorCodeEnum.DHT20: {
+        "name": "DHT20",
         "values": [
             {"name": "Temperature", "record_id": "temperature", "unit": "°C"},
             {"name": "Humiditiy", "record_id": "humiditiy", "unit": "%"},
+        ],
+    },
+    SensorCodeEnum.TSL2561: {
+        "name": "TSL2561",
+        "values": [
+            {"name": "Luminosity", "record_id": "luminosity", "unit": "Lux"},
+        ],
+    },
+    SensorCodeEnum.PMS5003: {
+        "name": "PMS5003",
+        "values": [
+            {"name": "Particulate_Matter_Concentration", "record_id": "particulate_matter_concentration", "unit": "PM2.5"},
+        ],
+    },
+    SensorCodeEnum.MHZ19B: {
+        "name": "MHZ19B",
+        "values": [
+            {"name": "CO2_Concentration", "record_id": "CO2_concentration", "unit": "PPM"},
         ],
     }
 }
