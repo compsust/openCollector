@@ -13,21 +13,10 @@ services:
     command: sleep infinity
 
   database:
-    image: influxdb:latest
+    image: questdb/questdb
     restart: unless-stopped
     expose:
-      - 8086
+      - 9000
+      - 8812
     volumes:
-      - ./data:/var/lib/influxdb2
-      - ./config:/etc/influxdb2
-
-  memcached:
-    image: memcached
-    command:
-      - --conn-limit=1024
-      - --memory-limit=64
-      - --threads=4
-
-
-volumes:
-  db_data:
+      - ./data:/var/lib/questdb
