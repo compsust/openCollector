@@ -3,9 +3,9 @@ from common import SensorData
 from ..driver_interface import AbstractSensorDriver
 
 
-class Dht22SensorDriver(AbstractSensorDriver):
+class Dht20SensorDriver(AbstractSensorDriver):
     """
-    Implementation of the Dht22 Sensor Driver.
+    Implementation of the Dht20 Sensor Driver.
     """
 
     def poll(self) -> SensorData:

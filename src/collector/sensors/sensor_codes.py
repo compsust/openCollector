@@ -1,10 +1,10 @@
 from common import SensorCodeEnum
 
 from .driver_interface import AbstractSensorDriver
-from .drivers.dht22 import Dht22SensorDriver
+from .drivers.dht20 import Dht20SensorDriver
 
 """Maps all sensor types to an implementation."""
-sensor_drivers = {SensorCodeEnum.DHT22: Dht22SensorDriver}
+sensor_drivers = {SensorCodeEnum.DHT20: Dht20SensorDriver}
 
 
 def get_sensor_driver_from_code(

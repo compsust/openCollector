@@ -26,7 +26,7 @@ async def db_connection(app: Litestar) -> AsyncGenerator[None, None]:
     """
     client = getattr(app.state, INFLUXDB_CLIENT_STATE_KEY, None)
     if client is None:
-        # TODO: Add these as environment variables.t
+        # TODO: Add these as environment variables.
         client = influxdb_client.InfluxDBClient(url="", token="", org="")
         query_client = client.query_api()
         setattr(app.state, INFLUXDB_CLIENT_STATE_KEY, client)
