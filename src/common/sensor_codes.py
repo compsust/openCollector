@@ -68,13 +68,21 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     SensorCodeEnum.PMS5003: {
         "name": "PMS5003",
         "values": [
-            {"name": "Particulate_Matter_Concentration", "record_id": "particulate_matter_concentration", "unit": "PM2.5"},
+            {
+                "name": "Particulate_Matter_Concentration",
+                "record_id": "particulate_matter_concentration",
+                "unit": "PM2.5",
+            },
         ],
     },
     SensorCodeEnum.MHZ19B: {
         "name": "MHZ19B",
         "values": [
-            {"name": "CO2_Concentration", "record_id": "CO2_concentration", "unit": "PPM"},
+            {
+                "name": "CO2_Concentration",
+                "record_id": "CO2_concentration",
+                "unit": "PPM",
+            },
         ],
-    }
+    },
 }
