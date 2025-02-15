@@ -1,4 +1,5 @@
 #MC: 01/22/2025, change DHT22 to DHT20, update pins as needed, refer to Altium PCB Schematic
+#MC: 02/14/2025, fixes to DHT20
 
 import machine
 import utime
@@ -83,8 +84,8 @@ def read_dht20():
             return None, None
         
         #ask for measurement
-        utime.sleep_ms(10)
-        i2c.writeto(0x38, [0x33, 0x00])
+        utime.sleep_ms(50)
+        i2c.writeto_mem(0x38, 0xAC, bytes([0x33, 0x00]))
         utime.sleep_ms(80)
 
         # check if measurment is complete
@@ -102,26 +103,13 @@ def read_dht20():
                 counter += 1
 
         #data processing
-        data = i2c.readfrom(0x38, 6)  # Read 6 bytes of data
-        hum = ((data[1] << 12) | (data[2] << 8) | (data[3] >> 4)) / (2**20) * 100
-        temp = (((data[4] & 0x0F) << 12) | (data[5] << 8) | (data[6])) / (2**20) * 200 - 50
+        data = i2c.readfrom(0x38, 7)  # Read 6 bytes of data
+        hum = (data[1] << 12 | data[2] << 4 | data[3] >> 4) / (2**20) * 100
+        temp = ((data[3] << 16 | data[4] << 8 | data[5]) & 0xfffff)  / (2**20) * 200 - 50
         return temp, hum
     except Exception as e:
         print("DHT20 Error:", e)
         return None, None
-
-# Obsolete
-# Temperature & Humidity Sensor Reading
-def read_dht22():
-    try:
-        dht_sensor.measure()  # Trigger the DHT22 to read
-        temp = dht_sensor.temperature()  # Get temperature in °C
-        hum = dht_sensor.humidity()  # Get humidity in %
-        return temp, hum
-    except Exception as e:
-        print("DHT22 Error:", e)
-        return None, None
-
 
 # Main loop
 while True:
