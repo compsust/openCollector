@@ -1,7 +1,12 @@
 [project]
 name = "sfu-compsust-open-collector"
 version = "0.1"
-dependencies = ["common", "collector", "storage"]
+dependencies = [
+    "common",
+    "collector",
+    "storage",
+    "influxdb-client>=1.48.0",
+]
 requires-python = ">= 3.13"
 
 [tool.uv]

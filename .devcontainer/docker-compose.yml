@@ -13,23 +13,10 @@ services:
     command: sleep infinity
 
   database:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: exampleuser
-      POSTGRES_PASSWORD: examplepass
-      POSTGRES_DB: exampledb
+    image: questdb/questdb
+    restart: unless-stopped
     expose:
-      - 5432
+      - 9000
+      - 8812
     volumes:
-      - db_data:/var/lib/postgresql/data
-
-  memcached:
-    image: memcached
-    command:
-      - --conn-limit=1024
-      - --memory-limit=64
-      - --threads=4
-
-
-volumes:
-  db_data:
+      - ./data:/var/lib/questdb
