@@ -1,11 +1,12 @@
 #MC: 01/22/2025, change DHT22 to DHT20, update pins as needed, refer to Altium PCB Schematic
+#MC: 02/14/2025, updates to DHT20 
 
 import machine
 import utime
 from machine import UART, Pin
 
 # I2C Setup for TSL2561 and DH20
-i2c = machine.I2C(0, scl=machine.Pin(21), sda=machine.Pin(20))
+i2c = machine.I2C(0, scl=machine.Pin(27), sda=machine.Pin(26))
 
 # UART Setup for PMS5003 and MH-Z19B
 uart_pms = UART(0, baudrate=9600, tx=Pin(22), rx=Pin(21))
@@ -79,8 +80,8 @@ def read_dht20():
             return None, None
         
         #ask for measurement
-        utime.sleep_ms(10)
-        i2c.writeto(0x38, [0x33, 0x00])
+        utime.sleep_ms(50)
+        i2c.writeto_mem(0x38, 0xAC, bytes([0x33, 0x00]))
         utime.sleep_ms(80)
 
         #check if measurment is complete
@@ -98,26 +99,13 @@ def read_dht20():
                 counter += 1
 
         #data processing
-        data = i2c.readfrom(0x38, 6)  # Read 6 bytes of data
-        hum = ((data[1] << 12) | (data[2] << 8) | (data[3] >> 4)) / (2**20) * 100
-        temp = (((data[4] & 0x0F) << 12) | (data[5] << 8) | (data[6])) / (2**20) * 200 - 50
+        data = i2c.readfrom(0x38, 7)  # Read 6 bytes of data
+        hum = (data[1] << 12 | data[2] << 4 | data[3] >> 4) / (2**20) * 100
+        temp = ((data[3] << 16 | data[4] << 8 | data[5]) & 0xfffff)  / (2**20) * 200 - 50
         return temp, hum
     except Exception as e:
         print("DHT20 Error:", e)
         return None, None
-
-# Obsolete
-# Temperature & Humidity Sensor Reading
-def read_dht22():
-    try:
-        dht_sensor.measure()  # Trigger the DHT22 to read
-        temp = dht_sensor.temperature()  # Get temperature in °C
-        hum = dht_sensor.humidity()  # Get humidity in %
-        return temp, hum
-    except Exception as e:
-        print("DHT22 Error:", e)
-        return None, None
-
 
 # Main loop
 while True:
@@ -133,10 +121,10 @@ while True:
     if mhz19b_co2 is not None:
         print(f"MH-Z19B CO2: {mhz19b_co2} ppm")
 
-    dht22_temp, dht22_hum = read_dht22()
-    if dht22_temp is not None:
-        print(f"DHT22 Temperature: {dht22_temp} °C")
-    if dht22_hum is not None:
-        print(f"DHT22 Humidity: {dht22_hum} %")
+    dht20_temp, dht20_hum = read_dht20()
+    if dht20_temp is not None:
+        print(f"DHT20 Temperature: {dht20_temp} °C")
+    if dht20_hum is not None:
+        print(f"DHT20 Humidity: {dht20_hum} %")
 
     utime.sleep(2)  # Loops every 2 seconds
