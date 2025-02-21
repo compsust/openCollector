@@ -1,5 +1,6 @@
 #MC: 01/22/2025, change DHT22 to DHT20, update pins as needed, refer to Altium PCB Schematic
 #MC: 02/14/2025, fixes to DHT20
+#MC: 02/21/2025, adjustments to Mh-z19 and PMS5003
 
 import machine
 import utime
@@ -9,8 +10,8 @@ from machine import UART, Pin
 i2c = machine.I2C(0, scl=machine.Pin(27), sda=machine.Pin(26))
 
 # UART Setup for PMS5003 and MH-Z19B
-uart_pms = UART(0, baudrate=9600, tx=Pin(22), rx=Pin(21))
-uart_mhz = UART(1, baudrate=9600, tx=Pin(6), rx=Pin(7))
+uart_mhz = UART(0, baudrate=9600, tx=Pin(22), rx=Pin(21))
+uart_pms = UART(1, baudrate=9600, tx=Pin(6), rx=Pin(7))
 
 # Set up the GPIO pin for DHT22
 dht_pin = machine.Pin(34, machine.Pin.OUT)
@@ -48,9 +49,13 @@ def read_tsl2561(command):
 def read_pms5003():
     try:
         if uart_pms.any():
-            data = uart_pms.read(32)  # Read 32 bytes (PMS5003 frame size)
-            # Example parsing; replace with specific PMS5003 protocol
-            return data
+            response = uart_pms.read(32)  # Read 32 bytes (PMS5003 frame size)
+            if response and len(response) == 32 and response[0] == 0x42 and response[1] == 0x4D:
+                #sum together high and low byte for each
+                pm1_0  = (response[5] << 8) | response[6]  # PM1.0 concentration
+                pm2_5  = (response[7] << 8) | response[8]  # PM2.5 concentration
+                pm10   = (response[9] << 8) | response[10]  # PM10 concentration
+                return pm1_0, pm2_5, pm10
         return None
     except Exception as e:
         print("PMS5003 Error:", e)
@@ -61,15 +66,14 @@ def read_pms5003():
 def read_mhz19b():
     try:
         if uart_mhz.any():
-            uart_mhz.write(
-                b"\xff\x01\x86\x00\x00\x00\x00\x00\x79"
-            )  # Command to read CO2
+            uart_mhz.write(bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))# Command to read CO2
             utime.sleep(0.1)
             response = uart_mhz.read(9)  # Read 9-byte response
-            if response and len(response) == 9:
+            if response and len(response) == 9 and response[0] == 0xFF and response[1] == 0x86:
                 co2 = response[2] * 256 + response[3]
                 return co2
         return None
+    
     except Exception as e:
         print("MH-Z19B Error:", e)
         return None
