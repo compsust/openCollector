@@ -13,13 +13,9 @@ i2c = machine.I2C(0, scl=machine.Pin(27), sda=machine.Pin(26))
 uart_mhz = UART(0, baudrate=9600, tx=Pin(22), rx=Pin(21))
 uart_pms = UART(1, baudrate=9600, tx=Pin(6), rx=Pin(7))
 
-# Set up the GPIO pin for DHT22
-dht_pin = machine.Pin(34, machine.Pin.OUT)
-
 utime.sleep(1)  # Allow the sensor to initialize
 
 # Functions to get Sensor Readings
-
 
 # Light Sensor Power Up
 def power_up_tsl2561():
