@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
-
-import influxdb_client
+import asyncpg
+from asyncpg.connection import Connection
 
 
 from litestar import Litestar
@@ -10,29 +10,28 @@ from litestar import Litestar
 """
 The keys used to set objects on the Litestar application state.
 """
-INFLUXDB_CLIENT_STATE_KEY = "influxdb_client"
-INFLUXDB_QUERY_CLIENT_STATE_KEY = "influxdb_query_client"
+PG_CONN_STATE_KEY = "asyncpg_client"
 
 
 @asynccontextmanager
 async def db_connection(app: Litestar) -> AsyncGenerator[None, None]:
     """
-    Initializes the InfluxDB client.
+    The database in use is QuestDB. To query from QuestDb, we
+    can use a Postgres client.
+    Initializes an asynchronous Postgres client from asyncpg.
 
     Args:
         app (Litestar): The Litestar application instance.
             Used to attach the created client object to the
             application state which can be accessed in routes.
     """
-    client = getattr(app.state, INFLUXDB_CLIENT_STATE_KEY, None)
+    client = getattr(app.state, PG_CONN_STATE_KEY, None)
     if client is None:
         # TODO: Add these as environment variables.
-        client = influxdb_client.InfluxDBClient(url="", token="", org="")
-        query_client = client.query_api()
-        setattr(app.state, INFLUXDB_CLIENT_STATE_KEY, client)
-        setattr(app.state, INFLUXDB_QUERY_CLIENT_STATE_KEY, query_client)
+        connection: Connection = await asyncpg.connect(host="", port=0, user="", password="", database="")
+        setattr(app.state, PG_CONN_STATE_KEY, connection)
 
     try:
         yield
     finally:
-        client.close()
+        await connection.close()
