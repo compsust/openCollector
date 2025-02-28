@@ -78,29 +78,36 @@ class DeviceConfig:
             )
 
 
-class CacheConfig:
+class UploadConfig:
     """
-    Configuration object which describes a Memcached target.
+    Configuration object which describes a QuestDB target.
     Attributes:
         name (str): A descriptive name for the target.
-        endpoint (str): The URI through which the cache target node may
-            accept requests.
+        host (str): The database URL.
+        port (str): The database port.
+        user (str): The database username.
+        password (str): The database password.
     """
 
     name: str
-    endpoint: str
+    host: str
+    port: str
+    user: str
+    password: str
 
-    def __init__(self, config: dict[str, Any], index: int):
+    def __init__(self, config: dict[str, Any]):
         """
         Initializes the config and ensures the required attributes are present.
 
         Args:
-            config (dict[str, Any]): The cache config object, ie. a
-                dictionary contained within the "caches" array in the config file.
-            index (int): The index of the cache config within the "caches" array.
+            config (dict[str, Any]): The upload config object, ie. the
+                dictionary contained within the "upload" key in the config file.
         """
-        self.name = get_attribute_or_error(config, "name", f"cache[{index}]")
-        self.endpoint = get_attribute_or_error(config, "endpoint", f"cache[{index}]")
+        self.name = get_attribute_or_error(config, "name", "upload")
+        self.host = get_attribute_or_error(config, "host", "upload")
+        self.port = get_attribute_or_error(config, "port", "upload")
+        self.user = get_attribute_or_error(config, "user", "upload")
+        self.password = get_attribute_or_error(config, "password", "upload")
 
 
 class SensorConfig:
@@ -170,23 +177,23 @@ class CollectorConfig:
         polling_interval (int): The number of miliseconds to wait
             between sensor polls. Must not be negative.
         device (DeviceConfig): The device config.
+        upload (UploadConfig): The configured upload target.
         sensors (list[SensorConfig]): All configured sensors.
-        caches (list[TargetConfig]): All configured caches.
     """
 
     collector_id: str
     node_name: str
     polling_interval: int
     device: DeviceConfig
+    upload: UploadConfig
     sensors: list[SensorConfig]
-    caches: list[CacheConfig]
 
     def __init__(
         self,
         config: dict[str, Any],
         device: DeviceConfig,
+        upload: UploadConfig,
         sensors: list[SensorConfig],
-        caches: list[CacheConfig],
     ):
         """
         Initializes the config and ensures the required attributes are present.
@@ -201,8 +208,8 @@ class CollectorConfig:
             config, "polling_interval", "config"
         )
         self.device = device
+        self.upload = upload
         self.sensors = sensors
-        self.caches = caches
 
         # Validate that polling_interval is not negative
         if self.polling_interval < 0:

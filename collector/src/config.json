@@ -7,12 +7,13 @@
         "allowed_gpio": [1, 2, 3, 4],
         "requires_micropython": true 
     },
-    "caches": [
-        {
-            "name": "Our Memcached Server",
-            "endpoint": "localhost:11211"
-        }
-    ],
+    "upload": {
+        "name": "QuestDB",
+        "host": "localhost",
+        "port": 9000,
+        "user": "node",
+        "password": "quest"
+    },
     "sensors": [
         {
             "sensor_id": null,

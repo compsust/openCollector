@@ -9,7 +9,7 @@ import time
 
 from common import SensorReport
 
-from .cache import CacheManager
+from .upload import CacheManager
 from .config import ConfigManager
 from .sensors import SensorManager
 

@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from .datastructures import CacheConfig, CollectorConfig, DeviceConfig, SensorConfig
+from .datastructures import CollectorConfig, DeviceConfig, SensorConfig, UploadConfig
 from .utils import generate_unique_id
 
 """
@@ -41,14 +41,10 @@ class ConfigManager:
             raise ValueError("Config missing device config.")
         device_config = DeviceConfig(config["device"], self.micropython)
 
-        # Cache configs
-        if "caches" not in config:
-            raise ValueError("Config missing caches config.")
-
-        caches: list[CacheConfig] = []
-        for config, index in config["caches"]:
-            cache = CacheConfig(config, index)
-            caches.append(cache)
+        # Upload config
+        if "upload" not in config:
+            raise ValueError("Config missing upload config.")
+        upload_config = UploadConfig(config["upload"])
 
         # Sensor configs
         if "sensors" not in config:
@@ -64,7 +60,7 @@ class ConfigManager:
             sensors.append(sensor)
 
         # Collector config
-        collector_config = CollectorConfig(config, device_config, sensors, caches)
+        collector_config = CollectorConfig(config, device_config, upload_config, sensors)
 
         self._config = collector_config
 

@@ -12,6 +12,3 @@ requires-python = ">= 3.12"
 
 [tool.uv]
 dev-dependencies = []
-
-[tool.uv.sources]
-storage = { workspace = true }
