@@ -34,15 +34,16 @@ identified, with information about the sensor being contained
 in the sensor_metadata table.
 """
 records_table_init_command = (
-"CREATE TABLE IF NOT EXISTS records("
-"timestamp TIMESTAMP, "
-f"(collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}), "
-f"(collector_name SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}), "
-f"(sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}), "
-"(sensor_code SYMBOL CAPACITY 256), "
-"(record_id SYMBOL CAPACITY 256)"
-"value DOUBLE"
-") TIMESTAMP(timestamp)")
+    "CREATE TABLE IF NOT EXISTS records("
+    "timestamp TIMESTAMP, "
+    f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
+    f"collector_name SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
+    f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
+    "sensor_code SYMBOL CAPACITY 256, "
+    "record_id SYMBOL CAPACITY 256, "
+    "value DOUBLE"
+    ") TIMESTAMP(timestamp)"
+)
 
 """
 The SQL command to create the error table.
@@ -52,11 +53,12 @@ identified, with information about the sensor being contained
 in the sensor_metadata table.
 """
 errors_table_init_command = (
-"CREATE TABLE IF NOT EXISTS records("
-"timestamp TIMESTAMP, "
-f"(collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}), "
-f"(collector_name SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}), "
-f"(sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}), "
-"(sensor_code SYMBOL CAPACITY 256), "
-"error_message VARCHAR"
-") TIMESTAMP(timestamp)")
+    "CREATE TABLE IF NOT EXISTS records("
+    "timestamp TIMESTAMP, "
+    f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
+    f"collector_name SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
+    f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
+    "sensor_code SYMBOL CAPACITY 256, "
+    "error_message VARCHAR"
+    ") TIMESTAMP(timestamp)"
+)

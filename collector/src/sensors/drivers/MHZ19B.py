@@ -1,4 +1,4 @@
-#MC: 02/21/2025, new file complete implementation
+# MC: 02/21/2025, new file complete implementation
 
 import utime
 from machine import UART, Pin
@@ -11,7 +11,7 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
     Implementation of the MHZ19B Sensor Driver.
     """
 
-    def poll(self, uart_mhz) -> SensorData: 
+    def poll(self, uart_mhz) -> SensorData:
         """
         collects sensor data from MHZ19C
         Args:
@@ -21,14 +21,21 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
         """
         try:
             if uart_mhz.any():
-                uart_mhz.write(bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))# Command to read CO2
+                uart_mhz.write(
+                    bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
+                )  # Command to read CO2
                 utime.sleep_ms(100)
                 response = uart_mhz.read(9)  # Read 9-byte response
-                if response and len(response) == 9 and response[0] == 0xFF and response[1] == 0x86:
+                if (
+                    response
+                    and len(response) == 9
+                    and response[0] == 0xFF
+                    and response[1] == 0x86
+                ):
                     co2 = response[2] * 256 + response[3]
                     return {"CO2": co2}
             return {"CO2": None}
-        
+
         except Exception as e:
             print("MH-Z19B Error:", e)
             return {"CO2": None}

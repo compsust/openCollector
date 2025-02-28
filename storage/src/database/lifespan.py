@@ -11,6 +11,7 @@ The keys used to set objects on the Litestar application state.
 """
 PG_CONN_STATE_KEY = "asyncpg_client"
 
+
 @asynccontextmanager
 async def db_connection(app: Litestar) -> AsyncGenerator[None, None]:
     """
@@ -26,7 +27,13 @@ async def db_connection(app: Litestar) -> AsyncGenerator[None, None]:
     client = getattr(app.state, PG_CONN_STATE_KEY, None)
     if client is None:
         # TODO: Add these as environment variables.
-        connection: Connection = await asyncpg.connect(host=config.QUESTDB_HOST, port=config.QUESTDB_PORT, user=config.QUESTDB_USER, password=config.QUESTDB_PASSWORD, database=config.QUESTDB_DB_NAME)
+        connection: Connection = await asyncpg.connect(
+            host=config.QUESTDB_HOST,
+            port=config.QUESTDB_PORT,
+            user=config.QUESTDB_USER,
+            password=config.QUESTDB_PASSWORD,
+            database=config.QUESTDB_DB_NAME,
+        )
         setattr(app.state, PG_CONN_STATE_KEY, connection)
 
     await connection.execute(records_table_init_command)

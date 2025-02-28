@@ -1,5 +1,5 @@
 # 2025/01/31 - Michael Chen: Update DHT22 to DHT20, add all sensors
-# 2025/02/21 - MC: Update Tsl2561 to two channels 
+# 2025/02/21 - MC: Update Tsl2561 to two channels
 
 from enum import Enum
 from typing import TypedDict
@@ -56,25 +56,15 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     SensorCodeEnum.DHT20: {
         "name": "DHT20",
         "values": [
-            {"name": "Temperature", 
-             "record_id": "temperature", 
-             "unit": "°C"},
-
-            {"name": "Humiditiy", 
-             "record_id": "humiditiy", 
-             "unit": "%"},
+            {"name": "Temperature", "record_id": "temperature", "unit": "°C"},
+            {"name": "Humiditiy", "record_id": "humiditiy", "unit": "%"},
         ],
     },
     SensorCodeEnum.TSL2561: {
         "name": "TSL2561",
         "values": [
-            {"name": "Luminosity0", 
-             "record_id": "luminosity0", 
-             "unit": "Lux"},
-
-            {"name": "Luminosity1", 
-             "record_id": "luminosity1", 
-             "unit": "Lux"},
+            {"name": "Luminosity0", "record_id": "luminosity0", "unit": "Lux"},
+            {"name": "Luminosity1", "record_id": "luminosity1", "unit": "Lux"},
         ],
     },
     SensorCodeEnum.PMS5003: {
@@ -85,13 +75,11 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
                 "record_id": "particulate_matter_concentration_1.0",
                 "unit": "PM1.0",
             },
-
             {
                 "name": "Particulate_Matter_Concentration_2.5",
                 "record_id": "particulate_matter_concentration_2.5",
                 "unit": "PM2.5",
             },
-            
             {
                 "name": "Particulate_Matter_Concentration_10",
                 "record_id": "particulate_matter_concentration_10",
