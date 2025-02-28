@@ -6,6 +6,7 @@ dependencies = [
     "common",
     "litestar[standard]>=2.13.0",
     "asyncpg",
+    "python-decouple",
 ]
 requires-python = ">= 3.12"
 

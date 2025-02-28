@@ -31,17 +31,19 @@ class SensorError(NamedTuple):
     Associates a caught sensor exception with a sensor.
 
     Attributes:
-        sensor_id (str): The ID of the associated sensor,
-            as contained in the associated SensorConfig.
-        sensor_code (SensorCodeEnum): The code of the associated sensor,
-            as contained in the associated SensorConfig.
+        sensor_id (str | None): The ID of the associated sensor,
+            as contained in the associated SensorConfig, or None
+            if the error wasn't associated with a particular sensor.
+        sensor_code (SensorCodeEnum | None): The code of the associated sensor,
+            as contained in the associated SensorConfig, or None
+            if the error wasn't associated with a particular sensor.
         error_message (str): A description of the exception
             raised by the sensor.
         timestamp (float): The Unix timestamp at which the error occurred.
     """
 
-    sensor_id: str
-    sensor_code: SensorCodeEnum
+    sensor_id: str | None
+    sensor_code: SensorCodeEnum | None
     error_message: str
     timestamp: float
 

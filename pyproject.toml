@@ -20,7 +20,7 @@ collector = { workspace = true }
 storage = { workspace = true }
 
 [tool.uv.workspace]
-members = ["src/common", "src/collector", "src/storage"]
+members = ["common", "collector", "storage"]
 
 [tool.ruff.lint]
 extend-select = ["I"]
