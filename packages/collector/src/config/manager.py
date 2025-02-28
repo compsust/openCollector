@@ -60,7 +60,9 @@ class ConfigManager:
             sensors.append(sensor)
 
         # Collector config
-        collector_config = CollectorConfig(config, device_config, upload_config, sensors)
+        collector_config = CollectorConfig(
+            config, device_config, upload_config, sensors
+        )
 
         self._config = collector_config
 

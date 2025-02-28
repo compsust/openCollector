@@ -5,7 +5,6 @@ dependencies = [
     "common",
     "collector",
     "storage",
-    "influxdb-client>=1.48.0",
 ]
 requires-python = ">= 3.13"
 
@@ -20,7 +19,7 @@ collector = { workspace = true }
 storage = { workspace = true }
 
 [tool.uv.workspace]
-members = ["common", "collector", "storage"]
+members = ["packages/*"]
 
 [tool.ruff.lint]
 extend-select = ["I"]
