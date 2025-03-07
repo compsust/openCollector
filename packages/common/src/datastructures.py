@@ -1,6 +1,6 @@
 from typing import Any, NamedTuple
 
-from .sensor_codes import RecordID
+from .sensor_codes import RecordID, SensorCodeEnum
 
 type SensorData = dict[RecordID, Any]
 """Alias for data returned by a sensor."""
@@ -55,3 +55,29 @@ class CollectorReport(NamedTuple):
     collector_id: str
     records: list[CollectorRecord]
     errors: list[CollectorError]
+
+
+class CollectorMetadata(NamedTuple):
+    """
+    Packages collector metadata to be sent to storage nodes.
+
+    Attributes are same as in the collector config.
+    """
+
+    collector_id: str
+    collector_name: str
+    device_model: str
+    polling_interval: int
+
+
+class SensorMetadata(NamedTuple):
+    """
+    Packages sensor metadata to be sent to storage nodes.
+
+    Attributes are same as in the collector config.
+    """
+
+    collector_id: str
+    sensor_id: str
+    sensor_code: SensorCodeEnum
+    sensor_name: str

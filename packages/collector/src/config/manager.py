@@ -1,6 +1,7 @@
 import json
 from typing import Any
 
+from common.src import CollectorMetadata, SensorMetadata
 from .datastructures import CollectorConfig, DeviceConfig, SensorConfig, UploadConfig
 from .utils import generate_unique_id
 
@@ -80,3 +81,29 @@ class ConfigManager:
                 raise Exception("Failed to load device config.")
 
         return self._config
+
+    @property
+    def metadata(self) -> tuple[CollectorMetadata, list[SensorMetadata]]:
+        """
+        Packages the configuration into the metadata objects.
+
+        Returns:
+            tuple[CollectorMetadata, list[SensorMetadata]]: The metadata.
+        """
+        collector_metadata = CollectorMetadata(
+            collector_id=self.config.collector_id,
+            collector_name=self.config.node_name,
+            device_model=self.config.device.model,
+            polling_interval=self.config.polling_interval,
+        )
+        sensor_metadata = []
+        for sensor in self.config.sensors:
+            sensor_metadata.append(
+                SensorMetadata(
+                    collector_id=self.config.collector_id,
+                    sensor_id=sensor.sensor_id,
+                    sensor_code=sensor.sensor_code,
+                    sensor_name=sensor.name,
+                )
+            )
+        return collector_metadata, sensor_metadata

@@ -24,11 +24,19 @@ def main():
     sensor_manager = SensorManager(config_manager)
     upload_manager = UploadManager(config_manager)
 
-    # TODO: Update metadata table
-    # upload_manager.upload_metadata()
-
     # Store errors that don't happen during the sensor polling.
     errors: list[CollectorError] = []
+
+    # Update metadata table
+    # Timestamp in microseconds.
+    timestamp = time.time() * 1000 * 1000
+    try:
+        collector_metadata, sensor_metadata = config_manager.metadata
+        upload_manager.upload_metadata(collector_metadata, sensor_metadata)
+    except Exception as e:
+        errors.append(
+            CollectorError(sensor_id=None, error_message=str(e), timestamp=timestamp)
+        )
 
     # Loop
     while ():

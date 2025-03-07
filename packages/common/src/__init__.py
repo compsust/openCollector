@@ -1,5 +1,12 @@
 from .sensor_codes import SensorCodeEnum
-from .datastructures import SensorData, CollectorError, CollectorRecord, CollectorReport
+from .datastructures import (
+    SensorData,
+    CollectorError,
+    CollectorRecord,
+    CollectorReport,
+    CollectorMetadata,
+    SensorMetadata,
+)
 from .database import (
     records_table_name,
     errors_table_name,
@@ -13,6 +20,8 @@ __all__ = [
     "CollectorError",
     "CollectorRecord",
     "CollectorReport",
+    "CollectorMetadata",
+    "SensorMetadata",
     "records_table_name",
     "errors_table_name",
     "collector_metadata_table_name",
