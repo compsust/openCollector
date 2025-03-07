@@ -35,17 +35,19 @@ class SensorManager:
         errors: list[CollectorError] = []
 
         for driver in self.drivers:
+            # Timestamp in microseconds.
+            timestamp = time.time() * 1000 * 1000
             try:
                 data = driver.poll()
                 record = CollectorRecord(
-                    sensor_id=driver.config.sensor_id,
-                    data=data,
+                    sensor_id=driver.config.sensor_id, data=data, timestamp=timestamp
                 )
                 records.append(record)
             except Exception as e:
                 error = CollectorError(
                     sensor_id=driver.config.sensor_id,
                     error_message=str(e),
+                    timestamp=timestamp,
                 )
                 errors.append(error)
 

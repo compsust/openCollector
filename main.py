@@ -11,13 +11,15 @@ from lib.PMS5003 import PMS5003
 from lib.MZH19B import MZH19B
 
 # Initialize I2C Buffer
-i2c = I2C(1, scl=Pin(27), sda=Pin(26)) # GPIO pins GP21 and GP20
+i2c = I2C(1, scl=Pin(27), sda=Pin(26))  # GPIO pins GP21 and GP20
 
 # Turn on Sensors
-dht20 = DHT20(i2c) 
+dht20 = DHT20(i2c)
 tsl2561 = TSL2561(i2c)
-pms5003 = PMS5003(UART(1, baudrate=9600, tx=Pin(21), rx=Pin(22))) # GPIO pins GP16 and GP17
-mzh19b = MZH19B(UART(2, baudrate=9600, tx=Pin(6), rx=Pin(7))) # GPIO pins GP4 and GP5
+pms5003 = PMS5003(
+    UART(1, baudrate=9600, tx=Pin(21), rx=Pin(22))
+)  # GPIO pins GP16 and GP17
+mzh19b = MZH19B(UART(2, baudrate=9600, tx=Pin(6), rx=Pin(7)))  # GPIO pins GP4 and GP5
 
 # Initialize Sensors
 dht20._initialize()

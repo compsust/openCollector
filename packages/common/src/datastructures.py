@@ -14,10 +14,12 @@ class CollectorRecord(NamedTuple):
         sensor_id (str): The ID of the associated sensor,
             as contained in the associated SensorConfig.
         data (SensorData): The data returned by the sensor.
+        timestamp (float): The Unix timestamp at which the record was recorded.
     """
 
     sensor_id: str
     data: SensorData
+    timestamp: float
 
 
 class CollectorError(NamedTuple):
@@ -36,6 +38,7 @@ class CollectorError(NamedTuple):
 
     sensor_id: str | None
     error_message: str
+    timestamp: float
 
 
 class CollectorReport(NamedTuple):
