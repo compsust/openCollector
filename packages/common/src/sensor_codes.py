@@ -2,7 +2,7 @@
 # 2025/02/21 - MC: Update Tsl2561 to two channels
 
 from enum import Enum
-from typing import TypedDict
+from typing import TypedDict, Literal
 
 
 class SensorCodeEnum(Enum):
@@ -52,19 +52,33 @@ class SensorMetadata(TypedDict):
     values: list[SensorValueMetadata]
 
 
+"""
+Stores metadata for each type of sensor code.
+
+Attributes:
+    name: The name of the sensor.
+    values: A list containing the values that the sensor will output. For example,
+        a temperature and humidity sensor will have two value entries.
+    values[i].name: The name of the value.
+    values[i].record_id: The key used to store the value in a dictionary.
+    values[i].unit: The unit of measurement.
+
+Note that when adding new sensors, the RecordID type below must be
+updated for valid type inference.
+"""
 sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     SensorCodeEnum.DHT20: {
         "name": "DHT20",
         "values": [
             {"name": "Temperature", "record_id": "temperature", "unit": "°C"},
-            {"name": "Humiditiy", "record_id": "humiditiy", "unit": "%"},
+            {"name": "Humiditiy", "record_id": "humidity", "unit": "%"},
         ],
     },
     SensorCodeEnum.TSL2561: {
         "name": "TSL2561",
         "values": [
-            {"name": "Luminosity0", "record_id": "luminosity0", "unit": "Lux"},
-            {"name": "Luminosity1", "record_id": "luminosity1", "unit": "Lux"},
+            {"name": "Luminosity0", "record_id": "lux0", "unit": "Lux"},
+            {"name": "Luminosity1", "record_id": "lux1", "unit": "Lux"},
         ],
     },
     SensorCodeEnum.PMS5003: {
@@ -72,17 +86,17 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
         "values": [
             {
                 "name": "Particulate_Matter_Concentration_1.0",
-                "record_id": "particulate_matter_concentration_1.0",
+                "record_id": "PM1.0",
                 "unit": "PM1.0",
             },
             {
                 "name": "Particulate_Matter_Concentration_2.5",
-                "record_id": "particulate_matter_concentration_2.5",
+                "record_id": "PM2.5",
                 "unit": "PM2.5",
             },
             {
                 "name": "Particulate_Matter_Concentration_10",
-                "record_id": "particulate_matter_concentration_10",
+                "record_id": "PM10",
                 "unit": "PM10",
             },
         ],
@@ -92,9 +106,23 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
         "values": [
             {
                 "name": "CO2_Concentration",
-                "record_id": "CO2_concentration",
+                "record_id": "CO2",
                 "unit": "PPM",
             },
         ],
     },
 }
+
+"""
+Types the record_ids we expect to see for type safety.    
+"""
+RecordID = Literal[
+    "CO2",
+    "humidity",
+    "lux0",
+    "lux1",
+    "PM1.0",
+    "PM10",
+    "PM2.5",
+    "temperature",
+]

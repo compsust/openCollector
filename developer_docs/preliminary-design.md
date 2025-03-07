@@ -28,9 +28,9 @@ This section gives an overview of the components of the system.
 
 #### Sensors
 
-The `SensorManager` class is responsible for controlling each `SensorDriver` class it is connected to, and constructing a `SensorReport` object. This will involve the following methods:
+The `SensorManager` class is responsible for controlling each `SensorDriver` class it is connected to, and constructing a `CollectorReport` object. This will involve the following methods:
 - `SensorManager.init()`: Given a `CollectorConfig` object, initializes a `SensorDriver` class for every sensor in the config. There will be a lookup table mapping types of sensor configurations to implementations of the `AbstractSensorDriver` interface which the `SensorManager` can use.
-- `SensorManager.poll()`: Calls the `poll()` method on each of the underlying drivers, retrieving the data, catching any exceptions, and constructing a `SensorReport` object to return to the main control loop.
+- `SensorManager.poll()`: Calls the `poll()` method on each of the underlying drivers, retrieving the data, catching any exceptions, and constructing a `CollectorReport` object to return to the main control loop.
 
 The `AbstractSensorDriver` class is resposible for collecting data from the hardware and will contain the following methods:
 - `SensorDriver.init()`: Given a `SensorConfig` object, initializes any underlying library with the configured values.
@@ -62,9 +62,9 @@ This section outlines the data structures that will need to be used and passed a
 These datastructures may utilize Python's dataclasses.
 
 - `SensorData`: Generic data type for data returned by a sensor. May just be an alias for `Dict[str, Any]`.
-- `SensorRecord`: Contains a `SensorData`, the ID of the associated sensor, and a `datetime` timestamp.
-- `SensorError`: Contains an error code, an error message, the ID of the associated sensor, and a `datetime` timestamp.
-- `SensorReport`: Contains a list of `SensorRecord`, a list of `SensorError`, and the ID of the collector node.
+- `CollectorRecord`: Contains a `SensorData`, the ID of the associated sensor, and a `datetime` timestamp.
+- `CollectorError`: Contains an error code, an error message, the ID of the associated sensor, and a `datetime` timestamp.
+- `CollectorReport`: Contains a list of `CollectorRecord`, a list of `CollectorError`, and the ID of the collector node.
 
 #### Configuration Data
 
@@ -85,9 +85,9 @@ Upon program startup, the main control loop does the following:
 #### Polling
 
 On an interval known as `POLLING_INTERVAL`, the following occurs:
-1. The main control loop calls `SensorManager.poll()` which in turn calls `AbstractSensorDriver.poll()` on all the `SensorDrivers`. Each `SensorDriver` may return a `SensorData`, or it may raise an exception if an error has occurred. If it raises an exception, the `SensorManager` catches it and creates a `SensorError` object. If it returns data, the `SensorManager` creates a `SensorRecord`.
-2. The `SensorManager` creater a `SensorReport` object with the `SensorRecord` and `SensorError` objects, and populates it with the list of target storage node IDs that the device is to send data to. This is to allow the device to keep track of which of its targets it has sent data to, in the case that data is attempted to be sent when some connections are offline.
-3. Finally, the `SensorManager` returns the `SensorReport` object to the main control loop, which then calls `CacheManager.cache()` which stores the data in-memory.
+1. The main control loop calls `SensorManager.poll()` which in turn calls `AbstractSensorDriver.poll()` on all the `SensorDrivers`. Each `SensorDriver` may return a `SensorData`, or it may raise an exception if an error has occurred. If it raises an exception, the `SensorManager` catches it and creates a `CollectorError` object. If it returns data, the `SensorManager` creates a `CollectorRecord`.
+2. The `SensorManager` creater a `CollectorReport` object with the `CollectorRecord` and `CollectorError` objects, and populates it with the list of target storage node IDs that the device is to send data to. This is to allow the device to keep track of which of its targets it has sent data to, in the case that data is attempted to be sent when some connections are offline.
+3. Finally, the `SensorManager` returns the `CollectorReport` object to the main control loop, which then calls `CacheManager.cache()` which stores the data in-memory.
 
 ## Storage Node Design
 
@@ -105,7 +105,7 @@ The Memcached server is what is connected to the network and collecting the data
 
 #### Repository/Database
 
-The database is the persistent storage mechanism and may be a SQL database such as Postgres or a no-SQL database such as MongoDB. The Litestar server should be agnostic to the underlying database technology through the use of the Repository class, which converts between database constructs and native application datatypes such as `SensorReport`.
+The database is the persistent storage mechanism and may be a SQL database such as Postgres or a no-SQL database such as MongoDB. The Litestar server should be agnostic to the underlying database technology through the use of the Repository class, which converts between database constructs and native application datatypes such as `CollectorReport`.
 
 #### Litestar Browser & REST Interface
 

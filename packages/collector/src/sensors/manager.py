@@ -3,7 +3,7 @@ import time
 from config import ConfigManager
 from sensors.driver_interface import AbstractSensorDriver
 from sensors.sensor_codes import get_sensor_driver_from_code
-from common.src import SensorError, SensorRecord, SensorReport
+from common.src import CollectorError, CollectorRecord, CollectorReport
 
 
 class SensorManager:
@@ -23,34 +23,29 @@ class SensorManager:
             driver = DriverClass(config=sensor_config)
             self.drivers.append(driver)
 
-    def poll(self) -> tuple[list[SensorRecord], list[SensorError]]:
+    def poll(self) -> tuple[list[CollectorRecord], list[CollectorError]]:
         """
         Polls all sensors.
 
         Returns:
-            tuple[list[SensorRecord], list[SensorError]]:
+            tuple[list[CollectorRecord], list[CollectorError]]:
                 all recorded sensor data and caught sensor exceptions.
         """
-        records: list[SensorRecord] = []
-        errors: list[SensorError] = []
+        records: list[CollectorRecord] = []
+        errors: list[CollectorError] = []
 
         for driver in self.drivers:
-            timestamp = time.time()
             try:
                 data = driver.poll()
-                record = SensorRecord(
+                record = CollectorRecord(
                     sensor_id=driver.config.sensor_id,
-                    sensor_code=driver.config.sensor_code,
                     data=data,
-                    timestamp=timestamp,
                 )
                 records.append(record)
             except Exception as e:
-                error = SensorError(
+                error = CollectorError(
                     sensor_id=driver.config.sensor_id,
-                    sensor_code=driver.config.sensor_code,
                     error_message=str(e),
-                    timestamp=timestamp,
                 )
                 errors.append(error)
 

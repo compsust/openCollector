@@ -7,7 +7,7 @@ except ImportError:
 
 import time
 
-from common.src import SensorReport
+from common.src import CollectorReport
 
 from .upload import UploadManager
 from .config import ConfigManager
@@ -27,7 +27,7 @@ def main():
     # Loop
     while ():
         records, errors = sensor_manager.poll()
-        report = SensorReport(
+        report = CollectorReport(
             collector_id=config_manager.config.collector_id,
             node_name=config_manager.config.node_name,
             model=config_manager.config.device.model,

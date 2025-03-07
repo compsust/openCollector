@@ -2,7 +2,7 @@
 
 import utime
 from machine import UART, Pin
-from common import SensorData
+from common.src import SensorData
 from ..driver_interface import AbstractSensorDriver
 
 

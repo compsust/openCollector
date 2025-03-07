@@ -2,7 +2,7 @@ import requests
 from typing import Any
 from collector.src.config.datastructures import UploadConfig
 from config.manager import ConfigManager
-from common.src import SensorReport
+from common.src import CollectorReport, CollectorError
 
 
 class UploadManager:
@@ -18,7 +18,7 @@ class UploadManager:
         # URL for QuestDB data POST. See: https://questdb.com/docs/reference/api/rest
         self.endpoint = "http://" + self.config.host + ":" + self.config.port + "/imp"
 
-    def upload(self, report: SensorReport):
+    def upload(self, report: CollectorReport, additional_errors: list[CollectorError]):
         # Construct a CSV version of the errors.
         errors = {"data": ("errors", "")}
 
@@ -35,7 +35,7 @@ class UploadManager:
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
-    def _construct_records(self, report: SensorReport) -> dict[str, Any]:
+    def _construct_records(self, report: CollectorReport) -> dict[str, Any]:
         records = ["collector_id,collector_name,sensor_id,sensor_code,record_id,value"]
         for record in report.records:
             records.append("")

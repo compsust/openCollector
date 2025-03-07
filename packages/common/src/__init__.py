@@ -1,10 +1,10 @@
 from .sensor_codes import SensorCodeEnum
-from .sensor_types import SensorData, SensorError, SensorRecord, SensorReport
+from .datastructures import SensorData, CollectorError, CollectorRecord, CollectorReport
 
 __all__ = [
     "SensorCodeEnum",
     "SensorData",
-    "SensorError",
-    "SensorRecord",
-    "SensorReport",
+    "CollectorError",
+    "CollectorRecord",
+    "CollectorReport",
 ]
