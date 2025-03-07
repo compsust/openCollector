@@ -1,4 +1,10 @@
 import config
+from common.src import (
+    records_table_name,
+    errors_table_name,
+    collector_metadata_table_name,
+    sensor_metadata_table_name,
+)
 
 """
 This file contains the SQL commands to create the database
@@ -34,7 +40,7 @@ identified, with information about the sensor being contained
 in the sensor_metadata table.
 """
 records_table_init_command = (
-    "CREATE TABLE IF NOT EXISTS records("
+    f"CREATE TABLE IF NOT EXISTS {records_table_name}("
     "timestamp TIMESTAMP, "
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
@@ -51,7 +57,7 @@ identified, with information about the sensor being contained
 in the sensor_metadata table.
 """
 errors_table_init_command = (
-    "CREATE TABLE IF NOT EXISTS records("
+    f"CREATE TABLE IF NOT EXISTS {errors_table_name}("
     "timestamp TIMESTAMP, "
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
@@ -67,7 +73,7 @@ we don't have to send them in each record. The metadata table is
 updated by the collector each time it starts up.
 """
 collector_metadata_table_init_command = (
-    "CREATE TABLE IF NOT EXISTS collector_metadata("
+    f"CREATE TABLE IF NOT EXISTS {collector_metadata_table_name}("
     "timestamp TIMESTAMP, "
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     "collector_name VARCHAR, "
@@ -84,7 +90,7 @@ we don't have to send them in each record. The metadata table is
 updated by the collector each time it starts up.
 """
 sensor_metadata_table_init_command = (
-    "CREATE TABLE IF NOT EXISTS sensor_metadata("
+    f"CREATE TABLE IF NOT EXISTS {sensor_metadata_table_name}("
     "timestamp TIMESTAMP, "
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "

@@ -1,8 +1,15 @@
 import requests
-from typing import Any, Literal
 from collector.src.config.datastructures import UploadConfig
 from config.manager import ConfigManager
-from common.src import CollectorReport, CollectorError, CollectorRecord
+from common.src import (
+    CollectorReport,
+    CollectorError,
+    CollectorRecord,
+    records_table_name,
+    errors_table_name,
+    collector_metadata_table_name,
+    sensor_metadata_table_name,
+)
 
 
 class UploadManager:
@@ -51,7 +58,7 @@ class UploadManager:
 
     def _construct_records(
         self, records: list[CollectorRecord]
-    ) -> dict[str, tuple[Literal["records"], str]]:
+    ) -> dict[str, tuple[str, str]]:
         """
         Given a list of CollectorRecord, constructs a CSV file in the format
         that QuestDB's REST API expects.
@@ -72,11 +79,11 @@ class UploadManager:
                     f"{record.timestamp},{self.collector_id},{record.sensor_id},{record_id},{datapoint}"
                 )
         csv = "\n".join(records_csv_lines)
-        return {"data": ("records", csv)}
+        return {"data": (records_table_name, csv)}
 
     def _construct_errors(
         self, errors: list[CollectorError]
-    ) -> dict[str, tuple[Literal["errors"], str]]:
+    ) -> dict[str, tuple[str, str]]:
         """
         Given a list of CollectorError, constructs a CSV file in the format
         that QuestDB's REST API expects.
@@ -96,4 +103,4 @@ class UploadManager:
                 f"{error.timestamp},{self.collector_id},{error.sensor_id},{error.error_message}"
             )
         csv = "\n".join(errors_csv_lines)
-        return {"data": ("errors", csv)}
+        return {"data": (errors_table_name, csv)}
