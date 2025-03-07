@@ -37,9 +37,7 @@ records_table_init_command = (
     "CREATE TABLE IF NOT EXISTS records("
     "timestamp TIMESTAMP, "
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
-    f"collector_name SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
-    "sensor_code SYMBOL CAPACITY 256, "
     "record_id SYMBOL CAPACITY 256, "
     "value DOUBLE"
     ") TIMESTAMP(timestamp)"
@@ -56,9 +54,41 @@ errors_table_init_command = (
     "CREATE TABLE IF NOT EXISTS records("
     "timestamp TIMESTAMP, "
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
-    f"collector_name SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
-    "sensor_code SYMBOL CAPACITY 256, "
     "error_message VARCHAR"
+    ") TIMESTAMP(timestamp)"
+)
+
+"""
+The SQL command to create the collector metadata table.
+
+The metadata table maps a collector ID to its metadata attributes so
+we don't have to send them in each record. The metadata table is
+updated by the collector each time it starts up.
+"""
+collector_metadata_table_init_command = (
+    "CREATE TABLE IF NOT EXISTS collector_metadata("
+    "timestamp TIMESTAMP, "
+    f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
+    "collector_name VARCHAR, "
+    "device_model VARCHAR, "
+    "polling_interval INT, "
+    ") TIMESTAMP(timestamp)"
+)
+
+"""
+The SQL command to create the sensor metadata table.
+
+The metadata table maps a sensor ID to its metadata attributes so
+we don't have to send them in each record. The metadata table is
+updated by the collector each time it starts up.
+"""
+sensor_metadata_table_init_command = (
+    "CREATE TABLE IF NOT EXISTS sensor_metadata("
+    "timestamp TIMESTAMP, "
+    f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
+    f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
+    "sensor_code INT, "
+    "sensor_name VARCHAR, "
     ") TIMESTAMP(timestamp)"
 )
