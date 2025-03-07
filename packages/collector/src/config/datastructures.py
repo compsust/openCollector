@@ -1,6 +1,6 @@
 from typing import Any
 
-from common import SensorCodeEnum
+from common.src import SensorCodeEnum
 
 
 def get_attribute_or_error(

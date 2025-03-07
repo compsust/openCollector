@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-
 # Datastructures for data returned by the API
 # Two main types:
 # Summaries provide a quick overview of the information for an entity

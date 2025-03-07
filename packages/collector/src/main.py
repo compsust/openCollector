@@ -7,9 +7,9 @@ except ImportError:
 
 import time
 
-from common import SensorReport
+from common.src import SensorReport
 
-from .upload import CacheManager
+from .upload import UploadManager
 from .config import ConfigManager
 from .sensors import SensorManager
 
@@ -22,7 +22,7 @@ def main():
     # Initialize manager classes
     config_manager = ConfigManager(IS_MICROPYTHON)
     sensor_manager = SensorManager(config_manager)
-    cache_manager = CacheManager(config_manager)
+    upload_manager = UploadManager(config_manager)
 
     # Loop
     while ():
@@ -34,7 +34,7 @@ def main():
             records=records,
             errors=errors,
         )
-        cache_manager.upload(report)
+        upload_manager.upload(report)
         time.sleep(config_manager.config.polling_interval)
 
 

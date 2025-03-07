@@ -1,4 +1,4 @@
-from common import SensorCodeEnum
+from common.src import SensorCodeEnum
 
 from .driver_interface import AbstractSensorDriver
 from .drivers.dht20 import Dht20SensorDriver

@@ -1,3 +1,3 @@
-from .manager import CacheManager
+from .manager import UploadManager
 
-__all__ = ["CacheManager"]
+__all__ = ["UploadManager"]

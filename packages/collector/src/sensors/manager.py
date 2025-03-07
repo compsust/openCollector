@@ -1,9 +1,9 @@
 import time
 
-from collector.config import ConfigManager
-from collector.sensors.driver_interface import AbstractSensorDriver
-from collector.sensors.sensor_codes import get_sensor_driver_from_code
-from common import SensorError, SensorRecord, SensorReport
+from config import ConfigManager
+from sensors.driver_interface import AbstractSensorDriver
+from sensors.sensor_codes import get_sensor_driver_from_code
+from common.src import SensorError, SensorRecord, SensorReport
 
 
 class SensorManager:

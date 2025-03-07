@@ -2,7 +2,7 @@ import requests
 from typing import Any
 from collector.src.config.datastructures import UploadConfig
 from config.manager import ConfigManager
-from common import SensorReport
+from common.src import SensorReport
 
 
 class UploadManager:
