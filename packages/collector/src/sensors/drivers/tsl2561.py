@@ -38,10 +38,12 @@ class Tsl2561SensorDriver(AbstractSensorDriver):
             channel0_data = self.i2c.readfrom(0x39, 2)
             self.i2c.writeto(0x39, bytes([0xAE]))
             channel1_data = self.i2c.readfrom(0x39, 2)
+            #removed multiplication by 256. no idea why it works now
 
             ch0 = ((channel0_data[1] << 8) | channel0_data[0])  #light + IR
             ch1 = ((channel1_data[1] << 8) | channel1_data[0])  #IR
-            #follow datasheet page 23 instructions on how to calculate
+            
+            #follow datasheet page 23 instructions on how to calculate lux
             a = ch1/ch0 
             if (0 < a <= 0.52):
                 lux = 0.0315*ch0 - (0.0593*ch0 * (ch1/ch0)**1.4)

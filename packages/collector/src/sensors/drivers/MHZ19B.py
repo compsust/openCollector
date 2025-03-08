@@ -14,7 +14,6 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
         """Initialize the sensor driver with an UART instance."""
         self.uart = uart
 
-
     def poll(self) -> SensorData:
         """
         collects sensor data from MHZ19C
