@@ -1,17 +1,21 @@
 # MC: 02/21/2025, Complete implmentation
+# MC: 03/07/2025, Added initilization
 
 import utime
 import machine
 from common.src import SensorData
 from ..driver_interface import AbstractSensorDriver
 
-
 class Dht20SensorDriver(AbstractSensorDriver):
     """
     Implementation of the Dht20 Sensor Driver.
     """
+    def __init__(self, i2c):
+        """Initialize the sensor driver with an I2C instance."""
+        self.i2c = i2c
+        self.address = 0x38  # Default I2C address for DHT20
 
-    def poll(self, i2c) -> SensorData:
+    def poll(self) -> SensorData:
         """
         collects sensor data from DHT20
         Args:
@@ -21,20 +25,20 @@ class Dht20SensorDriver(AbstractSensorDriver):
         """
 
         try:
-            status = i2c.readfrom(0x38, 1)
+            status = self.i2c.readfrom(0x38, 1)
             if status[0] != 0x18:
                 print("DHT20 Error: Checksum Fail")
                 return {"temperature": None, "humidity": None}
 
             # ask for measurement
             utime.sleep_ms(50)
-            i2c.writeto_mem(0x38, 0xAC, bytes([0x33, 0x00]))
+            self.i2c.writeto(0x38, bytes([0xAC, 0x33, 0x00]))
             utime.sleep_ms(80)
 
             # check if measurment is complete
             counter = 0
             while True:
-                status = i2c.readfrom(0x38, 1)
+                status = self.i2c.readfrom(0x38, 1)
                 status_bit7 = (status[0] & 0x80) == 0  # Extract Bit [7]
                 if status_bit7:  # If Bit [7] == 0, measurement is complete
                     break
@@ -46,11 +50,9 @@ class Dht20SensorDriver(AbstractSensorDriver):
                     counter += 1
 
             # data processing
-            data = i2c.readfrom(0x38, 7)  # Read 6 bytes of data
+            data = self.i2c.readfrom(0x38, 7)  # Read 6 bytes of data
             hum = (data[1] << 12 | data[2] << 4 | data[3] >> 4) / (2**20) * 100
-            temp = ((data[3] << 16 | data[4] << 8 | data[5]) & 0xFFFFF) / (
-                2**20
-            ) * 200 - 50
+            temp = ((data[3] << 16 | data[4] << 8 | data[5]) & 0xFFFFF) / (2**20) * 200 - 50
             return {"temperature": temp, "humidity": hum}
 
         except Exception as e:

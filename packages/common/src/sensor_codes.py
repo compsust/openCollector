@@ -1,5 +1,6 @@
 # 2025/01/31 - Michael Chen: Update DHT22 to DHT20, add all sensors
 # 2025/02/21 - MC: Update Tsl2561 to two channels
+# 2025/03/07 - MC: Change TSL2561 back to single channel
 
 from enum import Enum
 from typing import TypedDict, Literal
@@ -77,8 +78,7 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     SensorCodeEnum.TSL2561: {
         "name": "TSL2561",
         "values": [
-            {"name": "Luminosity0", "record_id": "lux0", "unit": "Lux"},
-            {"name": "Luminosity1", "record_id": "lux1", "unit": "Lux"},
+            {"name": "Luminosity", "record_id": "lux0", "unit": "Lux"}
         ],
     },
     SensorCodeEnum.PMS5003: {
