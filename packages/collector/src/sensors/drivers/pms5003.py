@@ -13,6 +13,10 @@ class PMS5003SensorDriver(AbstractSensorDriver):
 
     reset_pin = machine.Pin(24, machine.Pin.OUT)  # Assume reset is connected to GP15
 
+    def __init__(self, uart):
+        """Initialize the sensor driver with an UART instance."""
+        self.uart = uart
+
     def reset_pms5003():
         """
         Send a short low pulse to reset device
@@ -22,7 +26,7 @@ class PMS5003SensorDriver(AbstractSensorDriver):
         reset_pin.value(1)  # Set RESET pin HIGH (normal operation)
         utime.sleep(1)  # Give the sensor time to restart
 
-    def poll(self, uart_pms) -> SensorData:
+    def poll(self) -> SensorData:
         """
         collects sensor data from PMS5003
         Args:
@@ -31,8 +35,8 @@ class PMS5003SensorDriver(AbstractSensorDriver):
             SensorData: The particulate matter data returned by the sensor.
         """
         try:
-            if uart_pms.any():
-                response = uart_pms.read(32)  # Read 32 bytes (PMS5003 frame size)
+            if self.uart.any():
+                response = self.uart.read(32)  # Read 32 bytes (PMS5003 frame size)
                 if (
                     response
                     and len(response) == 32

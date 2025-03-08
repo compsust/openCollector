@@ -10,8 +10,12 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
     """
     Implementation of the MHZ19B Sensor Driver.
     """
+    def __init__(self, uart):
+        """Initialize the sensor driver with an UART instance."""
+        self.uart = uart
 
-    def poll(self, uart_mhz) -> SensorData:
+
+    def poll(self) -> SensorData:
         """
         collects sensor data from MHZ19C
         Args:
@@ -20,12 +24,12 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
             SensorData: The CO2 data returned by the sensor.
         """
         try:
-            if uart_mhz.any():
-                uart_mhz.write(
+            if self.uart.any():
+                self.uart.write(
                     bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
                 )  # Command to read CO2
                 utime.sleep_ms(100)
-                response = uart_mhz.read(9)  # Read 9-byte response
+                response = self.uart.read(9)  # Read 9-byte response
                 if (
                     response
                     and len(response) == 9
