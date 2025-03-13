@@ -568,6 +568,12 @@ wheels = [
 ]
 
 [[package]]
+name = "questdb"
+version = "2.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/de/3b8b192e5b82d6033a13c9714f90a93aec2efeaac36200dc64a6dc5abb5b/questdb-2.0.3.tar.gz", hash = "sha256:510f4eeb5509e479bba73795cebe4417321288f0052d605aecb11b76fabed88b", size = 11870218 }
+
+[[package]]
 name = "rich"
 version = "13.9.4"
 source = { registry = "https://pypi.org/simple" }
@@ -675,6 +681,11 @@ dependencies = [
     { name = "python-decouple" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "questdb" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "asyncpg" },
@@ -684,7 +695,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = []
+dev = [{ name = "questdb" }]
 
 [[package]]
 name = "typing"
