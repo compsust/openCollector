@@ -1,12 +1,11 @@
+from questdb.ingress import Sender
 from tap import Tap
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import uuid
-from common.src.sensor_codes import SensorCodeEnum
-from questdb.ingress import Sender
-import config
 import random
-from common.src import (
+from common import (
+    SensorCodeEnum,
     sensor_metadata,
     records_table_name,
     errors_table_name,
@@ -14,9 +13,10 @@ from common.src import (
     sensor_metadata_table_name,
 )
 
+
 # The first available time for data to be generated at.
 default_base_timestamp = datetime(year=2025, month=1, day=1)
-conf = f"http::addr=localhost:9000;username={config.QUESTDB_USER};password={config.QUESTDB_PASSWORD};"
+conf = f"http::addr=database:9000;username={'node'};password={'quest'};"
 
 
 class CliArguments(Tap):
@@ -142,7 +142,7 @@ def generate_sensors(
     """
     sensors = []
     for index, collector in enumerate(collectors):
-        sensors.append(
+        sensors.extend(
             [
                 MockSensor(
                     collector_id=collector.collector_id,
@@ -166,9 +166,7 @@ def generate_records(
     for sensor in sensors:
         for _ in range(records_per_sensor):
             # Timestamps between the beginning of 2025 and the set timespan.
-            timestamp = datetime(year=2025, month=1, day=1) + timedelta(
-                seconds=random.randint(0, generation_span_seconds)
-            )
+            timestamp = generate_timestamp(generation_span_seconds)
 
             # Get a random record ID for this sensor type.
             metadata = sensor_metadata.get(sensor.sensor_code, {})
@@ -198,7 +196,7 @@ def generate_collector_errors(
     """
     errors = []
     for collector in collectors:
-        errors.append(
+        errors.extend(
             [
                 MockError(
                     timestamp=generate_timestamp(generation_span_seconds),
@@ -226,7 +224,7 @@ def generate_sensor_errors(
     """
     errors = []
     for sensor in sensors:
-        errors.append(
+        errors.extend(
             [
                 MockError(
                     timestamp=generate_timestamp(generation_span_seconds),
@@ -276,7 +274,7 @@ def generate_metadata(
                     polling_interval=collector.polling_interval,
                 )
             )
-            sensor_metadata.append(
+            sensor_metadata.extend(
                 [
                     MockSensorMetadata(
                         timestamp=timestamp,
@@ -353,7 +351,7 @@ def main():
                     "sensor_id": metadata.sensor_id,
                 },
                 columns={
-                    "sensor_code": metadata.sensor_code,
+                    "sensor_code": str(metadata.sensor_code),
                     "sensor_name": metadata.sensor_name,
                 },
                 at=metadata.timestamp,

@@ -1,10 +1,11 @@
 import config
-from common.src import (
+from common import (
     records_table_name,
     errors_table_name,
     collector_metadata_table_name,
     sensor_metadata_table_name,
 )
+
 
 """
 This file contains the SQL commands to create the database
@@ -15,7 +16,7 @@ See the QuestDB docs on this for more info: https://questdb.com/docs/reference/s
 Some information on what the parts of the commands do:
 - CREATE TABLE IF NOT EXISTS {table_name} just makes the
     database aware of the table and its structure
-- timestamp TIMESTAMP creates a column on the table that
+- timestPamp TIMESTAMP creates a column on the table that
     stores the timestamp, and TIMESTAMP(timestamp) designates
     that column as the one which stores the timestamp,
     so that QuestDB can know which one to populate when generating timestamps.

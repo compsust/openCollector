@@ -1,26 +1,13 @@
 [project]
 name = "sfu-compsust-open-collector"
 version = "0.1"
-dependencies = [
-    "common",
-    "collector",
-    "storage",
-    "mkdocs>=1.6.1",
-]
 requires-python = ">= 3.13"
 
 [tool.uv]
 dev-dependencies = [
+    "mkdocs>=1.6.1",
     "ruff>=0.8.6",
 ]
-
-[tool.uv.sources]
-common = { workspace = true }
-collector = { workspace = true }
-storage = { workspace = true }
-
-[tool.uv.workspace]
-members = ["packages/*"]
 
 [tool.ruff.lint]
 extend-select = ["I"]
