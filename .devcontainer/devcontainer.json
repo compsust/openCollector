@@ -17,6 +17,11 @@
 		"dependencies": ["uv", "sync"]
 	},
 
+	"containerEnv": {
+		// When installing the QuestDB Python package, which is only needed for dev, it needs to install rust.
+		"SETUP_DO_RUSTUP_INSTALL": "1"
+	},
+
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {

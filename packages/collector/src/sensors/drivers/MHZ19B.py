@@ -10,6 +10,7 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
     """
     Implementation of the MHZ19B Sensor Driver.
     """
+
     def __init__(self, uart):
         """Initialize the sensor driver with an UART instance."""
         self.uart = uart

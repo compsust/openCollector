@@ -15,7 +15,8 @@ from .database import (
 )
 
 __all__ = [
-    "SensorCodeEnum", "sensor_metadata",
+    "SensorCodeEnum",
+    "sensor_metadata",
     "SensorData",
     "CollectorError",
     "CollectorRecord",

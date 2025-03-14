@@ -6,10 +6,12 @@ import machine
 from common.src import SensorData
 from ..driver_interface import AbstractSensorDriver
 
+
 class Dht20SensorDriver(AbstractSensorDriver):
     """
     Implementation of the Dht20 Sensor Driver.
     """
+
     def __init__(self, i2c):
         """Initialize the sensor driver with an I2C instance."""
         self.i2c = i2c
@@ -52,7 +54,9 @@ class Dht20SensorDriver(AbstractSensorDriver):
             # data processing
             data = self.i2c.readfrom(0x38, 7)  # Read 6 bytes of data
             hum = (data[1] << 12 | data[2] << 4 | data[3] >> 4) / (2**20) * 100
-            temp = ((data[3] << 16 | data[4] << 8 | data[5]) & 0xFFFFF) / (2**20) * 200 - 50
+            temp = ((data[3] << 16 | data[4] << 8 | data[5]) & 0xFFFFF) / (
+                2**20
+            ) * 200 - 50
             return {"temperature": temp, "humidity": hum}
 
         except Exception as e:

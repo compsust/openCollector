@@ -77,9 +77,7 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     },
     SensorCodeEnum.TSL2561: {
         "name": "TSL2561",
-        "values": [
-            {"name": "Luminosity", "record_id": "lux0", "unit": "Lux"}
-        ],
+        "values": [{"name": "Luminosity", "record_id": "lux0", "unit": "Lux"}],
     },
     SensorCodeEnum.PMS5003: {
         "name": "PMS5003",
