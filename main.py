@@ -5,10 +5,10 @@ from machine import I2C
 from utime import sleep_ms
 
 # Import User defined Packages
-from lib.DHT20 import DHT20
-from lib.TSL2561 import TSL2561
-from lib.PMS5003 import PMS5003
-from lib.MZH19B import MZH19B
+from collector.sensors.drivers.DHT20 import DHT20
+from collector.sensors.drivers.TSL2561 import TSL2561
+from collector.sensors.drivers.PMS5003 import PMS5003
+from collector.sensors.drivers.MZH19B import MZH19B
 
 # Initialize I2C Buffer
 i2c = I2C(1, scl=Pin(27), sda=Pin(26))  # GPIO pins GP21 and GP20
