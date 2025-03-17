@@ -16,7 +16,7 @@ from common import (
 
 # The first available time for data to be generated at.
 default_base_timestamp = datetime(year=2025, month=1, day=1)
-conf = f"http::addr=database:9000;username={'node'};password={'quest'};"
+conf = f"http::addr=database:9000;username={'node'};password={'quest'};auto_flush_rows=100;auto_flush_interval=1000;"
 
 
 class CliArguments(Tap):
@@ -127,7 +127,7 @@ def generate_collectors(num_nodes: int) -> list[MockCollector]:
         MockCollector(
             collector_id=str(uuid.uuid4()),
             collector_name=f"Collector_{i}",
-            device_model=f"Model_{random.choice(['Raspi4', 'Pi Pico'])}",
+            device_model=random.choice(['Raspi4', 'Pi Pico']),
             polling_interval=random.randint(500, 3000),
         )
         for i in range(num_nodes)
@@ -205,7 +205,7 @@ def generate_collector_errors(
                     error_message=random.choice(
                         [
                             "Something terrible has gone wrong on this node.",
-                            "A great error has brougt forth havoc to this node.",
+                            "A great error has brought forth havoc to this node.",
                             "This node experienced a technical difficulty.",
                         ]
                     ),
@@ -338,7 +338,7 @@ def main():
                 columns={
                     "collector_name": metadata.collector_name,
                     "device_model": metadata.device_model,
-                    "polling_interval": metadata.device_model,
+                    "polling_interval": metadata.polling_interval,
                 },
                 at=metadata.timestamp,
             )

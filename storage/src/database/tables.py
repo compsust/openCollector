@@ -47,7 +47,7 @@ records_table_init_command = (
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
     "record_id SYMBOL CAPACITY 256, "
     "value DOUBLE"
-    ") TIMESTAMP(timestamp)"
+    ") TIMESTAMP(timestamp) partition by DAY"
 )
 
 """
@@ -63,7 +63,7 @@ errors_table_init_command = (
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
     "error_message VARCHAR"
-    ") TIMESTAMP(timestamp)"
+    ") TIMESTAMP(timestamp) partition by DAY"
 )
 
 """
@@ -80,7 +80,7 @@ collector_metadata_table_init_command = (
     "collector_name VARCHAR, "
     "device_model VARCHAR, "
     "polling_interval INT, "
-    ") TIMESTAMP(timestamp)"
+    ") TIMESTAMP(timestamp) partition by WEEK"
 )
 
 """
@@ -97,5 +97,5 @@ sensor_metadata_table_init_command = (
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
     "sensor_code INT, "
     "sensor_name VARCHAR, "
-    ") TIMESTAMP(timestamp)"
+    ") TIMESTAMP(timestamp) partition by WEEK"
 )
