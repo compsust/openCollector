@@ -1,0 +1,22 @@
+Output: Gerber Files
+Type  : Gerber
+From  : Variant [[No Variations]] of Project [Capstone PCB Project REV 3.PrjPcb]
+   Generated File[PCB2.GTO]
+   Generated File[PCB2.GTP]
+   Generated File[PCB2.GTS]
+   Generated File[PCB2.GTL]
+   Generated File[PCB2.GBL]
+   Generated File[PCB2.GBS]
+   Generated File[PCB2.GBP]
+   Generated File[PCB2.GBO]
+   Generated File[PCB2.GD1]
+   Generated File[PCB2.GG1]
+   Generated File[PCB2.GM]
+   Generated File[PCB2.EXTREP]
+   Generated File[PCB2.REP]
+
+
+Files Generated   : 13
+Documents Printed : 0
+
+Finished Output Generation At 10:02:13 AM On 2025-03-18
