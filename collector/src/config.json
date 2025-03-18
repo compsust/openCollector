@@ -4,7 +4,7 @@
     "polling_interval": 1000,
     "device": {
         "model": "Raspberry Pi Pico",
-        "allowed_gpio": [1, 2, 3, 4],
+        "allowed_gpio": [2, 4, 25, 24],
         "requires_micropython": true 
     },
     "upload": {
@@ -17,10 +17,20 @@
     "sensors": [
         {
             "sensor_id": null,
-            "sensor_code": "DHT22",
+            "sensor_code": "DHT20",
             "name": "Temperature Sensor",
-            "gpio": {
-                "pin": 34
+            "I2C": {
+                "SCL": 27,
+                "SDA": 26
+            }
+        },
+        {
+            "sensor_id": null,
+            "sensor_code": "TSL2561",
+            "name": "Light Sensor",
+            "I2C": {
+                "SCL": 27,
+                "SDA": 26  
             }
         },
         {
@@ -28,8 +38,24 @@
             "sensor_code": "PMS5003",
             "name": "Air Quality Sensor",
             "gpio": {
-                "uart_tx": 1,
-                "uart_rx": 2
+                "uart_tx": 21,
+                "uart_rx": 22,
+                "reset": 24,
+                "set": 25
+            },
+            "attributes": {
+                "baudrate": 9600
+            }
+        },
+        {
+            "sensor_id": null,
+            "sensor_code": "MZ-H19C",
+            "name": "CO2 Sensor",
+            "gpio": {
+                "uart_tx": 6,
+                "uart_rx": 7,
+                "HD": 2,
+                "PWM": 4
             },
             "attributes": {
                 "baudrate": 9600
