@@ -1,24 +1,35 @@
-*Note: This user manual was created using the software markdown structure format (.md) as part of the overall user guide in the Capstone's GitHub repository. Once complete, the entire GitHub respository will be made public and intended to be used as the complete User Manual.*
+<!-- Update font to Times New Roman :) -->
+<span style="font-family: 'times New Roman', sans-serif;">
+
+*Note: This user manual was created using the software markdown structure format (.md) as part of the overall user guide. Once complete, the entire GitHub respository will be made public and intended to be used as the complete User Manual.*
 
 <!-- Title and background information -->
 # Raspberry Pi Mesh Network for Environmental Sensor Data Monitoring User Manual
-**Course:** SEE 410W | SEE411
+**Course:** SEE 410W | SEE411 *(Septmeber 2024 - April 2025)*
 **Created by:** Pi-oneers Team (Micheal Chen, Nathaniel King, William Le, Tianna Sequeira)
 **Submitted on:** March 30, 2025
 
 **Client:** Stephen Makonin, SFU Computational Sustainability Lab
 **Capstone Advisor:** Mina Xu, SEE Professor
 
+<!-- Table of Contents -->
 ## Table of Contents
-1. [User Guide Overview](###userguide)
-2. [Safety Considerations](###safety)
-3. [Technical Specifications](###techspec)
-4. [Prototype at a Glance](###prototype)
-5. [Operating the Prototype](###operation)
-6. [Maintenance](###maintenance)
-7. [Troubleshooting](###troubleshoot)
-8. [Team Member Contribution](###contribution)
-9.  [References](###references)
+- [Raspberry Pi Mesh Network for Environmental Sensor Data Monitoring User Manual](#raspberry-pi-mesh-network-for-environmental-sensor-data-monitoring-user-manual)
+  - [Table of Contents](#table-of-contents)
+    - [User Guide Overview ](#user-guide-overview-)
+    - [Safety Considerations ](#safety-considerations-)
+    - [Technical Specifications ](#technical-specifications-)
+    - [Prototype at a Glance ](#prototype-at-a-glance-)
+    - [Operating the Prototype ](#operating-the-prototype-)
+    - [Maintenance ](#maintenance-)
+    - [Troubleshooting ](#troubleshooting-)
+        - [Wi-Fi Disconnection](#wi-fi-disconnection)
+        - [Electrical Wiring Disconnection](#electrical-wiring-disconnection)
+        - [Data Overload](#data-overload)
+        - [Sensor Malfunctions](#sensor-malfunctions)
+        - [Microcontroller Boot](#microcontroller-boot)
+    - [Team Member Contribution ](#team-member-contribution-)
+    - [References ](#references-)
 
 <!-- Section 1: Overview -->
 ### User Guide Overview <a name="userguide"></a>
@@ -38,10 +49,12 @@ When operating the environmental data monitoring system, users must follow basic
 <!-- Section 4: Prototype -->
 ### Prototype at a Glance <a name="prototype"></a>
 <!-- Prototype at a Glance – Orienting the user to the main features of the design; basic functions and considerations; instrumentation -->
+[Maybe add: 3D model, PCB Design, Electrical Schematic and all the backend storage stuff]
 
 <!-- Section 5: Prototype Operation -->
 ### Operating the Prototype <a name="operation"></a>
 <!-- Operating the Prototype – Detailed description of how each sub-component can be operated -->
+[Maybe add: web interface design and how to operate from a user perspective?]
 
 <!-- Section 6: Maintenance -->
 ### Maintenance <a name="maintenance"></a>
@@ -82,3 +95,5 @@ Below is a list of each members contributions for this portion of the capstone p
 | William | <li> Finalized 3D Model & Printing |
 
 ### References <a name="references"></a>
+
+</span>
