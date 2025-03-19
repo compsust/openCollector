@@ -68,17 +68,17 @@ If users are storing large data files or have expanded the system to include mul
 ##### Sensor Malfunctions
 If the sensors are not initialized properly, users may also encounter sensor malfunctions or incorrect readings, where sensor outputs fluctuate, display errors, or stop working entirely. This can be due to loose or incorrect wiring connections, calibration drift, or exposure to extreme environmental conditions. To resolve this, verify that all sensor connections match the wiring diagram and check for physical damage, replacing faulty sensors as needed. Recalibrating sensors according to the manufacturer’s instructions can improve accuracy. Additionally, ensuring sensors are not exposed to conditions beyond their rated specifications and restarting the system to refresh sensor readings may help.
 ##### Microcontroller Boot
-In rare cases, the Raspberry Pi may not display or respond. This can result in an insufficient power supply, or hardware failure. To troubleshoot, try booting with a the Raspberry Pi again by using the BOOTSEL button. Ensure the power supply meets the recommended voltage and current requirements, as an underpowered device may fail to start properly. If the Raspberry Pi appears physically damaged, such as having broken ports or burned components, replacing the board may be necessary. If the issue persists, testing with another Raspberry Pi unit can help determine if the problem lies with the hardware.
+In rare cases, the Raspberry Pi may not display or respond. This can result in an insufficient power supply, or hardware failure. To troubleshoot, try booting with a the Raspberry Pi again by using the *BOOTSEL button*. Ensure the power supply meets the recommended voltage and current requirements, as an underpowered device may fail to start properly. If the Raspberry Pi appears physically damaged, such as having broken ports or burned components, replacing the board may be necessary. If the issue persists, testing with another Raspberry Pi unit can help determine if the problem lies with the hardware.
 
-c
+### Team Member Contribution <a name="contribution"></a>
 Below is a list of each members contributions for this portion of the capstone project. 
 
 <!-- Table for Team Member Contributions -->
 | Team Member | Contributions |
 | ------------|----------------|
 |Micheal| <li> Finalized PCB Design <br> <li> Ordered Final Components |
-|Nathaniel | <li> Developed database, storage and collector node code <br> <li> Documentation and Writing User Manual |
-| Tianna | <li> Developed User Website Interface (front end code) <br> <li> Documentation and writing User Manual |
-| William | <li> 3D Model Printing |
+|Nathaniel | <li> Developed database, storage and collector node software <br> <li> Documentation and Writing User Manual |
+| Tianna | <li> Developed User Website Interface (front end code) <br> <li> Documentation and Writing User Manual |
+| William | <li> Finalized 3D Model & Printing |
 
 ### References <a name="references"></a>
