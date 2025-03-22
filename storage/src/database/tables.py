@@ -6,7 +6,6 @@ from common import (
     sensor_metadata_table_name,
 )
 
-
 """
 This file contains the SQL commands to create the database
 tables which store all the records and errors from the sensors.

@@ -138,6 +138,7 @@ class NodeSummary:
     collectors_reporting: int
     total_sensors: int
     sensors_reporting: int
+    records_reported: int
     errors_reported: int
     collectors: list[CollectorSummary]
 

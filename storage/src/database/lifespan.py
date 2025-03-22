@@ -26,7 +26,6 @@ async def db_connection(app: Litestar) -> AsyncGenerator[None, None]:
     """
     client = getattr(app.state, PG_CONN_STATE_KEY, None)
     if client is None:
-        # TODO: Add these as environment variables.
         connection: Connection = await asyncpg.connect(
             host=config.QUESTDB_HOST,
             port=config.QUESTDB_PORT,

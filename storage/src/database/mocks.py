@@ -127,7 +127,7 @@ def generate_collectors(num_nodes: int) -> list[MockCollector]:
         MockCollector(
             collector_id=str(uuid.uuid4()),
             collector_name=f"Collector_{i}",
-            device_model=random.choice(['Raspi4', 'Pi Pico']),
+            device_model=random.choice(["Raspi4", "Pi Pico"]),
             polling_interval=random.randint(500, 3000),
         )
         for i in range(num_nodes)
