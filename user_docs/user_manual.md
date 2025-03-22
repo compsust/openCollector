@@ -88,7 +88,7 @@ Below is a list of each members contributions for this portion of the capstone p
 
 <!-- Table for Team Member Contributions -->
 | Team Member | Contributions |
-| ------------|----------------|
+| ------------|----------------|----------------|
 |Micheal| <li> Circuit and PCB Design <br> <li> Ordering Components <br> <lin> Collector Firmware Development <br> <lin> PCB Manufacturing |
 |Nathaniel | <li> Developed database, storage and collector node software <br> <li> Documentation and Writing User Manual |
 | Tianna | <li> Developed User Website Interface (front end code) <br> <li> Documentation and Writing User Manual |
