@@ -26,17 +26,17 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
-				"python.defaultInterpreterPath": ".venv/bin/python",
+				//"python.defaultInterpreterPath": ".venv/bin/python",
 				"python.analysis.typeCheckingMode": "basic",
 				"python.analysis.autoImportCompletions": true,
 				// https://micropython-stubs.readthedocs.io/en/main/22_vscode.html
 				"python.analysis.diagnosticSeverityOverrides": {
 						"reportMissingModuleSource": "none"
-				},
-				"python.analysis.extraPaths": [
-					".venv/lib/python3.13/site-packages",
-					"typings"
-				]
+				}
+				//"python.analysis.extraPaths": [
+					//".venv/lib/python3.13/site-packages",
+					//"typings"
+				//]
 			},
 			"extensions": [
 				"pomdtr.excalidraw-editor",
@@ -44,7 +44,8 @@
 				"mgesbert.python-path",
 				"ms-python.python",
 				"ms-python.vscode-pylance",
-				"njqdev.vscode-python-typehint"
+				"njqdev.vscode-python-typehint",
+				"qufiwefefwoyn.inline-sql-syntax"
 			]
 		}
 	},

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+
+from common import SensorData
 # Datastructures for data returned by the API
 # Two main types:
 # Summaries provide a quick overview of the information for an entity
@@ -17,12 +19,15 @@ class StatusEnum(Enum):
 
     Options:
         Unknown: No data has been received from the
-            node or sensor since the server process has begun.
+            node or sensor.
         Operational: Data has been received from the node or
             sensor recently.
         Dropped: Data has been received from the node or sensor
-            since the server process has begun but not recently.
-        Error: An error has been received from the node or sensor.
+            since but it is less recent than a threshold
+            determined by a set multiple of the collector's
+            polling interval.
+        Error: The sensor has an error and it is more recent than
+            the most recent data received.
     """
 
     UNKNOWN = "Unknown"
@@ -40,14 +45,19 @@ class SensorSummary:
         id (str): The ID of the sensor.
         name (str): The name of the sensor.
         status (StatusEnum): The status of the sensor.
-        last_value (float | None): The last value returned
+            Since the sensor has multiple records for each
+            record ID it returns, the status is UNKNOWN by default,
+            DROPPED if no sensors or errors have been received within
+            the threshold, ERROR if any errors have been reported since
+            the last record, and OPERATIONAL otherwise.
+        last_value (SensorData | None): The last value returned
             by the sensor.
     """
 
     id: str
     name: str
     status: StatusEnum
-    last_value: float | None
+    last_value: SensorData | None
 
 
 @dataclass
@@ -58,9 +68,13 @@ class CollectorSummary:
     Attributes:
         id (str): The ID of the node.
         name (str): The name of the node.
-        status (StatusEnum): The status of the node.
-        last_value (float | None): The last value returned
-            by the sensor.
+        status (StatusEnum): The status of the node. The status is
+            UNKNOWN by if any of the sensor statuses are,
+            DROPPED if any of the sensor statuses are,
+            ERROR if any of the sensor status are, and
+            OPERATIONAL otherwise.
+        sensors (list[SensorSummary]): The summaries of the
+            sensors in this node.
     """
 
     id: str
