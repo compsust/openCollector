@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
-from common import SensorData
+from common import SensorCodeEnum, SensorData
 # Datastructures for data returned by the API
 # Two main types:
 # Summaries provide a quick overview of the information for an entity
@@ -99,9 +99,9 @@ class CollectorRecord:
     """
 
     sensor_id: str
-    name: str
+    record_id: str
     unit: str
-    data: float
+    value: float
     timestamp: datetime
 
 
@@ -128,9 +128,9 @@ class CollectorError:
 
 
 @dataclass
-class NodeSummary:
+class NetworkSummary:
     """
-    A summary for the entire storage node.
+    A summary for the entire storage network.
 
     Attributes:
         total_collectors (int): The total number of collector
@@ -165,6 +165,8 @@ class CollectorDetails:
     Attributes:
         id (str): The ID of the collector node.
         name (str): The name of the collector node.
+        device_model (str): The node's device model.
+        polling_interval (int): The node's polling interval.
         status (StatusEnum): The status of the collector node.
         total_sensors (int): The total number of sensors
             connected to this collector node which have returned data.
@@ -179,6 +181,8 @@ class CollectorDetails:
 
     id: str
     name: str
+    device_model: str
+    polling_interval: int
     status: StatusEnum
     total_sensors: int
     latest_record: datetime
@@ -213,7 +217,7 @@ class SensorDetails:
     id: str
     name: str
     status: StatusEnum
-    type: str
+    code: SensorCodeEnum
     latest_record: datetime
     earliest_record: datetime
     total_records: int

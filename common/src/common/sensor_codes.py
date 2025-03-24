@@ -124,3 +124,30 @@ RecordID = Literal[
     "PM2.5",
     "temperature",
 ]
+
+
+def get_unit_from_record_id(sensor_code: SensorCodeEnum, record_id: RecordID) -> str:
+    """
+    Retrieves the unit string for a record_id.
+
+    Args:
+        sensor_code (SensorCodeEnum): The type of sensor.
+        record_id (RecordID): The record ID of the value type.
+
+    Returns:
+        str: The unit describing the record_id.
+    """
+    value_metadata = next(
+        (
+            value
+            for value in sensor_metadata[sensor_code]["values"]
+            if value["record_id"] == record_id
+        ),
+        None,
+    )
+    if value_metadata is None:
+        raise ValueError(
+            f"Combination of sensor code {sensor_code} and record_id {record_id} does not exist in the sensor metadata."
+        )
+
+    return value_metadata["unit"]

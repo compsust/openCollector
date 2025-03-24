@@ -6,7 +6,7 @@ from typing import TypedDict
 # Query string.
 latest_records_query_string = f"""--sql
 SELECT *
-FROM records
+FROM $1
 LATEST ON timestamp PARTITION BY sensor_id, record_id
 """
 

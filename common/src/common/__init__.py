@@ -1,4 +1,9 @@
-from .sensor_codes import SensorCodeEnum, sensor_metadata, RecordID
+from .sensor_codes import (
+    SensorCodeEnum,
+    sensor_metadata,
+    RecordID,
+    get_unit_from_record_id,
+)
 from .datastructures import (
     SensorData,
     CollectorError,
@@ -18,6 +23,7 @@ __all__ = [
     "SensorCodeEnum",
     "sensor_metadata",
     "RecordID",
+    "get_unit_from_record_id",
     "SensorData",
     "CollectorError",
     "CollectorRecord",

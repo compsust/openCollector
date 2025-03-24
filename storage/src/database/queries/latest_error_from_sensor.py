@@ -1,0 +1,39 @@
+from datetime import datetime
+from common import errors_table_name, RecordID
+from asyncpg import Connection
+from typing import TypedDict
+
+# Query string.
+latest_error_from_sensor_query_string = f"""--sql
+(
+    SELECT *
+    FROM $1
+    LATEST ON timestamp PARTITION BY sensor_id
+) WHERE sensor_id = $2
+"""
+
+
+# Query result type.
+class LatestErrorFromSensorQueryRow(TypedDict):
+    collector_id: str
+    sensor_id: str
+    error_message: str
+    timestamp: datetime
+
+
+async def latest_error_from_sensor_query(
+    connection: Connection, sensor_id: str
+) -> list[LatestErrorFromSensorQueryRow]:
+    """
+    Returns the most recent error from a sensor.
+
+    Args:
+        connection (Connection): The asyncpg connection.
+        sensor_id (str): The ID of the sensor.
+
+    Returns:
+        list[LatestErrorFromSensorQueryRow]: The database results.
+    """
+    return await connection.fetch(
+        latest_error_from_sensor_query_string, errors_table_name, sensor_id
+    )

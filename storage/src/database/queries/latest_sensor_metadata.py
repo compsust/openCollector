@@ -16,7 +16,7 @@ LATEST ON timestamp PARTITION BY sensor_id
 
 # Query result type.
 class LatestSensorMetadataQueryRow(TypedDict):
-    collector_metadata: str
+    collector_id: str
     sensor_id: str
     sensor_code: SensorCodeEnum
     sensor_name: str
