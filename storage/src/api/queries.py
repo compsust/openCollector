@@ -32,7 +32,7 @@ class ApiQueryController(Controller):
         )
 
     @get(
-        path="collectors/{collector_id:str}/sensors/{sensor_id:str}",
+        path="collectors/sensors/{sensor_id:str}",
         description="Returns the details for all data contained in a sensor.",
     )
     async def get_sensor_details(
@@ -49,5 +49,5 @@ class ApiQueryController(Controller):
             records_page=records_page,
             records_page_size=records_page_size,
             errors_page=errors_page,
-            errors_page_size=errors_page,
+            errors_page_size=errors_page_size,
         )
