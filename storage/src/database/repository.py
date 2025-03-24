@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from asyncpg.connection import Connection
 from common import CollectorRecord, get_unit_from_record_id
-from storage.src.datastructures import (
+from datastructures import (
     SensorSummary,
     CollectorSummary,
     NetworkSummary,

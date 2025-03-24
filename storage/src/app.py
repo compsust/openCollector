@@ -7,6 +7,7 @@ from litestar.plugins.htmx import HTMXPlugin
 from database import db_connection
 from api import api_router
 from browser import browser_router
+from dependencies import dependencies
 
 app = Litestar(
     route_handlers=[api_router, browser_router],
@@ -16,4 +17,5 @@ app = Litestar(
         engine=JinjaTemplateEngine,
     ),
     lifespan=[db_connection],
+    dependencies=dependencies,
 )

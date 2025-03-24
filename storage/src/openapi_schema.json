@@ -12,9 +12,9 @@
     "paths": {
         "/api/query/collectors/{collector_id}": {
             "get": {
-                "summary": "GetCollector",
+                "summary": "GetCollectorDetails",
                 "description": "Returns the details for all data contained in a collector node.",
-                "operationId": "ApiQueryCollectorsCollectorIdGetCollector",
+                "operationId": "ApiQueryCollectorsCollectorIdGetCollectorDetails",
                 "parameters": [
                     {
                         "name": "collector_id",
@@ -24,6 +24,28 @@
                         },
                         "required": true,
                         "deprecated": false
+                    },
+                    {
+                        "name": "errors_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "errors_page_size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
                     }
                 ],
                 "responses": {
@@ -80,14 +102,35 @@
                 "deprecated": false
             }
         },
+        "/api/query/summary": {
+            "get": {
+                "summary": "GetNetworkSummary",
+                "description": "Returns the summary for all data contained in this storage node.",
+                "operationId": "ApiQuerySummaryGetNetworkSummary",
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NetworkSummary"
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
         "/api/query/collectors/{collector_id}/sensors/{sensor_id}": {
             "get": {
-                "summary": "GetSensor",
+                "summary": "GetSensorDetails",
                 "description": "Returns the details for all data contained in a sensor.",
-                "operationId": "ApiQueryCollectorsCollectorIdSensorsSensorIdGetSensor",
+                "operationId": "ApiQueryCollectorsCollectorIdSensorsSensorIdGetSensorDetails",
                 "parameters": [
                     {
-                        "name": "collector_id",
+                        "name": "sensor_id",
                         "in": "path",
                         "schema": {
                             "type": "string"
@@ -96,7 +139,51 @@
                         "deprecated": false
                     },
                     {
-                        "name": "sensor_id",
+                        "name": "records_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "records_page_size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "errors_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "errors_page_size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "collector_id",
                         "in": "path",
                         "schema": {
                             "type": "string"
@@ -151,27 +238,6 @@
                                             "extra": {}
                                         }
                                     ]
-                                }
-                            }
-                        }
-                    }
-                },
-                "deprecated": false
-            }
-        },
-        "/api/query/summary": {
-            "get": {
-                "summary": "GetSummary",
-                "description": "Returns the summary for all data contained in this storage node.",
-                "operationId": "ApiQuerySummaryGetSummary",
-                "responses": {
-                    "200": {
-                        "description": "Request fulfilled, document follows",
-                        "headers": {},
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/NodeSummary"
                                 }
                             }
                         }
@@ -358,6 +424,12 @@
                     "name": {
                         "type": "string"
                     },
+                    "device_model": {
+                        "type": "string"
+                    },
+                    "polling_interval": {
+                        "type": "integer"
+                    },
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
                     },
@@ -397,12 +469,14 @@
                 },
                 "type": "object",
                 "required": [
+                    "device_model",
                     "earliest_record",
                     "errors",
                     "id",
                     "latest_error",
                     "latest_record",
                     "name",
+                    "polling_interval",
                     "sensors",
                     "status",
                     "total_errors",
@@ -437,13 +511,13 @@
                     "sensor_id": {
                         "type": "string"
                     },
-                    "name": {
+                    "record_id": {
                         "type": "string"
                     },
                     "unit": {
                         "type": "string"
                     },
-                    "data": {
+                    "value": {
                         "type": "number"
                     },
                     "timestamp": {
@@ -453,11 +527,11 @@
                 },
                 "type": "object",
                 "required": [
-                    "data",
-                    "name",
+                    "record_id",
                     "sensor_id",
                     "timestamp",
-                    "unit"
+                    "unit",
+                    "value"
                 ],
                 "title": "CollectorRecord"
             },
@@ -488,7 +562,7 @@
                 ],
                 "title": "CollectorSummary"
             },
-            "NodeSummary": {
+            "NetworkSummary": {
                 "properties": {
                     "total_collectors": {
                         "type": "integer"
@@ -500,6 +574,9 @@
                         "type": "integer"
                     },
                     "sensors_reporting": {
+                        "type": "integer"
+                    },
+                    "records_reported": {
                         "type": "integer"
                     },
                     "errors_reported": {
@@ -517,11 +594,23 @@
                     "collectors",
                     "collectors_reporting",
                     "errors_reported",
+                    "records_reported",
                     "sensors_reporting",
                     "total_collectors",
                     "total_sensors"
                 ],
-                "title": "NodeSummary"
+                "title": "NetworkSummary"
+            },
+            "SensorCodeEnum": {
+                "type": "string",
+                "enum": [
+                    "DHT20",
+                    "TSL2561",
+                    "PMS5003",
+                    "MH-Z19B"
+                ],
+                "title": "SensorCodeEnum",
+                "description": "\nContains an enumerated value\nfor all supported sensor types.\n\nEach value will be mapped to a\nspecific implementation of\nAbstractSensorDriver.\n"
             },
             "SensorDetails": {
                 "properties": {
@@ -534,8 +623,8 @@
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
                     },
-                    "type": {
-                        "type": "string"
+                    "code": {
+                        "$ref": "#/components/schemas/SensorCodeEnum"
                     },
                     "latest_record": {
                         "type": "string",
@@ -570,6 +659,7 @@
                 },
                 "type": "object",
                 "required": [
+                    "code",
                     "earliest_record",
                     "errors",
                     "id",
@@ -579,8 +669,7 @@
                     "records",
                     "status",
                     "total_errors",
-                    "total_records",
-                    "type"
+                    "total_records"
                 ],
                 "title": "SensorDetails"
             },
@@ -598,7 +687,8 @@
                     "last_value": {
                         "oneOf": [
                             {
-                                "type": "number"
+                                "additionalProperties": {},
+                                "type": "object"
                             },
                             {
                                 "type": "null"
@@ -623,7 +713,7 @@
                     "Error"
                 ],
                 "title": "StatusEnum",
-                "description": "\nDescribes the knowledge that the storage node\nhas about how a collector node or sensor is functioning.\n\nStatuses are stored in-memory, and thus a restart of the\nserver process will result in statuses being reset.\n\nOptions:\n    Unknown: No data has been received from the\n        node or sensor since the server process has begun.\n    Operational: Data has been received from the node or\n        sensor recently.\n    Dropped: Data has been received from the node or sensor\n        since the server process has begun but not recently.\n    Error: An error has been received from the node or sensor.\n"
+                "description": "\nDescribes the knowledge that the storage node\nhas about how a collector node or sensor is functioning.\n\nStatuses are stored in-memory, and thus a restart of the\nserver process will result in statuses being reset.\n\nOptions:\n    Unknown: No data has been received from the\n        node or sensor.\n    Operational: Data has been received from the node or\n        sensor recently.\n    Dropped: Data has been received from the node or sensor\n        since but it is less recent than a threshold\n        determined by a set multiple of the collector's\n        polling interval.\n    Error: The sensor has an error and it is more recent than\n        the most recent data received.\n"
             }
         }
     }
