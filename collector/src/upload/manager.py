@@ -28,6 +28,7 @@ class UploadManager:
 
         # URL for QuestDB data POST. See: https://questdb.com/docs/reference/api/rest
         self.endpoint = "http://" + self.config.host + ":" + self.config.port + "/imp"
+        self.auth = requests.HTTPBasicAuth(self.config.user, self.config.password)
 
     def upload(
         self, report: CollectorReport, additional_errors: list[CollectorError] = []
@@ -49,12 +50,12 @@ class UploadManager:
         records = self._construct_records(report.records)
 
         # Upload the errors.
-        response = requests.post(self.endpoint, files=errors)
+        response = requests.post(self.endpoint, files=errors, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
         # Upload the records.
-        response = requests.post(self.endpoint, files=records)
+        response = requests.post(self.endpoint, files=records, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
@@ -76,12 +77,12 @@ class UploadManager:
         sensors = self._construct_sensor_metadata(sensor_metadata)
 
         # Upload the collector metadata.
-        response = requests.post(self.endpoint, files=collector)
+        response = requests.post(self.endpoint, files=collector, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
         # Upload the sensor metadata.
-        response = requests.post(self.endpoint, files=sensors)
+        response = requests.post(self.endpoint, files=sensors, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 

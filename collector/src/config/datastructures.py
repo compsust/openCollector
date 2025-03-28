@@ -82,14 +82,12 @@ class UploadConfig:
     """
     Configuration object which describes a QuestDB target.
     Attributes:
-        name (str): A descriptive name for the target.
         host (str): The database URL.
         port (str): The database port.
         user (str): The database username.
         password (str): The database password.
     """
 
-    name: str
     host: str
     port: str
     user: str
@@ -103,7 +101,6 @@ class UploadConfig:
             config (dict[str, Any]): The upload config object, ie. the
                 dictionary contained within the "upload" key in the config file.
         """
-        self.name = get_attribute_or_error(config, "name", "upload")
         self.host = get_attribute_or_error(config, "host", "upload")
         self.port = get_attribute_or_error(config, "port", "upload")
         self.user = get_attribute_or_error(config, "user", "upload")

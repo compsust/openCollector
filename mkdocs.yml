@@ -1,4 +1,34 @@
 site_name: OpenCollector
+site_url: http://localhost
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+
+plugins:
+    - search
+    - include-markdown
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
 nav:
   - Home: index.md
-theme: readthedocs
+  - Overview: overview.md
+  - User Guide:
+    - Overview: user-guide/overview.md
+    - Collector:
+      - PCB and Case: user-guide/collector/pcb.md
+      - Config: user-guide/collector/config.md
+      - Sensors: user-guide/collector/sensors.md
+  - Developer Guide:
+    - Overview: developer-guide/overview.md
+    - Collector:
+      - Sensors: developer-guide/collector/sensors.md
