@@ -19,7 +19,7 @@ class SensorCodeEnum(Enum):
     DHT20 = "DHT20"
     TSL2561 = "TSL2561"
     PMS5003 = "PMS5003"
-    MHZ19B = "MH-Z19B"
+    MHZ19B = "MHZ19B"
 
 
 class SensorValueMetadata(TypedDict):

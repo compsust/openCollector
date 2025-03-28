@@ -50,7 +50,7 @@
         },
         {
             "sensor_id": "dec4f7e3-dd3c-4642-b9e6-0f599ecfc89f",
-            "sensor_code": "MH-Z19B",
+            "sensor_code": "MHZ19B",
             "name": "CO2 Sensor",
             "gpio": {
                 "UART_TX": 6,

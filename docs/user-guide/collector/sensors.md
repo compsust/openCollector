@@ -6,7 +6,71 @@ For information on how to add more supported sensors to the software, see the pa
 
 ## Supported Sensors and Codes
 
-| Key | Type | Example | Required | Description |
-| -------- | ------- | -------- | -------- | ------- |
+The following table outlines the sensors that are supported by the collector node software. Node that the values in the *Sensor Code* column are the values that are accepted by the `sensor_code` value in the sensor configuration object. 
 
-## Configuration
+| Sensor | Type | Sensor Code |
+| -------- | ------- | -------- |
+| [DHT20](https://www.adafruit.com/product/5183) | Temperature & Humidity | `"DHT20"` |
+| [TSL2561](https://cdn-shop.adafruit.com/datasheets/TSL2561.pdf) | Luminosity | `"TSL2561"` |
+| [PMS5003](https://www.adafruit.com/product/3686) | Air Quality | `"PMS5003"` |
+| [MH-Z19B](https://www.winsen-sensor.com/d/files/infrared-gas-sensor/mh-z19b-co2-ver1_0.pdf) | CO2 | `"MHZ19B"` |
+
+## Configurations
+
+The following sections outline the required structure of the `gpio` and `attributes` section of the sensor config for each sensor type. It also includes the structure of data which is output by the sensor.
+
+### DHT20
+
+The DHT is a compact temperature and humidity sensor which communicates via I2C.
+
+#### GPIO Configuration
+
+The following is the structure and allowed keys of the `gpio` object within the sensor config object for this sensor.
+
+| Key | Description |
+| -------- | ------- |
+|  | ------- |
+
+#### Extra Attributes Configuration
+
+The following is the structure and allowed keys of the `attributes` object within the sensor config object for this sensor.
+
+| Key | Description |
+| -------- | ------- |
+
+#### Output Structure
+
+The following is the structure of the data which this sensor will upload to the database.
+
+| Value | Unit | Description |
+| -------- | ------- |
+
+### TSL2561
+
+The TSL2561 is a digital light sensor which communicates via I2C. It outputs the infrared and visible + infrared luminosities seperately. 
+
+#### GPIO Configuration
+
+#### Extra Attributes Configuration
+
+#### Output Structure
+
+### PMS5003
+
+The PMS5003 is a digital air quality sensor which communicates through UART. It reports the concentration of PM1.0, PM2.5, and PM10.
+
+#### GPIO Configuration
+
+#### Extra Attributes Configuration
+
+#### Output Structure
+
+### MH-Z19B
+
+The MH-Z19B is a digital CO2 sensor which communicates through UART.
+
+#### GPIO Configuration
+
+#### Extra Attributes Configuration
+
+#### Output Structure
