@@ -23,54 +23,107 @@ The following sections outline the required structure of the `gpio` and `attribu
 
 The DHT is a compact temperature and humidity sensor which communicates via I2C.
 
-#### GPIO Configuration
+#### GPIO
 
 The following is the structure and allowed keys of the `gpio` object within the sensor config object for this sensor.
 
 | Key | Description |
 | -------- | ------- |
-|  | ------- |
+| `"SCL"` | The GPIO pin used for SCL. |
+| `"SDA"` | The GPIO pin used for SDA. |
 
-#### Extra Attributes Configuration
+#### Extra Attributes
 
-The following is the structure and allowed keys of the `attributes` object within the sensor config object for this sensor.
-
-| Key | Description |
-| -------- | ------- |
+There are no extra attributes used by this sensor.
 
 #### Output Structure
 
 The following is the structure of the data which this sensor will upload to the database.
 
 | Value | Unit | Description |
-| -------- | ------- |
+| -------- | ------- | ------- |
+| Temperature | °C | The temperature read by the sensor in celsius. |
+| Humidity | % | The humitidy read by the sensor in %. |
 
 ### TSL2561
 
-The TSL2561 is a digital light sensor which communicates via I2C. It outputs the infrared and visible + infrared luminosities seperately. 
+The TSL2561 is a digital light sensor which communicates via I2C.
 
-#### GPIO Configuration
+#### GPIO
 
-#### Extra Attributes Configuration
+The following is the structure and allowed keys of the `gpio` object within the sensor config object for this sensor.
+
+| Key | Description |
+| -------- | ------- |
+| `"SCL"` | The GPIO pin used for SCL. |
+| `"SDA"` | The GPIO pin used for SDA. |
+
+#### Extra Attributes
+
+There are no extra attributes used by this sensor.
 
 #### Output Structure
+
+The following is the structure of the data which this sensor will upload to the database.
+
+| Value | Unit | Description |
+| -------- | ------- | ------- |
+| Luminosity | Lux | The luminosity read by the sensor in lux. |
 
 ### PMS5003
 
 The PMS5003 is a digital air quality sensor which communicates through UART. It reports the concentration of PM1.0, PM2.5, and PM10.
 
-#### GPIO Configuration
+#### GPIO
 
-#### Extra Attributes Configuration
+The following is the structure and allowed keys of the `gpio` object within the sensor config object for this sensor.
+
+| Key | Description |
+| -------- | ------- |
+| `"TX"` | The GPIO pin used for UART TX. |
+| `"RX"` | The GPIO pin used for UART RX. |
+
+#### Extra Attributes
+
+The following is the structure and allowed keys of the `attributes` object within the sensor config object for this sensor.
+
+| Key | Description |
+| `"baudrate"` | The baudrate used for configuring UART. |
 
 #### Output Structure
+
+The following is the structure of the data which this sensor will upload to the database.
+
+| Value | Unit | Description |
+| -------- | ------- | ------- |
+| Particulate Matter Concentration 1.0 | PM1.0 | The PM1.0 read by the sensor. |
+| Particulate Matter Concentration 2.5 | PM2.5 | The PM2.5 read by the sensor. |
+| Particulate Matter Concentration 10 | PM10 | The PM10 read by the sensor. |
 
 ### MH-Z19B
 
 The MH-Z19B is a digital CO2 sensor which communicates through UART.
 
-#### GPIO Configuration
+#### GPIO
 
-#### Extra Attributes Configuration
+The following is the structure and allowed keys of the `gpio` object within the sensor config object for this sensor.
+
+| Key | Description |
+| -------- | ------- |
+| `"TX"` | The GPIO pin used for UART TX. |
+| `"RX"` | The GPIO pin used for UART RX. |
+
+#### Extra Attributes
+
+The following is the structure and allowed keys of the `attributes` object within the sensor config object for this sensor.
+
+| Key | Description |
+| `"baudrate"` | The baudrate used for configuring UART. |
 
 #### Output Structure
+
+The following is the structure of the data which this sensor will upload to the database.
+
+| Value | Unit | Description |
+| -------- | ------- | ------- |
+| CO2 Concentration | PPM | The CO2 concentration read by the sensor in parts per million. |

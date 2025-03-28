@@ -1,4 +1,4 @@
-# User Guide
+# Setup
 
 This section of the documentation provides instructions for setting up and using the OpenCollector system to collect data.
 
@@ -19,6 +19,11 @@ The database is required to be reachable over the network by both the collector 
 ## Deploy QuestDB and Storage Node
 
 QuestDB and the storage node may be deployed together or seperately. The instructions included below support deploying them through *Docker* or through manual installation.
+
+##### Things to mention
+
+*TODO integrate this into the other sections*
+The database tables are created upon the storage node fisrt starting and connecting to the database.
 
 ### Together
 

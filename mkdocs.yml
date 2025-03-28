@@ -20,15 +20,19 @@ markdown_extensions:
   - pymdownx.superfences
 
 nav:
-  - Home: index.md
-  - Overview: overview.md
+  - Overview: index.md
   - User Guide:
-    - Overview: user-guide/overview.md
+    - Usage: user-guide/usage.md
+    - Setup: user-guide/setup.md
     - Collector:
       - PCB and Case: user-guide/collector/pcb.md
       - Config: user-guide/collector/config.md
       - Sensors: user-guide/collector/sensors.md
+    - Storage:
+      - Config: user-guide/storage/config.md
   - Developer Guide:
     - Overview: developer-guide/overview.md
     - Collector:
       - Sensors: developer-guide/collector/sensors.md
+  - About: about.md
+  - GitHub: https://github.com/compsust/openCollector

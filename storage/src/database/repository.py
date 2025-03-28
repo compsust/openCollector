@@ -12,9 +12,7 @@ from datastructures import (
     StatusEnum,
 )
 from . import queries
-
-
-active_device_polling_threshold = 3
+import config
 
 
 class RepostioryError(Exception):
@@ -180,7 +178,7 @@ class Repository:
                 active_threshold = timedelta(
                     milliseconds=(
                         collector_metadata["polling_interval"]
-                        * active_device_polling_threshold
+                        * config.ACTIVE_DEVICE_POLLING_THRESHOLD
                     )
                 )
                 if latest_timestamp < (datetime.now() - active_threshold):
@@ -356,7 +354,7 @@ class Repository:
             active_threshold = timedelta(
                 milliseconds=(
                     collector_metadata["polling_interval"]
-                    * active_device_polling_threshold
+                    * config.ACTIVE_DEVICE_POLLING_THRESHOLD
                 )
             )
             if latest_timestamp < (datetime.now() - active_threshold):
@@ -510,7 +508,7 @@ class Repository:
             active_threshold = timedelta(
                 milliseconds=(
                     collector_metadata["polling_interval"]
-                    * active_device_polling_threshold
+                    * config.ACTIVE_DEVICE_POLLING_THRESHOLD
                 )
             )
             if latest_timestamp < (datetime.now() - active_threshold):

@@ -39,10 +39,8 @@
             "sensor_code": "PMS5003",
             "name": "Air Quality Sensor",
             "gpio": {
-                "UART_TX": 21,
-                "UART_RX": 22,
-                "RESET": 24,
-                "SET": 25
+                "TX": 21,
+                "RX": 22
             },
             "attributes": {
                 "baudrate": 9600
@@ -53,10 +51,8 @@
             "sensor_code": "MHZ19B",
             "name": "CO2 Sensor",
             "gpio": {
-                "UART_TX": 6,
-                "UART_RX": 7,
-                "HD": 2,
-                "PWM": 4
+                "TX": 6,
+                "RX": 7
             },
             "attributes": {
                 "baudrate": 9600

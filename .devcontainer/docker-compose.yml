@@ -21,7 +21,7 @@ services:
     volumes:
       - ./data:/var/lib/questdb
     environment:
-      - QDB_PG_USER=admin
+      - QDB_PG_USER=pguser
       - QDB_PG_PASSWORD=quest
       - QDB_HTTP_USER=node
       - QDB_HTTP_PASSWORD=quest
