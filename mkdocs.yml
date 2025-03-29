@@ -33,6 +33,13 @@ nav:
   - Developer Guide:
     - Overview: developer-guide/overview.md
     - Collector:
+      - Overview: developer-guide/collector/overview.md
       - Sensors: developer-guide/collector/sensors.md
+      - Reference:
+        - Config: developer-guide/collector/reference/config.md
+        - Upload: developer-guide/collector/reference/upload.md
+        - Sensors: developer-guide/collector/reference/sensors.md
+    - Storage:
+      - Overview: developer-guide/storage/overview.md
   - About: about.md
   - GitHub: https://github.com/compsust/openCollector

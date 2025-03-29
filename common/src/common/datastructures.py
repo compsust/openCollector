@@ -1,8 +1,8 @@
 from typing import Any, NamedTuple
 
-from .sensor_codes import RecordID, SensorCodeEnum
+from .sensors import RecordID, SensorCodeEnum
 
-type SensorData = dict[RecordID, Any]
+type SensorData = dict[RecordID, float | int]
 """Alias for data returned by a sensor."""
 
 

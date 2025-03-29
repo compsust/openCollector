@@ -24,6 +24,17 @@ When data for a collector node or sensor is displayed throughout the interface, 
 
 A collector node's status is determined by its sensors - a collector is only `OPERATIONAL` if all sensors are operational and it has no errors itself. Any `UNKNOWN` sensor will cause the collector to be `UNKNOWN`, and any `ERROR` sensor will cause the collector to be `ERROR`, in that order. If the collector has any errors that aren't associated with a sensor, its status is `ERROR`.
 
+### Errors
+
+When a collector node runs into an error, it will attempt to upload it to the database. Errors can come from one of two sources:
+
+1. From a sensor, in the process of reading data.
+2. From a collector itself, in the process of initialization, uploading the data, or some other functionality outside of reading sensor data.
+
+If an error pertains to the upload functionality, the error itself may not be able to be uploaded. To account for this, errors will be saved across failed upload cycles and uploaded at the next successful opportunity.
+
+*TODO: Update this once this functionality is extended to records*
+
 ### Web Interface
 
 This section contains information on how to use the browser interface.

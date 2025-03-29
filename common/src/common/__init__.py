@@ -1,4 +1,4 @@
-from .sensor_codes import (
+from .sensors import (
     SensorCodeEnum,
     sensor_metadata,
     RecordID,
