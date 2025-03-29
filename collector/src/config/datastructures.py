@@ -3,33 +3,38 @@ from typing import Any
 from common.src import SensorCodeEnum
 
 
-def get_attribute_or_error(
-    config: dict[str, Any], attribute: str, config_name: str
+def get_attribute(
+    config: dict[str, Any], attribute: str, config_name: str, required: bool = True
 ) -> Any:
     """
     Retrieves the attribute from the config, or
-    raises an error if it does not exist.
+    raises an error if it does not exist and the attribute is required.
 
     Args:
         config (dict[str, Any]): The config to retrieve from.
         attribute (str): The name of the attribute.
         config_name (str): The name of the config.
+        required (bool): If true, an exception will be raised
+            if the attribute doesn't exist.
 
     Raises:
         ValueError: Raised if the attribute does not
-            exist within the config.
+            exist within the config and is required.
 
     Returns:
-        Any: The config attribute.
+        Any: The config attribute, or None if it does not exist and is not required.
     """
     try:
         attribute = config["attribute"]
     except KeyError:
-        raise ValueError(
-            f"Config '{config_name}' missing required parameter '{attribute}'."
-        )
+        if required:
+            raise ValueError(
+                f"Config '{config_name}' missing required parameter '{attribute}'."
+            )
+        else:
+            return None
 
-    if attribute is None:
+    if attribute is None and required:
         raise ValueError(
             f"Config '{config_name}' missing required parameter '{attribute}'."
         )
@@ -66,9 +71,9 @@ class DeviceConfig:
                 dictionary contained within the "device" key in the config file.
             micropython (bool): Whether the current environment is micropython
         """
-        self.model = get_attribute_or_error(config, "model", "device")
-        self.allowed_gpio = get_attribute_or_error(config, "allowed_gpio", "device")
-        self.requires_micropython = get_attribute_or_error(
+        self.model = get_attribute(config, "model", "device")
+        self.allowed_gpio = get_attribute(config, "allowed_gpio", "device")
+        self.requires_micropython = get_attribute(
             config, "requires_micropython", "device"
         )
 
@@ -101,11 +106,10 @@ class UploadConfig:
             config (dict[str, Any]): The upload config object, ie. the
                 dictionary contained within the "upload" key in the config file.
         """
-        self.host = get_attribute_or_error(config, "host", "upload")
-        self.port = get_attribute_or_error(config, "port", "upload")
-        self.user = get_attribute_or_error(config, "user", "upload")
-        self.password = get_attribute_or_error(config, "password", "upload")
-
+        self.host = get_attribute(config, "host", "upload")
+        self.port = get_attribute(config, "port", "upload")
+        self.user = get_attribute(config, "user", "upload")
+        self.password = get_attribute(config, "password", "upload")
 
 class SensorConfig:
     """
@@ -127,8 +131,8 @@ class SensorConfig:
     sensor_id: str
     sensor_code: SensorCodeEnum
     name: str
-    gpio: dict[str, int]
-    attributes: dict[str, Any]
+    gpio: dict[str, int] 
+    attributes: dict[str, Any] | None
 
     def __init__(
         self,
@@ -147,14 +151,14 @@ class SensorConfig:
             index (int): The index of the sensor config within the "sensors" array.
             allowed_gpio (list[int]): The allowed GPIO pins as configured in the device config.
         """
-        self.sensor_id = get_attribute_or_error(config, "sensor_id", f"sensor[{index}]")
-        self.sensor_code = get_attribute_or_error(
+        self.sensor_id = get_attribute(config, "sensor_id", f"sensor[{index}]")
+        self.sensor_code = get_attribute(
             config, "sensor_code", f"sensor[{index}]"
         )
-        self.name = get_attribute_or_error(config, "name", f"sensor[{index}]")
-        self.gpio = get_attribute_or_error(config, "gpio", f"sensor[{index}]")
-        self.attributes = get_attribute_or_error(
-            config, "attributes", f"sensor[{index}]"
+        self.name = get_attribute(config, "name", f"sensor[{index}]")
+        self.gpio = get_attribute(config, "gpio", f"sensor[{index}]")
+        self.attributes = get_attribute(
+            config, "attributes", f"sensor[{index}]", required=False
         )
 
         # Validate that the configured GPIO pins are allowed on this device.
@@ -199,9 +203,9 @@ class CollectorConfig:
             config (dict[str, Any]): The config object, ie. the
                 dictionary pulled from the config file.
         """
-        self.collector_id = get_attribute_or_error(config, "collector_id", "config")
-        self.node_name = get_attribute_or_error(config, "node_name", "config")
-        self.polling_interval = get_attribute_or_error(
+        self.collector_id = get_attribute(config, "collector_id", "config")
+        self.node_name = get_attribute(config, "node_name", "config")
+        self.polling_interval = get_attribute(
             config, "polling_interval", "config"
         )
         self.device = device

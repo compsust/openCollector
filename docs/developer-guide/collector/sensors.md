@@ -36,14 +36,25 @@ With this in mind, adding a new sensor to this metadata requires the following:
 
 ### Implement the `SensorDriver`
 
-The concrete implementations of the `AbstractSensorDriver` interface.
+The concrete implementations of the `AbstractSensorDriver` interface are located in the folder `collector/sensors/drivers`. The interface itself is very simple and only has two functions:
+
+1. `__init__(self, config: SensorConfig)` intakes the `SensorConfig` object from the SensorManager and takes care of any required initialization of variables or sub-drivers. Note that both the `gpio` and `attributes` dictionaries on the config aren't previously validated, so this function may also ensure that all required keys are present.
+2. `poll() -> SensorData` executes the code required to retrieve data from the sensor and returns a dictionary with the keys as configured in `sensor_metadata`. If this function fails, it should raise an exception, with a helpful error message, as the exception string is what is uploaded to the database.
+
+Additionally, the file `collector/sensors/sensor_codes.py` contains the `sensor_drivers` dictionary, which maps all possible values of `SensorCodeEnum` to their associated drivers.
+
+Therefore, to add a new sensor, the following steps are required:
+
+1. Create a new `.py` file in the `collector/sensors/drivers` directory, and create a class called `<SensorType>SensorDriver` which implements the `AbstractSensorDriver` class.
+2. Add the class to the `sensor_drivers` dictionary in the `collector/sensors/sensor_codes.py` file with the correct value of `SensorCodeEnum` as the key.
 
 ### Update the Documentation.
 
+Finally, the following steps are required to add the supported sensor to the documentation:
 
-Explain all the steps for supporting a new sensor:
-1. Add a new value to SensorCodeEnum
-2. Add a new entry to sensor_metadata
-3. Create a new SensorDriver in the src/collector/sensors/drivers folder
-4. Add this SensorDriver to the sensor_drivers dict in sensor_codes.py
-5. Add the sensor config to config.json
+1. Add the newly added value of `SensorCodeEnum` to `docs/user-guide/collector/sensord.md` with a description of the type of sensor and a link to the sensor page.
+2. Add a new section under the [Configurations header](../../user-guide/collector/sensors.md#configurations) for the sensor. The section should have 3 sub-sections:
+    1. The GPIO section documents each key in the `gpio` configuration object for the `SensorConfig` for this sensor.
+    2. The Extra Attributes section documents each key in the `attributes` configuration object for the `SensorConfig` for this sensor.
+    3. The Output Structure section documents the expected structure of `SensorData` for this sensor and should match the configuration in `sensor_metadata`.
+3. Add an example configuration for this sensor to the `config.example.json` document located in `collector/src`.
