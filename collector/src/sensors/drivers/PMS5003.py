@@ -3,7 +3,7 @@
 import utime
 from machine import UART, Pin
 from common.src import SensorData
-from ..driver_interface import AbstractSensorDriver
+from ..driver import AbstractSensorDriver
 
 
 class PMS5003SensorDriver(AbstractSensorDriver):

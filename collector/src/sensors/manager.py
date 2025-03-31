@@ -1,18 +1,31 @@
 import time
 
 from config import ConfigManager
-from sensors.driver_interface import AbstractSensorDriver
+from collector.src.sensors.driver import AbstractSensorDriver
 from sensors.sensor_codes import get_sensor_driver_from_code
-from common.src import CollectorError, CollectorRecord, CollectorReport
-
+from datastructures import CollectorRecord, CollectorError
 
 class SensorManager:
+    """
+    Initializes and orchestrates the configured
+    sensor drivers.
+
+    Attributes:
+        collector_id: The configured collector ID.
+        drivers: The driver instances, or an empty list 
+            if they have yet to be initialized. 
+    """
+
     collector_id: str
     drivers: list[AbstractSensorDriver] = []
 
     def __init__(self, config_manager: ConfigManager):
         """
         Initializes all SensorDrivers.
+
+        Args:
+            config_manager: ConfigManager instance
+                used to retrieve the sensor configs.
         """
         self.collector_id = config_manager.config.collector_id
 
@@ -27,9 +40,12 @@ class SensorManager:
         """
         Polls all sensors.
 
+        If the sensor returns data, uses it to construct a CollectorRecord.
+
+        If the sensor raises an exception, uses it to construct a CollectorError.
+
         Returns:
-            tuple[list[CollectorRecord], list[CollectorError]]:
-                all recorded sensor data and caught sensor exceptions.
+            All recorded sensor data and caught sensor exceptions.
         """
         records: list[CollectorRecord] = []
         errors: list[CollectorError] = []

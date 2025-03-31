@@ -4,7 +4,7 @@ from .sensors import (
     RecordID,
     get_unit_from_record_id,
 )
-from .datastructures import (
+from ....collector.src.datastructures import (
     SensorData,
     CollectorError,
     CollectorRecord,

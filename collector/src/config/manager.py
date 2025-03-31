@@ -3,7 +3,6 @@ from typing import Any
 
 from common.src import CollectorMetadata, SensorMetadata
 from .datastructures import CollectorConfig, DeviceConfig, SensorConfig, UploadConfig
-from .utils import generate_unique_id
 
 """
 Deals with reading and writing configuration values to the file system.
@@ -11,29 +10,41 @@ Deals with reading and writing configuration values to the file system.
 
 
 class ConfigManager:
-    # If true, the code is being run on micropython
+    """
+    Parses and stores all configured paramteres for a collector node.
+
+    Attributes:
+        micropython: If true, the program is being run within
+            a micropython environment.
+        _config: The config, or None if it
+            has not been successfully parsed.
+    """
     micropython: bool = True
     _config: CollectorConfig | None = None
 
     def __init__(self, micropython: bool):
+        """
+        Initialize the config manager.
+
+        Args:
+            micropython: If true, the program is being run within
+                a micropython environment.
+        """
         self.micropython = micropython
         self.initialize_config()
 
     def initialize_config(self):
         """
         Initializes config objects for all
-        sensors and cache targets specified in
-        the configuration file.
+        configuration parameters contained within the
+        configuration file and sets the config on the class.
 
-        Sets the config on the class.
+        Raises:
+            ValueError: Raised if any config is missing.
         """
         # Load config into a dictionary.
         with open("config.json") as f:
             config: dict[str, Any] = json.load(f)
-
-        # Generate an ID for this device if not included
-        if "collector_id" not in config or config["collector_id"] is None:
-            config["collector_id"] = generate_unique_id(self.micropython)
 
         # Initialize all configs
 
@@ -53,10 +64,6 @@ class ConfigManager:
 
         sensors: list[SensorConfig] = []
         for config, index in config["sensors"]:
-            # Generate an ID for this device if not included
-            if "sensor_id" not in config or config["sensor_id"] is None:
-                config["sensor_id"] = generate_unique_id(self.micropython)
-
             sensor = SensorConfig(config, index, device_config.allowed_gpio)
             sensors.append(sensor)
 
@@ -73,7 +80,7 @@ class ConfigManager:
         Retrieves the device config.
 
         Returns:
-            CollectorConfig: the current device config.
+            The current device config.
         """
         if self._config is None:
             self.initialize_config()
@@ -88,7 +95,7 @@ class ConfigManager:
         Packages the configuration into the metadata objects.
 
         Returns:
-            tuple[CollectorMetadata, list[SensorMetadata]]: The metadata.
+            The metadata.
         """
         collector_metadata = CollectorMetadata(
             collector_id=self.config.collector_id,

@@ -4,10 +4,10 @@
 import utime
 import machine
 from common.src import SensorData
-from ..driver_interface import AbstractSensorDriver
+from ..driver import AbstractSensorDriver
 
 
-class Dht20SensorDriver(AbstractSensorDriver):
+class DHT20SensorDriver(AbstractSensorDriver):
     """
     Implementation of the Dht20 Sensor Driver.
     """

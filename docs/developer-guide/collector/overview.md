@@ -17,7 +17,7 @@ The architecture of the collector code is visualized below and contains the foll
     - **`SensorDriver`** - Each `SensorDriver` class instance is responsible for collecting data from a single sensor.
     - **`SensorManager`** - This class is responsible for initializing as many `SensorDriver` instances as are called for in the configuration, polling them, and sending the data to the main control loop.
 
-![Alt: the diagram visualized the ConfigManager sending the configuration to the main control loop, the SensorManager polling multiple SensorDrivers which each communicate with the hardware layer, and the UploadManager sending the data to the QuestDB database](../images/collector-architecture.excalidraw.png)
+![Alt: the diagram visualizes the ConfigManager sending the configuration to the main control loop, the SensorManager polling multiple SensorDrivers which each communicate with the hardware layer, and the UploadManager sending the data to the QuestDB database](../images/collector-architecture.excalidraw.png)
 
 ### Main Control Loop
 
@@ -30,6 +30,23 @@ The main control loop has the following behavior:
     2. Uploads sensor data.
     3. If the data could not be uploaded, saves the data in-memory to re-try next loop.
     4. Waits a length of time determined by the `polling_interval` configuration parameter.
+
+```mermaid
+
+stateDiagram-v2
+    [*] --> Initialization
+
+    Initialization --> Metadata : Success
+    Metadata --> Poll: Success
+    Initialization --> Error : Failure
+    Metadata --> Error : Failure
+    Poll --> Upload
+    Upload --> Wait
+    Wait --> Poll : After Polling Interval
+
+    Metadata: Metadata Upload
+    Upload: Data Upload
+```
 
 ### Config
 
@@ -49,7 +66,7 @@ For documentation on which sensors are currently supported and how to configure 
 
 For instructions on how to add support for new sensors, see the [Sensor](./sensors.md) page.
 
-See the [Sensor Reference](./reference/sensor.md) for documentation on the sensor-related source code.
+See the [Sensor Reference](./reference/sensors.md) for documentation on the sensor-related source code.
 
 #### Architecture & Approach
 
@@ -63,6 +80,6 @@ In practice, this means that that the `SensorManger` class is not directly depen
 
 Abstract classes are be implemented with Python's `Protocol` type.
 
-## Deployment
+## Development
 
 **TODO: information here on how to flash the software for development**

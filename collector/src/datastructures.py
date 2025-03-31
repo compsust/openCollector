@@ -1,9 +1,9 @@
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
-from .sensors import RecordID, SensorCodeEnum
+from common.src import RecordID, SensorCodeEnum
 
 type SensorData = dict[RecordID, float | int]
-"""Alias for data returned by a sensor."""
+"""Alias for data returned by a sensor. The keys must be RecordIDs and the values are numerical."""
 
 
 class CollectorRecord(NamedTuple):

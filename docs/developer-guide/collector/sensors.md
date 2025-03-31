@@ -2,7 +2,7 @@
 
 For documentation on which sensors are currently supported and how to configure them, see the [User Guide](../../user-guide/collector/sensors.md) sensors page.
 
-See the [Sensor Reference](./reference/sensor.md) for documentation on the sensor-related source code.
+See the [Sensor Reference](./reference/sensors.md) for documentation on the sensor-related source code.
 
 ## Datastructure
 
@@ -12,7 +12,7 @@ Each sensor returns data of the type `SensorData`, which can be found in the fil
 
 The following is a list of instructions for adding support for a new sensor. Before starting, first verify the following:
 
-1. The existing sensor interface contained withing the [Sensor Reference](./reference/sensor.md) and the capacities for sensor configuration outlined in the [Config](../../user-guide/collector/config.md) will be able to support the sensor. If the sensor requires any dynamic runtime configuration that can't happen within a single Python module, it may not be able to work.
+1. The existing sensor interface contained withing the [Sensor Reference](./reference/sensors.md) and the capacities for sensor configuration outlined in the [Config](../../user-guide/collector/config.md) will be able to support the sensor. If the sensor requires any dynamic runtime configuration that can't happen within a single Python module, it may not be able to work.
 2. The code for reading from the sensor that you plan to use is compatible with Micropython.
 
 ### Update the Sensor Metadata

@@ -1,20 +1,29 @@
 import requests
-from collector.src.config.datastructures import UploadConfig
-from config.manager import ConfigManager
+from config import ConfigManager, UploadConfig
 from common.src import (
-    CollectorReport,
-    CollectorError,
-    CollectorRecord,
-    CollectorMetadata,
-    SensorMetadata,
     records_table_name,
     errors_table_name,
     collector_metadata_table_name,
     sensor_metadata_table_name,
 )
+from datastructures import     (CollectorReport,
+    CollectorError,
+    CollectorRecord,
+    CollectorMetadata,
+    SensorMetadata,)
 
 
 class UploadManager:
+    """
+    Handles formatting and upload of the data to the database.
+
+    Attributes:
+        collector_id: The ID of the collector set on the config.
+        config: The upload config.
+        endpoint: The endpoint string at which to reach the
+            QuestDB REST API.
+    """
+
     collector_id: str
     config: UploadConfig
     endpoint: str
@@ -22,6 +31,10 @@ class UploadManager:
     def __init__(self, config_manager: ConfigManager):
         """
         Initializes the manager.
+
+        Args:
+            config_manager: The config manager used to retrieve
+                the upload config.
         """
         self.collector_id = config_manager.config.collector_id
         self.config = config_manager.config.upload
@@ -37,8 +50,8 @@ class UploadManager:
         Uploads a collector report.
 
         Args:
-            report (CollectorReport): The report to upload.
-            additional_errors (list[CollectorError]): Any additional errors to attach.
+            report: The report to upload.
+            additional_errors: Any additional errors to attach.
         """
         # Join any additional errors.
         errors = [*report.errors, *additional_errors]
@@ -65,11 +78,11 @@ class UploadManager:
         sensor_metadata: list[SensorMetadata],
     ):
         """
-        Uploads the collector metadata.
+        Uploads the collector and sensor metadata.
 
         Args:
-            collector_metadata (CollectorMetadata): Collector metadata.
-            sensor_metadata (list[SensorMetadata]): Sensor metadata
+            collector_metadata: Collector metadata.
+            sensor_metadata: Sensor metadata
         """
         # Construct a CSV of the collector metadata.
         collector = self._construct_collector_metadata(collector_metadata)
@@ -92,6 +105,12 @@ class UploadManager:
         """
         Given a list of CollectorRecord, constructs a CSV file in the format
         that QuestDB's REST API expects.
+
+        Args:
+            records: The collector records to format.
+
+        Returns:
+            The data in CSV format.
         """
 
         records_csv_lines = ["timestamp,collector_id,sensor_id,record_id,value"]
@@ -109,6 +128,12 @@ class UploadManager:
         """
         Given a list of CollectorError, constructs a CSV file in the format
         that QuestDB's REST API expects.
+
+        Args:
+            records: The collector errors to format.
+
+        Returns:
+            The data in CSV format.
         """
 
         errors_csv_lines = ["timestamp,collector_id,sensor_id,error_message"]
@@ -125,6 +150,12 @@ class UploadManager:
         """
         Given a CollectorMetadata, constructs a CSV file in the format
         that QuestDB's REST API expects.
+
+        Args:
+            records: The collector metadata to format.
+
+        Returns:
+            The data in CSV format.
         """
         csv = (
             "collector_id,collector_name,device_model,polling_interval\n"
@@ -138,6 +169,12 @@ class UploadManager:
         """
         Given a list of SensorMetadata, constructs a CSV file in the format
         that QuestDB's REST API expects.
+
+        Args:
+            records: The sensor_metadata to format.
+
+        Returns:
+            The data in CSV format.
         """
         metadata_csv_lines = ["collector_id,sensor_id,sensor_code,sensor_name"]
         for data in metadata:

@@ -2,8 +2,8 @@
 
 import utime
 from machine import UART, Pin
-from common.src import SensorData
-from ..driver_interface import AbstractSensorDriver
+from datastructures import SensorData
+from ..driver import AbstractSensorDriver
 
 
 class MHZ19BSensorDriver(AbstractSensorDriver):

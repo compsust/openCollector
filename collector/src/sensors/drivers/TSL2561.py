@@ -4,10 +4,10 @@
 import utime
 import machine
 from common.src import SensorData
-from ..driver_interface import AbstractSensorDriver
+from ..driver import AbstractSensorDriver
 
 
-class Tsl2561SensorDriver(AbstractSensorDriver):
+class TSL2561SensorDriver(AbstractSensorDriver):
     """
     Implementation of the Tsl2561 Sensor Driver.
     """

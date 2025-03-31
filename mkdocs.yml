@@ -9,15 +9,36 @@ theme:
 plugins:
     - search
     - include-markdown
+    - neoteroi.mkdocsoad:
+        use_pymdownx: true
+    - mkdocstrings:
+        handlers:
+          python:
+            options:
+              docstring_style: google
+              parameter_headings: true
+              show_root_heading: true
+              show_symbol_type_heading: true
+              show_symbol_type_toc: true
 
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.details
+
+extra_css:
+  - css/oad.scss
 
 nav:
   - Overview: index.md
@@ -30,6 +51,7 @@ nav:
       - Sensors: user-guide/collector/sensors.md
     - Storage:
       - Config: user-guide/storage/config.md
+      - OpenAPI: user-guide/storage/openapi.md
   - Developer Guide:
     - Overview: developer-guide/overview.md
     - Collector:
@@ -41,5 +63,9 @@ nav:
         - Sensors: developer-guide/collector/reference/sensors.md
     - Storage:
       - Overview: developer-guide/storage/overview.md
+      - Database: developer-guide/storage/database.md
+      - Reference:
+        - Database: developer-guide/storage/reference/database.md
+        - Browser: developer-guide/storage/reference/browser.md
   - About: about.md
   - GitHub: https://github.com/compsust/openCollector
