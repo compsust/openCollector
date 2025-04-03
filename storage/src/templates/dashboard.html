@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %} 
+
+{% block title %}Home - OpenCollector{% endblock %} 
+
+{% set page_heading = "Dashboard" %}
+
+{% block body%}
+
+<div class="grid grid-cols-1 grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 gap-8 px-12 py-8">
+    <div hx-get="/snippets/network_summary" hx-trigger="load, every {{ refresh_s }}s" class="w-full">
+        Loading Network Summary...
+    </div>
+        
+    <div class="p-4 row-span-2 lg:col-span-2">
+        Loading Graph...
+    </div>
+    
+    <div class="p-4 lg:col-span-1">
+        Loading Collectors...
+    </div>
+</div>
+
+{% endblock body %}

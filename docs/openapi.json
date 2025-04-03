@@ -123,11 +123,11 @@
                 "deprecated": false
             }
         },
-        "/api/query/collectors/{collector_id}/sensors/{sensor_id}": {
+        "/api/query/collectors/sensors/{sensor_id}": {
             "get": {
                 "summary": "GetSensorDetails",
                 "description": "Returns the details for all data contained in a sensor.",
-                "operationId": "ApiQueryCollectorsCollectorIdSensorsSensorIdGetSensorDetails",
+                "operationId": "ApiQueryCollectorsSensorsSensorIdGetSensorDetails",
                 "parameters": [
                     {
                         "name": "sensor_id",
@@ -181,15 +181,6 @@
                         "deprecated": false,
                         "allowEmptyValue": false,
                         "allowReserved": false
-                    },
-                    {
-                        "name": "collector_id",
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true,
-                        "deprecated": false
                     }
                 ],
                 "responses": {

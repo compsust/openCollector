@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <title>{% block title %}{% endblock %} {{ title }}</title>
+  </head>
+  <body class="font-mono min-h-screen flex flex-col bg-white">
+    {% block navbar %} {% include 'base/navbar.html' %} {% endblock navbar %}
+
+    {% if page_heading %}
+      
+      {% block header %} {% include 'base/header.html' %} {% endblock header %}
+    
+    {% endif %}
+
+    <main>
+        {% block body %} {% endblock body %}
+    </main>
+
+    {% block footer %} {% include 'base/footer.html' %} {% endblock footer %}
+  </body>
+</html>
