@@ -6,7 +6,7 @@ from typing import TypedDict
 # Query string.
 latest_records_query_string = f"""--sql
 SELECT *
-FROM $1
+FROM {records_table_name}
 LATEST ON timestamp PARTITION BY sensor_id, record_id
 """
 
@@ -30,4 +30,4 @@ async def latest_records_query(connection: Connection) -> list[LatestRecordsQuer
     Returns:
         list[LatestRecordsQueryRow]: The database results.
     """
-    return await connection.fetch(latest_records_query_string, records_table_name)
+    return await connection.fetch(latest_records_query_string)

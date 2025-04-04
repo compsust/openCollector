@@ -19,6 +19,7 @@ class ConfigManager:
         _config: The config, or None if it
             has not been successfully parsed.
     """
+
     micropython: bool = True
     _config: CollectorConfig | None = None
 

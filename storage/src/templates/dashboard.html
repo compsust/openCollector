@@ -6,18 +6,25 @@
 
 {% block body%}
 
-<div class="grid grid-cols-1 grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 gap-8 px-12 py-8">
-    <div hx-get="/snippets/network_summary" hx-trigger="load, every {{ refresh_s }}s" class="w-full">
-        Loading Network Summary...
+<div class="flex flex-col md:flex-row px-12 py-8 justify-around gap-8">
+
+    <div class="flex flex-col gap-8 ">
+
+        <div hx-get="/snippets/network_summary" hx-trigger="load, every {{ refresh_s }}s" class="w-full min-w-[300px]">
+            Loading Network Summary...
+        </div>
+            
+        <div hx-get="/snippets/collector_summary" hx-trigger="load, every {{ refresh_s }}s" class="w-full">
+            Loading Collectors...
+        </div>
     </div>
-        
-    <div class="p-4 row-span-2 lg:col-span-2">
-        Loading Graph...
+
+    <div class="order-first md:order-last">
+        <div class="mt-2">
+            {% include 'snippets/graph.html' %}
+        </div>
     </div>
-    
-    <div class="p-4 lg:col-span-1">
-        Loading Collectors...
-    </div>
+
 </div>
 
 {% endblock body %}

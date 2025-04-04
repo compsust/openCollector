@@ -9,7 +9,7 @@ from typing import TypedDict
 # Query string.
 latest_sensor_metadata_query_string = f"""--sql
 SELECT *
-FROM $1
+FROM {sensor_metadata_table_name}
 LATEST ON timestamp PARTITION BY sensor_id
 """
 
@@ -35,6 +35,4 @@ async def latest_sensor_metadata_query(
     Returns:
         list[LatestSensorMetadataQueryRow]: The database results.
     """
-    return await connection.fetch(
-        latest_sensor_metadata_query_string, sensor_metadata_table_name
-    )
+    return await connection.fetch(latest_sensor_metadata_query_string)

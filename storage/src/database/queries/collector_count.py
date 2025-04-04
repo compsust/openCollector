@@ -5,7 +5,9 @@ from asyncpg import Connection
 from typing import TypedDict
 
 # Query string.
-collector_count_query_string = "--sql SELECT COUNT(DISTINCT collector_id) FROM $1"
+collector_count_query_string = f"""--sql
+SELECT COUNT(DISTINCT collector_id) FROM {collector_metadata_table_name}
+"""
 
 
 # Query result type.
@@ -23,6 +25,4 @@ async def collector_count_query(connection: Connection) -> list[CollectorCountQu
     Returns:
         list[CollectorCountQueryRow]: The database results.
     """
-    return await connection.fetch(
-        collector_count_query_string, collector_metadata_table_name
-    )
+    return await connection.fetch(collector_count_query_string)

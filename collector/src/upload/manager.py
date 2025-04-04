@@ -6,11 +6,13 @@ from common.src import (
     collector_metadata_table_name,
     sensor_metadata_table_name,
 )
-from datastructures import     (CollectorReport,
+from datastructures import (
+    CollectorReport,
     CollectorError,
     CollectorRecord,
     CollectorMetadata,
-    SensorMetadata,)
+    SensorMetadata,
+)
 
 
 class UploadManager:

@@ -6,10 +6,10 @@ from typing import TypedDict
 # Query string.
 records_from_sensor_query_string = """--sql 
 SELECT *
-FROM $1
-WHERE sensor_id = $2
+FROM {records_table_name}
+WHERE sensor_id = $1
 ORDER BY timestamp DESC
-LIMIT $3, $4
+LIMIT $2, $3
 """
 
 
@@ -41,7 +41,6 @@ async def records_from_sensor_query(
     limit_end = limit_start + page_size
     return await connection.fetch(
         records_from_sensor_query_string,
-        records_table_name,
         sensor_id,
         limit_start,
         limit_end,

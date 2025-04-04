@@ -5,7 +5,9 @@ from asyncpg import Connection
 from typing import TypedDict
 
 # Query string.
-total_errors_query_string = "--sql SELECT COUNT FROM $1"
+total_errors_query_string = f"""--sql 
+SELECT COUNT FROM {errors_table_name}
+"""
 
 
 # Query result type.
@@ -23,4 +25,4 @@ async def total_errors_query(connection: Connection) -> list[ErrorsCountQueryRow
     Returns:
         list[ErrorsCountQueryRow]: The database results.
     """
-    return await connection.fetch(total_errors_query_string, errors_table_name)
+    return await connection.fetch(total_errors_query_string)

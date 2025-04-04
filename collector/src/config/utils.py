@@ -1,5 +1,6 @@
 from typing import Any
 
+
 def get_attribute(
     config: dict[str, Any], attribute: str, config_name: str, required: bool = True
 ) -> Any:

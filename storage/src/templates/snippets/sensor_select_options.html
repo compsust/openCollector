@@ -1,0 +1,12 @@
+<select id="sensor_select" x-model="$data.sensor_id" 
+        hx-get="/snippets/record_select_options" 
+        hx-target="#record_select_container" 
+        hx-vals='{"sensor_id": "sensor1"}'
+        hx-trigger="change"
+        class="bg-gray-200 p-2">
+    <option value="" disabled>Select a Sensor</option>
+
+    {% for option in options %}
+        <option value="{{ option.value }}">{{ option.label }}</option>
+    {% endfor %}
+</select>

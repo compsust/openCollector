@@ -75,6 +75,7 @@ class UploadConfig:
         self.user = get_attribute(config, "user", "upload")
         self.password = get_attribute(config, "password", "upload")
 
+
 class SensorConfig:
     """
     Configuration object which describes a sensor.
@@ -96,7 +97,7 @@ class SensorConfig:
     sensor_id: str
     sensor_code: SensorCodeEnum
     name: str
-    gpio: dict[str, int] 
+    gpio: dict[str, int]
     attributes: dict[str, Any] | None
 
     def __init__(
@@ -117,9 +118,7 @@ class SensorConfig:
             allowed_gpio: The allowed GPIO pins as configured in the device config.
         """
         self.sensor_id = get_attribute(config, "sensor_id", f"sensor[{index}]")
-        self.sensor_code = get_attribute(
-            config, "sensor_code", f"sensor[{index}]"
-        )
+        self.sensor_code = get_attribute(config, "sensor_code", f"sensor[{index}]")
         self.name = get_attribute(config, "name", f"sensor[{index}]")
         self.gpio = get_attribute(config, "gpio", f"sensor[{index}]")
         self.attributes = get_attribute(
@@ -172,14 +171,12 @@ class CollectorConfig:
             upload: The parsed upload config.
             sensors: The parsed sensor configs.
 
-        Raises: 
+        Raises:
             ValueError: Raised if the polling interval is a negative number.
         """
         self.collector_id = get_attribute(config, "collector_id", "config")
         self.node_name = get_attribute(config, "node_name", "config")
-        self.polling_interval = get_attribute(
-            config, "polling_interval", "config"
-        )
+        self.polling_interval = get_attribute(config, "polling_interval", "config")
         self.device = device
         self.upload = upload
         self.sensors = sensors

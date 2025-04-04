@@ -208,6 +208,8 @@ class Repository:
                 collectors_reporting += 1
 
         # Create and return the node summary
+        print("total collectors:\n\n")
+        print(total_collectors)
         return NetworkSummary(
             total_collectors=total_collectors[0]["count_distinct"],
             collectors_reporting=collectors_reporting,

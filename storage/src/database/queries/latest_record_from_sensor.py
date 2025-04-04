@@ -7,9 +7,9 @@ from typing import TypedDict
 latest_record_from_sensor_query_string = f"""--sql
 (
     SELECT *
-    FROM $1
+    FROM {records_table_name}
     LATEST ON timestamp PARTITION BY sensor_id
-) WHERE sensor_id = $2
+) WHERE sensor_id = $1
 """
 
 
@@ -35,6 +35,4 @@ async def latest_record_from_sensor_query(
     Returns:
         list[LatestRecordsFromCollectorQueryRow]: The database results.
     """
-    return await connection.fetch(
-        latest_record_from_sensor_query_string, records_table_name, sensor_id
-    )
+    return await connection.fetch(latest_record_from_sensor_query_string, sensor_id)

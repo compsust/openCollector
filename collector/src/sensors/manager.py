@@ -5,6 +5,7 @@ from collector.src.sensors.driver import AbstractSensorDriver
 from sensors.sensor_codes import get_sensor_driver_from_code
 from datastructures import CollectorRecord, CollectorError
 
+
 class SensorManager:
     """
     Initializes and orchestrates the configured
@@ -12,8 +13,8 @@ class SensorManager:
 
     Attributes:
         collector_id: The configured collector ID.
-        drivers: The driver instances, or an empty list 
-            if they have yet to be initialized. 
+        drivers: The driver instances, or an empty list
+            if they have yet to be initialized.
     """
 
     collector_id: str

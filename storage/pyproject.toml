@@ -7,6 +7,7 @@ dependencies = [
     "litestar[standard]>=2.13.0",
     "asyncpg",
     "python-decouple",
+    "bokeh>=3.7.2",
 ]
 requires-python = ">= 3.12"
 

@@ -8,7 +8,7 @@ from typing import TypedDict
 # Query string.
 latest_errors_query_string = f"""--sql
 SELECT *
-FROM $1
+FROM {errors_table_name}
 LATEST ON timestamp PARTITION BY collector_id, sensor_id
 """
 
@@ -31,4 +31,4 @@ async def latest_errors_query(connection: Connection) -> list[LatestErrorsQueryR
     Returns:
         list[LatestErrorsQueryRow]: The database results.
     """
-    return await connection.fetch(latest_errors_query_string, errors_table_name)
+    return await connection.fetch(latest_errors_query_string)

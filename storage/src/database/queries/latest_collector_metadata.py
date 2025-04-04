@@ -8,7 +8,7 @@ from common import (
 # Query string.
 latest_collector_metadata_query_string = f"""--sql
 SELECT *
-FROM $1
+FROM {collector_metadata_table_name}
 LATEST ON timestamp PARTITION BY collector_id 
 """
 
@@ -34,6 +34,4 @@ async def latest_collector_metadata_query(
     Returns:
         list[LatestCollectorMetadataQueryRow]: The database results.
     """
-    return await connection.fetch(
-        latest_collector_metadata_query_string, collector_metadata_table_name
-    )
+    return await connection.fetch(latest_collector_metadata_query_string)

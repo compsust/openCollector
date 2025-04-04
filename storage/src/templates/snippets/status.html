@@ -1,0 +1,9 @@
+{% if status == 'OPERATIONAL' %}
+    <div class="w-6 h-6 rounded-2xl border border-gray-400 bg-lime-400"></div>
+{% elif status == 'ERROR' %}
+    <div class="w-6 h-6 rounded-2xl border border-gray-400 bg-red-400"></div>
+{% elif status == 'DROPPED' %}
+    <div class="w-6 h-6 rounded-2xl border border-gray-400 bg-amber-400"></div>
+{% else %}
+    <div class="w-6 h-6 rounded-2xl border border-gray-400 bg-white"></div>
+{% endif %}

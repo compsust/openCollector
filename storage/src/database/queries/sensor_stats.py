@@ -1,6 +1,5 @@
 from datetime import datetime
 from common import (
-    collector_metadata_table_name,
     errors_table_name,
     records_table_name,
 )
@@ -8,38 +7,38 @@ from asyncpg import Connection
 from typing import TypedDict
 
 # Query string.
-sensor_stats_query_string = """--sql 
+sensor_stats_query_string = f"""--sql 
 WITH 
 total_records AS (
     SELECT COUNT(*) count 
-    FROM $1
-    WHERE sensor_id = $3
+    FROM {records_table_name}
+    WHERE sensor_id = $1
 ),
 total_errors AS (
     SELECT COUNT(*) count 
-    FROM $2 
-    WHERE sensor_id = $3
+    FROM {errors_table_name}
+    WHERE sensor_id = $1
 ),
 latest_record AS (
     (
         SELECT *
-        FROM $1
+        FROM {records_table_name}
         LATEST ON timestamp PARTITION BY sensor_id
-    ) WHERE sensor_id = $3
+    ) WHERE sensor_id = $1
 ),
 earliest_record AS (
     SELECT *
-    FROM $1
-    WHERE sensor_id = $3
+    FROM {records_table_name}
+    WHERE sensor_id = $1
     ORDER BY timestamp ASC
     LIMIT 1
 ),
 latest_error AS (
     (
         SELECT *
-        FROM $2
+        FROM {errors_table_name}
         LATEST ON timestamp PARTITION BY sensor_id
-    ) WHERE sensor_id = $3
+    ) WHERE sensor_id = $1
 )
 SELECT 
     total_records.count AS total_records,
@@ -79,7 +78,5 @@ async def sensor_stats_query(
     """
     return await connection.fetch(
         sensor_stats_query_string,
-        records_table_name,
-        errors_table_name,
         sensor_id,
     )

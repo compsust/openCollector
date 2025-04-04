@@ -21,4 +21,5 @@ app = Litestar(
     ),
     lifespan=[db_connection],
     dependencies=dependencies,
+    debug=True,
 )

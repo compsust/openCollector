@@ -6,12 +6,12 @@ from asyncpg import Connection
 from typing import TypedDict
 
 # Query string.
-errors_from_collector_query_string = """--sql 
+errors_from_collector_query_string = f"""--sql 
 SELECT *
-FROM $1
-WHERE collector_id = $2
+FROM {errors_table_name}
+WHERE collector_id = $1
 ORDER BY timestamp DESC
-LIMIT $3, $4
+LIMIT $2, $3
 """
 
 
@@ -42,7 +42,6 @@ async def errors_from_collector_query(
     limit_end = limit_start + page_size
     return await connection.fetch(
         errors_from_collector_query_string,
-        errors_table_name,
         collector_id,
         limit_start,
         limit_end,

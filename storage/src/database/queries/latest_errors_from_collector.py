@@ -9,9 +9,9 @@ from typing import TypedDict
 latest_errors_from_collector_query_string = f"""--sql
 (
     SELECT *
-    FROM $1
+    FROM {errors_table_name}
     LATEST ON timestamp PARTITION BY collector_id, sensor_id
-) WHERE collector_id = $2
+) WHERE collector_id = $1
 """
 
 
@@ -37,5 +37,5 @@ async def latest_errors_from_collector_query(
         list[LatestErrorsFromCollectorQueryRow]: The database results.
     """
     return await connection.fetch(
-        latest_errors_from_collector_query_string, errors_table_name, collector_id
+        latest_errors_from_collector_query_string, collector_id
     )

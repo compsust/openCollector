@@ -13,12 +13,14 @@ SENSOR_CAPACITY = config("SENSOR_CAPACITY", cast=int, default=16)
 TOTAL_SENSOR_CAPACITY = COLLECTOR_CAPACITY * SENSOR_CAPACITY
 
 # Node settings
-NODE_NAME=config("NODE_NAME", cast=str, default="OpenCollector")
+NODE_NAME = config("NODE_NAME", cast=str, default="OpenCollector")
 
 # User settings
-INTERFACE_USER=config("INTERFACE_USER", cast=str, default="username")
-INTERFACE_PASSWORD=config("INTERFACE_PASSWORD", cast=str, default="password")
-INTERFACE_REFRESH_SECONDS=config("INTERFACE_REFRESH_SECONDS", cast=int, default=1)
+INTERFACE_USER = config("INTERFACE_USER", cast=str, default="username")
+INTERFACE_PASSWORD = config("INTERFACE_PASSWORD", cast=str, default="password")
+INTERFACE_REFRESH_SECONDS = config("INTERFACE_REFRESH_SECONDS", cast=int, default=1)
 
 # Display settings
-ACTIVE_DEVICE_POLLING_THRESHOLD = config("ACTIVE_DEVICE_POLLING_THRESHOLD", cast=int, default=3)
+ACTIVE_DEVICE_POLLING_THRESHOLD = config(
+    "ACTIVE_DEVICE_POLLING_THRESHOLD", cast=int, default=3
+)

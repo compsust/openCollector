@@ -5,7 +5,9 @@ from asyncpg import Connection
 from typing import TypedDict
 
 # Query string.
-sensor_count_query_string = "--sql SELECT COUNT(DISTINCT sensor_id) FROM $1"
+sensor_count_query_string = f"""--sql 
+SELECT COUNT(DISTINCT sensor_id) FROM {sensor_metadata_table_name}
+"""
 
 
 # Query result type.
@@ -23,4 +25,4 @@ async def sensor_count_query(connection: Connection) -> list[SensorCountQueryRow
     Returns:
         list[SensorCountQueryRow]: The database results.
     """
-    return await connection.fetch(sensor_count_query_string, sensor_metadata_table_name)
+    return await connection.fetch(sensor_count_query_string)
