@@ -1,8 +1,9 @@
 # MC: 02/21/2025, new file complete implementation
 
 import utime
-from machine import UART, Pin
+import machine
 from datastructures import SensorData
+from config import SensorConfig
 from ..driver import AbstractSensorDriver
 
 
@@ -11,9 +12,18 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
     Implementation of the MHZ19B Sensor Driver.
     """
 
-    def __init__(self, uart):
+    def __init__(self, config: SensorConfig):
         """Initialize the sensor driver with an UART instance."""
-        self.uart = uart
+        baudrate = 9600
+        if config.attributes and config.attributes["baudrate"]:
+            baudrate = config.attributes["baudrate"]
+
+        self.uart = machine.UART(
+            0,
+            baudrate=baudrate,
+            tx=machine.Pin(config.gpio["TX"]),
+            rx=machine.Pin(config.gpio["RX"]),
+        )
 
     def poll(self) -> SensorData:
         """
@@ -23,23 +33,19 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
         Returns:
             SensorData: The CO2 data returned by the sensor.
         """
-        try:
-            if self.uart.any():
-                self.uart.write(
-                    bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
-                )  # Command to read CO2
-                utime.sleep_ms(100)
-                response = self.uart.read(9)  # Read 9-byte response
-                if (
-                    response
-                    and len(response) == 9
-                    and response[0] == 0xFF
-                    and response[1] == 0x86
-                ):
-                    co2 = response[2] * 256 + response[3]
-                    return {"CO2": co2}
-            return {"CO2": None}
+        if self.uart.any():
+            self.uart.write(
+                bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
+            )  # Command to read CO2
+            utime.sleep_ms(100)
+            response = self.uart.read(9)  # Read 9-byte response
+            if (
+                response
+                and len(response) == 9
+                and response[0] == 0xFF
+                and response[1] == 0x86
+            ):
+                co2 = response[2] * 256 + response[3]
+                return {"CO2": co2}
 
-        except Exception as e:
-            print("MH-Z19B Error:", e)
-            return {"CO2": None}
+        raise Exception("MHZ91B Failed to return data")

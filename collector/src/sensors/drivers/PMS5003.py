@@ -1,8 +1,9 @@
 # MC: 02/21/2025, new file complete implementation
 
 import utime
-from machine import UART, Pin
-from common.src import SensorData
+import machine
+from datastructures import SensorData
+from config import SensorConfig
 from ..driver import AbstractSensorDriver
 
 
@@ -11,20 +12,18 @@ class PMS5003SensorDriver(AbstractSensorDriver):
     Implementation of the PMS5003 Sensor Driver.
     """
 
-    reset_pin = machine.Pin(24, machine.Pin.OUT)  # Assume reset is connected to GP15
-
-    def __init__(self, uart):
+    def __init__(self, config: SensorConfig):
         """Initialize the sensor driver with an UART instance."""
-        self.uart = uart
+        baudrate = 9600
+        if config.attributes and config.attributes["baudrate"]:
+            baudrate = config.attributes["baudrate"]
 
-    def reset_pms5003():
-        """
-        Send a short low pulse to reset device
-        """
-        reset_pin.value(0)  # Pull RESET pin LOW
-        utime.sleep_ms(100)  # Wait for 100ms
-        reset_pin.value(1)  # Set RESET pin HIGH (normal operation)
-        utime.sleep(1)  # Give the sensor time to restart
+        self.uart = machine.UART(
+            0,
+            baudrate=baudrate,
+            tx=machine.Pin(config.gpio["TX"]),
+            rx=machine.Pin(config.gpio["RX"]),
+        )
 
     def poll(self) -> SensorData:
         """
@@ -34,22 +33,18 @@ class PMS5003SensorDriver(AbstractSensorDriver):
         Returns:
             SensorData: The particulate matter data returned by the sensor.
         """
-        try:
-            if self.uart.any():
-                response = self.uart.read(32)  # Read 32 bytes (PMS5003 frame size)
-                if (
-                    response
-                    and len(response) == 32
-                    and response[0] == 0x42
-                    and response[1] == 0x4D
-                ):
-                    # sum together high and low byte for each
-                    pm1_0 = (response[5] << 8) | response[6]  # PM1.0 concentration
-                    pm2_5 = (response[7] << 8) | response[8]  # PM2.5 concentration
-                    pm10 = (response[9] << 8) | response[10]  # PM10 concentration
-                    return {"PM1.0": pm1_0, "PM2.5": pm2_5, "PM10": pm10}
-                return {"PM1.0": None, "PM2.5": None, "PM10": None}
+        if self.uart.any():
+            response = self.uart.read(32)  # Read 32 bytes (PMS5003 frame size)
+            if (
+                response
+                and len(response) == 32
+                and response[0] == 0x42
+                and response[1] == 0x4D
+            ):
+                # sum together high and low byte for each
+                pm1_0 = (response[5] << 8) | response[6]  # PM1.0 concentration
+                pm2_5 = (response[7] << 8) | response[8]  # PM2.5 concentration
+                pm10 = (response[9] << 8) | response[10]  # PM10 concentration
+                return {"PM1.0": pm1_0, "PM2.5": pm2_5, "PM10": pm10}
 
-        except Exception as e:
-            print("PMS5003 Error:", e)
-            return {"PM1.0": None, "PM2.5": None, "PM10": None}
+        raise Exception("PMS5003 Failed to return data")

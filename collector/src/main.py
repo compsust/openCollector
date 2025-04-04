@@ -7,8 +7,7 @@ except ImportError:
 
 import time
 
-from common.src import CollectorReport, CollectorError
-
+from .datastructures import CollectorReport, CollectorError
 from .upload import UploadManager
 from .config import ConfigManager
 from .sensors import SensorManager
