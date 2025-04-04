@@ -225,3 +225,12 @@ class SensorDetails:
     total_errors: int
     records: list[CollectorRecord]
     errors: list[CollectorError]
+
+@dataclass
+class SensorTimeline:
+    collector_id: str
+    sensor_id: str
+    record_id: RecordID
+    unit: str
+    timestamps: list[datetime]
+    values: list[float | int]

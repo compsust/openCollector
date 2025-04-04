@@ -563,3 +563,6 @@ class Repository:
             records=records,
             errors=errors,
         )
+    
+    async def get_timeline(self, collector_id: str, sensor_id: str, record_id: RecordID) -> SensorTimeline:
+        
