@@ -1,4 +1,5 @@
 # MC: 02/21/2025, new file complete implementation
+# MC: 04/04/2025, update implmentation
 
 import utime
 import machine
@@ -11,6 +12,7 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
     """
     Implementation of the MHZ19B Sensor Driver.
     """
+    calibration_pin = machine.Pin(1, mode=machine.Pin.OUT, value=1)
 
     def __init__(self, config: SensorConfig):
         """Initialize the sensor driver with an UART instance."""
@@ -25,6 +27,7 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
             rx=machine.Pin(config.gpio["RX"]),
         )
 
+    max_retries=30
     def poll(self) -> SensorData:
         """
         collects sensor data from MHZ19C
@@ -33,19 +36,34 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
         Returns:
             SensorData: The CO2 data returned by the sensor.
         """
-        if self.uart.any():
+        # Flush any leftover junk
+        for attempt in range(max_retries):
+            while self.uart.any():
+                self.uart.read()
+                
             self.uart.write(
                 bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
             )  # Command to read CO2
-            utime.sleep_ms(100)
-            response = self.uart.read(9)  # Read 9-byte response
-            if (
-                response
-                and len(response) == 9
-                and response[0] == 0xFF
-                and response[1] == 0x86
-            ):
-                co2 = response[2] * 256 + response[3]
-                return {"CO2": co2}
+            timeout = 100
+            start = utime.ticks_ms()
+            while self.uart.any() < 9 and utime.ticks_diff(utime.ticks_ms(), start) < timeout:
+                utime.sleep_ms(5)
+            raw = self.uart.read(9)
+            #print(raw)
+            if(raw and raw[0] == 0xFF):
+                co2 = raw[3] * 256 + raw[4]
+                return co2
 
         raise Exception("MHZ91B Failed to return data")
+    
+    def calibrate(self):
+        """
+        Manually calibrate sensor
+        Args:
+            None
+        Returns:
+            None
+        """
+        self.calibration_pin.value(0)
+        utime.sleep(8)  # hold low for 7+ seconds
+        self.calibration_pin.value(1)

@@ -1,4 +1,5 @@
 # MC: 02/21/2025, new file complete implementation
+# MC: 04/04/2025, update implementation
 
 import utime
 import machine
@@ -11,6 +12,16 @@ class PMS5003SensorDriver(AbstractSensorDriver):
     """
     Implementation of the PMS5003 Sensor Driver.
     """
+    #Command values
+    PMS5003_SOF = bytearray([0x42, 0x4d])
+    PMS5003_CMD_MODE_PASSIVE = bytearray([0xe1, 0x00, 0x00])
+    PMS5003_CMD_MODE_ACTIVE = bytearray([0xe1, 0x00, 0x01])
+    PMS5003_CMD_READ = bytearray([0xe2, 0x00, 0x00])
+    PMS5003_CMD_SLEEP = bytearray([0xe4, 0x00, 0x00])
+    PMS5003_CMD_WAKEUP = bytearray([0xe4, 0x00, 0x01])
+
+    set_pin = machine.Pin(19, mode=machine.Pin.OUT, value=1)
+    reset_pin = machine.Pin(18, mode=machine.Pin.OUT, value=1)
 
     def __init__(self, config: SensorConfig):
         """Initialize the sensor driver with an UART instance."""
@@ -34,6 +45,8 @@ class PMS5003SensorDriver(AbstractSensorDriver):
             SensorData: The particulate matter data returned by the sensor.
         """
         if self.uart.any():
+            self.uart.write(self.pms5003_build_frame(self.PMS5003_CMD_READ))
+            utime.sleep(0.5)
             response = self.uart.read(32)  # Read 32 bytes (PMS5003 frame size)
             if (
                 response
@@ -48,3 +61,31 @@ class PMS5003SensorDriver(AbstractSensorDriver):
                 return {"PM1.0": pm1_0, "PM2.5": pm2_5, "PM10": pm10}
 
         raise Exception("PMS5003 Failed to return data")
+    
+    
+    def pms5003_build_frame(cmd_bytes):
+        """
+        Build command byte array
+        Args:
+            Command
+        Returns:
+            Functional byte array
+        """
+        if len(cmd_bytes) != 3:
+                raise RuntimeError("Malformed command frame")
+        cmd_frame = bytearray()
+        cmd_frame.extend(PMS5003_SOF)
+        cmd_frame.extend(cmd_bytes)
+        
+        cmd_frame.extend(sum(cmd_frame).to_bytes(2, "big"))
+        cmd_frame = ' '.join(f'0x{b:02X}' for b in cmd_frame)
+        print(cmd_frame)
+        return cmd_frame    
+    
+    def reset(self):
+        self.reset_pin.value(0)
+        utime.sleep(1)
+        self.reset_pin.value(1)
+    
+    def send_cmd(self, cmd):
+        self.uart.write(self.pms5003_build_frame(cmd))
