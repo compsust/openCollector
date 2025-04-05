@@ -21,8 +21,8 @@
             "sensor_code": "DHT20",
             "name": "Temperature Sensor",
             "gpio": {
-                "SCL": 27,
-                "SDA": 26
+                "SCL": 21,
+                "SDA": 20
             }
         },
         {
@@ -30,8 +30,8 @@
             "sensor_code": "TSL2561",
             "name": "Light Sensor",
             "gpio": {
-                "SCL": 27,
-                "SDA": 26
+                "SCL": 21,
+                "SDA": 20
             }
         },
         {
@@ -39,8 +39,8 @@
             "sensor_code": "PMS5003",
             "name": "Air Quality Sensor",
             "gpio": {
-                "TX": 21,
-                "RX": 22
+                "TX": 16,
+                "RX": 17
             },
             "attributes": {
                 "baudrate": 9600
@@ -51,8 +51,8 @@
             "sensor_code": "MHZ19B",
             "name": "CO2 Sensor",
             "gpio": {
-                "TX": 6,
-                "RX": 7
+                "TX": 4,
+                "RX": 5
             },
             "attributes": {
                 "baudrate": 9600
