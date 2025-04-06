@@ -1,3 +1,11 @@
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('collector_id', '')
+        Alpine.store('sensor_id', '')
+        Alpine.store('record_id', '')
+    })
+</script>
+
 <!-- 
    We need to query the graph using HTMX, with query that is parametrized by
    three datapoints: a collector ID, a sensor ID, and a record ID to display on
@@ -14,7 +22,7 @@
    -->
    <div class="flex flex-col bg-gray-100 p-4 rounded-lg border border-gray-500">
 
-    <div x-data="{ collector_id: '', sensor_id: '', record_id: '' }" 
+    <div
        hx-get="/snippets/collector_select_options" 
        hx-target="#collector_select_container" 
        hx-trigger="load"
@@ -39,6 +47,6 @@
        </div>
     </div>
 </div>
-<div hx-get="/snippets/graph" hx-trigger="every {{ refresh_s }}s" hx-vals='{"collector_id": "test", "sensor_id": "test2", "record_id": "test3"}' class="">
+<div id="graph_container" hx-get="/snippets/graph" hx-trigger="every {{ refresh_s }}s" hx-vals="js:{collector_id: Alpine.store('collector_id'), sensor_id: Alpine.store('sensor_id'), record_id: Alpine.store('record_id')}">
     <!-- The result from the graph query will be injected here -->
 </div>

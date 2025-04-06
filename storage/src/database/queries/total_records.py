@@ -20,9 +20,9 @@ async def total_records_query(connection: Connection) -> list[RecordsCountQueryR
     Returns the number of records that have been received.
 
     Args:
-        connection (Connection): The asyncpg connection
+        connection: The asyncpg connection
 
     Returns:
-        list[RecordsCountQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(total_records_query_string)

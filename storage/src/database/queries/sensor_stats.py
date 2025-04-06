@@ -70,11 +70,11 @@ async def sensor_stats_query(
     Returns the details / statistics for one sensor.
 
     Args:
-        connection (Connection): The asyncpg connection.
-        sensor_id (str): The ID of the sensor.
+        connection: The asyncpg connection.
+        sensor_id: The ID of the sensor.
 
     Returns:
-        list[SensorStatsQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(
         sensor_stats_query_string,

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
+from gc import collect
 from asyncpg.connection import Connection
-from common import CollectorRecord, get_unit_from_record_id
+from common import SensorCodeEnum, get_unit_from_record_id, RecordID
 from datastructures import (
     SensorSummary,
     CollectorSummary,
@@ -10,12 +11,13 @@ from datastructures import (
     CollectorError,
     CollectorRecord,
     StatusEnum,
+    SensorTimeline,
 )
 from . import queries
 import config
 
 
-class RepostioryError(Exception):
+class RepositoryError(Exception):
     """Base class for query errors."""
 
     pass
@@ -29,7 +31,7 @@ class Repository:
 
     async def get_network_summary(self) -> NetworkSummary:
         """
-        Retrieves the network summary from the database.
+        Retrieves the rnetwork summary from the database.
 
         Returns:
             NetworkSummary: A summary of the network, its collectors, and sensors.
@@ -72,7 +74,7 @@ class Repository:
                 None,
             )
             if sensor_metadata is None:
-                raise RepostioryError(
+                raise RepositoryError(
                     "Sensor record detected with a sensor ID that isn't found in the sensor metadata."
                 )
 
@@ -86,7 +88,7 @@ class Repository:
                 None,
             )
             if collector_summary is None:
-                raise RepostioryError(
+                raise RepositoryError(
                     "Sensor record detected with a collector ID that isn't found in the collector metadata."
                 )
 
@@ -128,7 +130,7 @@ class Repository:
                 None,
             )
             if collector_metadata is None:
-                raise RepostioryError(
+                raise RepositoryError(
                     "Collector detected with a collector ID that isn't found in the collector metadata."
                 )
 
@@ -208,8 +210,7 @@ class Repository:
                 collectors_reporting += 1
 
         # Create and return the node summary
-        print("total collectors:\n\n")
-        print(total_collectors)
+
         return NetworkSummary(
             total_collectors=total_collectors[0]["count_distinct"],
             collectors_reporting=collectors_reporting,
@@ -264,7 +265,7 @@ class Repository:
             None,
         )
         if collector_metadata is None:
-            raise RepostioryError(
+            raise RepositoryError(
                 "Collector detected with a collector ID that isn't found in the collector metadata."
             )
 
@@ -281,7 +282,7 @@ class Repository:
                 None,
             )
             if sensor_metadata is None:
-                raise RepostioryError(
+                raise RepositoryError(
                     "Sensor record detected with a sensor ID that isn't found in the sensor metadata."
                 )
 
@@ -392,7 +393,7 @@ class Repository:
                     None,
                 )
                 if sensor_metadata is None:
-                    raise RepostioryError(
+                    raise RepositoryError(
                         "Sensor record detected with a sensor ID that isn't found in the sensor metadata."
                     )
                 error_source = sensor_metadata["sensor_name"]
@@ -474,7 +475,7 @@ class Repository:
             None,
         )
         if sensor_metadata is None:
-            raise RepostioryError(
+            raise RepositoryError(
                 "Sensor record detected with a sensor ID that isn't found in the sensor metadata."
             )
 
@@ -488,7 +489,7 @@ class Repository:
             None,
         )
         if collector_metadata is None:
-            raise RepostioryError(
+            raise RepositoryError(
                 "Collector detected with a collector ID that isn't found in the collector metadata."
             )
 
@@ -563,6 +564,49 @@ class Repository:
             records=records,
             errors=errors,
         )
-    
-    async def get_timeline(self, collector_id: str, sensor_id: str, record_id: RecordID) -> SensorTimeline:
-        
+
+    async def get_sensor_code(self, sensor_id: str) -> SensorCodeEnum:
+        sensor_metadata = await queries.latest_sensor_metadata_query(
+            self.connection, sensor_id
+        )
+        print("sensor_metadata")
+        print(sensor_metadata)
+        try:
+            sensor_code = sensor_metadata[0]["sensor_code"]
+            return SensorCodeEnum[sensor_code]
+        except IndexError:
+            raise RepositoryError("Sensor ID does not exist.")
+
+    async def get_collector_ids(self):
+        return await queries.collector_ids_query(self.connection)
+
+    async def get_sensor_ids(self, collector_id: str):
+        return await queries.sensor_ids_query(
+            self.connection, collector_id=collector_id
+        )
+
+    async def get_timeline(
+        self, collector_id: str, sensor_id: str, record_id: RecordID
+    ) -> SensorTimeline:
+        timeline = await queries.sensor_timeline_query(
+            self.connection,
+            collector_id=collector_id,
+            sensor_id=sensor_id,
+            record_id=record_id,
+        )
+        sensor_code = await self.get_sensor_code(sensor_id)
+
+        timestamps, values = zip(
+            *[(record["timestamp"], record["value"]) for record in timeline]
+        )
+
+        unit = get_unit_from_record_id(sensor_code=sensor_code, record_id=record_id)
+
+        return SensorTimeline(
+            collector_id=collector_id,
+            sensor_id=sensor_id,
+            record_id=record_id,
+            unit=unit,
+            timestamps=list(timestamps),
+            values=list(values),
+        )

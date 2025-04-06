@@ -20,9 +20,9 @@ async def total_errors_query(connection: Connection) -> list[ErrorsCountQueryRow
     Returns the number of errors that have been received.
 
     Args:
-        connection (Connection): The asyncpg connection
+        connection: The asyncpg connection
 
     Returns:
-        list[ErrorsCountQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(total_errors_query_string)

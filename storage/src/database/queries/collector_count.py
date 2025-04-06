@@ -20,9 +20,9 @@ async def collector_count_query(connection: Connection) -> list[CollectorCountQu
     Returns the number of collector nodes that have reported.
 
     Args:
-        connection (Connection): The asyncpg connection.
+        connection: The asyncpg connection.
 
     Returns:
-        list[CollectorCountQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(collector_count_query_string)

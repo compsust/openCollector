@@ -29,9 +29,9 @@ async def latest_collector_metadata_query(
     Returns the most recent collector metadata.
 
     Args:
-        connection (Connection): The asyncpg connection
+        connection: The asyncpg connection
 
     Returns:
-        list[LatestCollectorMetadataQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(latest_collector_metadata_query_string)

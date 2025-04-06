@@ -79,11 +79,11 @@ async def collector_stats_query(
     Returns the details / statistics for one collector.
 
     Args:
-        connection (Connection): The asyncpg connection.
-        collector_id (str): The ID of the collector.
+        connection: The asyncpg connection.
+        collector_id: The ID of the collector.
 
     Returns:
-        list[CollectorStatsQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(
         collector_stats_query_string,

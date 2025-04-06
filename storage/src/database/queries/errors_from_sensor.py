@@ -30,13 +30,13 @@ async def errors_from_sensor_query(
     Returns the errors from the sensor.
 
     Args:
-        connection (Connection): The asyncpg connection
-        sensor_id (str): The ID of the sensor.
-        page (int): The index of the pagination results. Starts at 0.
-        page_size (int): The size of the page of results.
+        connection: The asyncpg connection
+        sensor_id: The ID of the sensor.
+        page: The index of the pagination results. Starts at 0.
+        page_size: The size of the page of results.
 
     Returns:
-        list[ErrorsFromSensorQueryRow]: The database results.
+        The database results.
     """
     limit_start = page * page_size
     limit_end = limit_start + page_size

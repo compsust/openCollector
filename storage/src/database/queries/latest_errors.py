@@ -26,9 +26,9 @@ async def latest_errors_query(connection: Connection) -> list[LatestErrorsQueryR
     Returns the most recent errors
 
     Args:
-        connection (Connection): The asyncpg connection
+        connection: The asyncpg connection
 
     Returns:
-        list[LatestErrorsQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(latest_errors_query_string)

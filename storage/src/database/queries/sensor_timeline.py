@@ -3,10 +3,15 @@ from common import (
 )
 from asyncpg import Connection
 from typing import TypedDict
+from datetime import datetime
 
 # Query string.
 sensor_timeline_query_string = f"""--sql
-SELECT COUNT FROM {records_table_name}
+SELECT timestamp, value
+FROM {records_table_name}
+WHERE collector_id=$1
+AND sensor_id = $2
+AND record_id = $3
 """
 
 
@@ -16,14 +21,25 @@ class SensorTimelineQueryRow(TypedDict):
     value: float | int
 
 
-async def sensor_timeline_query(connection: Connection) -> list[SensorTimelineQueryRow]:
+async def sensor_timeline_query(
+    connection: Connection, collector_id: str, sensor_id: str, record_id: str
+) -> list[SensorTimelineQueryRow]:
     """
-    Returns the number of records that have been received.
+    Returns a timeline of sensor data for a sensor.
 
     Args:
-        connection (Connection): The asyncpg connection
+        connection: The asyncpg connection
+        collector_id: The ID of the collector.
+        sensor_id: The ID of the sensor.
+        record_id: The ID of the record.
 
     Returns:
-        list[RecordsCountQueryRow]: The database results.
+        The database results.
     """
-    return await connection.fetch(total_records_query_string)
+    print("parameters")
+    print(collector_id)
+    print(sensor_id)
+    print(record_id)
+    return await connection.fetch(
+        sensor_timeline_query_string, collector_id, sensor_id, record_id
+    )

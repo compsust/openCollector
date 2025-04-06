@@ -20,9 +20,9 @@ async def sensor_count_query(connection: Connection) -> list[SensorCountQueryRow
     Returns the number of sensors that have reported.
 
     Args:
-        connection (Connection): The asyncpg connection.
+        connection: The asyncpg connection.
 
     Returns:
-        list[SensorCountQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(sensor_count_query_string)

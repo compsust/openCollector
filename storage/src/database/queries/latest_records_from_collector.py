@@ -29,11 +29,11 @@ async def latest_records_from_collector_query(
     Returns the most recent records from a collector node.
 
     Args:
-        connection (Connection): The asyncpg connection.
-        collector_id (str): The ID of the collector.
+        connection: The asyncpg connection.
+        collector_id: The ID of the collector.
 
     Returns:
-        list[LatestRecordsFromCollectorQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(
         latest_records_from_collector_query_string, collector_id

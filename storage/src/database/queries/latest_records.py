@@ -25,9 +25,9 @@ async def latest_records_query(connection: Connection) -> list[LatestRecordsQuer
     Returns the most recent records.
 
     Args:
-        connection (Connection): The asyncpg connection
+        connection: The asyncpg connection
 
     Returns:
-        list[LatestRecordsQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(latest_records_query_string)

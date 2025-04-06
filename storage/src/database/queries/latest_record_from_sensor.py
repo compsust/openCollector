@@ -29,10 +29,10 @@ async def latest_record_from_sensor_query(
     Returns the most recent record from a sensor.
 
     Args:
-        connection (Connection): The asyncpg connection.
-        sensor_id (str): The ID of the sensor.
+        connection: The asyncpg connection.
+        sensor_id: The ID of the sensor.
 
     Returns:
-        list[LatestRecordsFromCollectorQueryRow]: The database results.
+        The database results.
     """
     return await connection.fetch(latest_record_from_sensor_query_string, sensor_id)

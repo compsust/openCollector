@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import Any
 
-from common import SensorCodeEnum, SensorData
+from common import SensorCodeEnum, RecordID
 # Datastructures for data returned by the API
 # Two main types:
 # Summaries provide a quick overview of the information for an entity
@@ -57,7 +58,7 @@ class SensorSummary:
     id: str
     name: str
     status: StatusEnum
-    last_value: SensorData | None
+    last_value: dict[str, Any] | None
 
 
 @dataclass
@@ -225,6 +226,7 @@ class SensorDetails:
     total_errors: int
     records: list[CollectorRecord]
     errors: list[CollectorError]
+
 
 @dataclass
 class SensorTimeline:

@@ -10,8 +10,8 @@ from machine import UART, Pin
 i2c = machine.I2C(1, scl=machine.Pin(27), sda=machine.Pin(26))
 
 # UART Setup for PMS5003 and MH-Z19B
-uart_pms = UART(0, baudrate=9600, tx = Pin(16), rx = Pin(17))
-uart_mhz = UART(1, baudrate=9600, tx = Pin(4), rx = Pin(5))
+uart_pms = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))
+uart_mhz = UART(1, baudrate=9600, tx=Pin(4), rx=Pin(5))
 
 set_pin = Pin(19, mode=Pin.OUT, value=1)
 reset_pin = Pin(18, mode=Pin.OUT, value=1)
@@ -69,12 +69,14 @@ def read_pms5003():
 # Carbon Dioxide Sensor Reading
 def read_mhz19b():
     try:
-        uart_mhz.write(bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))  # Command to read CO2
+        uart_mhz.write(
+            bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
+        )  # Command to read CO2
         utime.sleep(1)
         print(uart_mhz.any())
         response = uart_mhz.read(9)  # Read 9-byte response
         print(response)
-    
+
         co2 = response[2] * 256 + response[3]
         return co2
 
@@ -119,34 +121,38 @@ def read_dht20():
         print("DHT20 Error:", e)
         return None, None
 
-CMD_RESET = b'\x42\x4D\xE1\xC4'         # Reset command
-CMD_SLEEP = b'\x42\x4D\xE2\xC3'         # Sleep command
-CMD_WAKEUP = b'\x42\x4D\xE3\xC2'        # Wakeup command
-CMD_MODE_PASSIVE = b'\x42\x4D\xE4\xC1'  # Passive mode command
-CMD_READ_DATA = b'\x42\x4D\xE5\xC0'     # Read data command
-CMD_MODE_ACTIVE = b'\x42\x4D\xE6\xBF'   # Active mode command
+
+CMD_RESET = b"\x42\x4d\xe1\xc4"  # Reset command
+CMD_SLEEP = b"\x42\x4d\xe2\xc3"  # Sleep command
+CMD_WAKEUP = b"\x42\x4d\xe3\xc2"  # Wakeup command
+CMD_MODE_PASSIVE = b"\x42\x4d\xe4\xc1"  # Passive mode command
+CMD_READ_DATA = b"\x42\x4d\xe5\xc0"  # Read data command
+CMD_MODE_ACTIVE = b"\x42\x4d\xe6\xbf"  # Active mode command
+
 
 def send_command(command):
     uart_pms.write(command)
     utime.sleep(1)
 
+
 def initialize_sensor():
     print("Initializing PMS5003...")
-    
+
     # Reset sensor
     send_command(CMD_RESET)
     utime.sleep(5)  # Wait for the reset to complete
-    
+
     # Set sleep mode and wake up
     send_command(CMD_SLEEP)
     send_command(CMD_WAKEUP)
     utime.sleep(2)
-    
+
     # Set to passive mode and request data
     send_command(CMD_MODE_ACTIVE)
-    #send_command(CMD_READ_DATA)
+    # send_command(CMD_READ_DATA)
 
-#initialize_sensor()
+
+# initialize_sensor()
 
 # Main loop
 while True:

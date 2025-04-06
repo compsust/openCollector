@@ -2,11 +2,11 @@
 # 2025/02/21 - MC: Update Tsl2561 to two channels
 # 2025/03/07 - MC: Change TSL2561 back to single channel
 
-from enum import Enum
+from enum import StrEnum
 from typing import TypedDict, Literal
 
 
-class SensorCodeEnum(Enum):
+class SensorCodeEnum(StrEnum):
     """
     Contains an enumerated value
     for all supported sensor types.
@@ -28,10 +28,10 @@ class SensorValueMetadata(TypedDict):
     Used by the storage node for data display.
 
     Attributes:
-        name (str): The name of the value, for example: "Temperature"
-        record_id (str): The name of the value when it is present
+        name: The name of the value, for example: "Temperature"
+        record_id: The name of the value when it is present
             in the SensorData record returned by a sensor.
-        unit (str): The unit system of the value, for example "°C"
+        unit: The unit system of the value, for example "°C"
     """
 
     name: str
@@ -44,8 +44,8 @@ class SensorMetadata(TypedDict):
     Describes a type of sensor.
 
     Attributes:
-        name (str): The name of the sensor
-        values (list[SensorValueMetadata]): A list of the
+        name: The name of the sensor
+        values: A list of the
             quantities returned by the sensor.
     """
 
@@ -55,14 +55,6 @@ class SensorMetadata(TypedDict):
 
 """
 Stores metadata for each type of sensor code.
-
-Attributes:
-    name: The name of the sensor.
-    values: A list containing the values that the sensor will output. For example,
-        a temperature and humidity sensor will have two value entries.
-    values[i].name: The name of the value.
-    values[i].record_id: The key used to store the value in a dictionary.
-    values[i].unit: The unit of measurement.
 
 Note that when adding new sensors, the RecordID type below must be
 updated for valid type inference.
@@ -118,7 +110,6 @@ RecordID = Literal[
     "CO2",
     "humidity",
     "lux0",
-    "lux1",
     "PM1.0",
     "PM10",
     "PM2.5",
@@ -131,8 +122,8 @@ def get_unit_from_record_id(sensor_code: SensorCodeEnum, record_id: RecordID) ->
     Retrieves the unit string for a record_id.
 
     Args:
-        sensor_code (SensorCodeEnum): The type of sensor.
-        record_id (RecordID): The record ID of the value type.
+        sensor_code: The type of sensor.
+        record_id: The record ID of the value type.
 
     Returns:
         str: The unit describing the record_id.
@@ -151,3 +142,16 @@ def get_unit_from_record_id(sensor_code: SensorCodeEnum, record_id: RecordID) ->
         )
 
     return value_metadata["unit"]
+
+
+def get_record_ids(sensor_code: SensorCodeEnum) -> list[str]:
+    """
+    Retrieves a list of the record IDs that are valid for a sensor type.
+
+    Args:
+        sensor_code: The sensor code to search.
+
+    Returns:
+        list[str]: The record IDs that are valid for this sensor code.
+    """
+    return [value["record_id"] for value in sensor_metadata[sensor_code]["values"]]

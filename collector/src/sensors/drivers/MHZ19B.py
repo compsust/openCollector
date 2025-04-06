@@ -12,6 +12,7 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
     """
     Implementation of the MHZ19B Sensor Driver.
     """
+
     calibration_pin = machine.Pin(1, mode=machine.Pin.OUT, value=1)
 
     def __init__(self, config: SensorConfig):
@@ -27,7 +28,8 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
             rx=machine.Pin(config.gpio["RX"]),
         )
 
-    max_retries=30
+    max_retries = 30
+
     def poll(self) -> SensorData:
         """
         collects sensor data from MHZ19C
@@ -40,22 +42,25 @@ class MHZ19BSensorDriver(AbstractSensorDriver):
         for attempt in range(max_retries):
             while self.uart.any():
                 self.uart.read()
-                
+
             self.uart.write(
                 bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
             )  # Command to read CO2
             timeout = 100
             start = utime.ticks_ms()
-            while self.uart.any() < 9 and utime.ticks_diff(utime.ticks_ms(), start) < timeout:
+            while (
+                self.uart.any() < 9
+                and utime.ticks_diff(utime.ticks_ms(), start) < timeout
+            ):
                 utime.sleep_ms(5)
             raw = self.uart.read(9)
-            #print(raw)
-            if(raw and raw[0] == 0xFF):
+            # print(raw)
+            if raw and raw[0] == 0xFF:
                 co2 = raw[3] * 256 + raw[4]
                 return co2
 
         raise Exception("MHZ91B Failed to return data")
-    
+
     def calibrate(self):
         """
         Manually calibrate sensor

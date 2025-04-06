@@ -4,6 +4,7 @@ from litestar.response import Template
 from bokeh.plotting import figure
 from bokeh.embed import components
 
+from common import RecordID, get_unit_from_record_id, get_record_ids
 from database.repository import Repository
 from datastructures import CollectorSummary, NetworkSummary, SensorSummary
 
@@ -21,9 +22,7 @@ class BrowserSnippetsController(Controller):
     async def network_summary(
         self, repository: Repository, request: HTMXRequest
     ) -> Template:
-        print(repository)
         summary = await repository.get_network_summary()
-        print(summary)
 
         context = {"request": request, "network_summary": summary}
         return HTMXTemplate(
@@ -37,11 +36,15 @@ class BrowserSnippetsController(Controller):
         status_code=200,
         include_in_schema=False,
     )
-    async def collector_select_options(self, request: HTMXRequest) -> Template:
+    async def collector_select_options(
+        self, repository: Repository, request: HTMXRequest
+    ) -> Template:
+        print("collector_ids")
+        collector_ids = await repository.get_collector_ids()
+        print(collector_ids)
         options = [
-            {"value": "collector1", "label": "Collector 1"},
-            {"value": "collector2", "label": "Collector 2"},
-            {"value": "collector3", "label": "Collector 3"},
+            {"value": collector["collector_id"], "label": collector["collector_name"]}
+            for collector in collector_ids
         ]
 
         context = {"request": request, "options": options}
@@ -57,12 +60,14 @@ class BrowserSnippetsController(Controller):
         include_in_schema=False,
     )
     async def sensor_select_options(
-        self, collector_id: str, request: HTMXRequest
+        self, collector_id: str, repository: Repository, request: HTMXRequest
     ) -> Template:
+        print("collector id:::")
+        print(collector_id)
+        sensor_ids = await repository.get_sensor_ids(collector_id)
         options = [
-            {"value": "sensor1", "label": "Senser 1"},
-            {"value": "sensor2", "label": "Sensor 2"},
-            {"value": "sensor3", "label": "Sensor 3"},
+            {"value": sensor["sensor_id"], "label": sensor["sensor_name"]}
+            for sensor in sensor_ids
         ]
 
         context = {"request": request, "options": options}
@@ -78,13 +83,13 @@ class BrowserSnippetsController(Controller):
         include_in_schema=False,
     )
     async def record_select_options(
-        self, sensor_id: str, request: HTMXRequest
+        self, sensor_id: str, repository: Repository, request: HTMXRequest
     ) -> Template:
-        options = [
-            {"value": "record1", "label": "Record 1"},
-            {"value": "record2", "label": "Record 2"},
-            {"value": "record3", "label": "Record 3"},
-        ]
+        sensor_code = await repository.get_sensor_code(sensor_id)
+        print("sensor code")
+        print(sensor_code)
+        record_ids = get_record_ids(sensor_code)
+        options = [{"value": record_id, "label": record_id} for record_id in record_ids]
 
         context = {"request": request, "options": options}
         return HTMXTemplate(
@@ -99,13 +104,24 @@ class BrowserSnippetsController(Controller):
         include_in_schema=False,
     )
     async def graph(
-        self, sensor_id: str, record_id: str, request: HTMXRequest
+        self,
+        collector_id: str,
+        sensor_id: str,
+        record_id: str,
+        repository: Repository,
+        request: HTMXRequest,
     ) -> Template:
-        x_values = [1, 2, 3, 4, 5]
-        y_values = [6, 7, 2, 3, 6]
+        if not collector_id or not sensor_id or not record_id:
+            return HTMXTemplate(template_name="snippets/bokeh_failed.html")
+
+        timeline = await repository.get_timeline(
+            collector_id=collector_id, sensor_id=sensor_id, record_id=record_id
+        )
+        sensor_code = await repository.get_sensor_code(sensor_id)
+        unit = get_unit_from_record_id(sensor_code=sensor_code, record_id=record_id)
 
         graph = figure(sizing_mode="stretch_both")
-        graph.line(x=x_values, y=y_values)
+        graph.line(x=timeline.timestamps, y=timeline.values)
 
         script, div = components(graph)
 

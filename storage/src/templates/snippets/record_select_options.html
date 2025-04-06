@@ -1,4 +1,7 @@
-<select id="record_select" x-model="$data.record_id" class="bg-gray-200 p-2">
+<select id="record_select" 
+        x-model="$store.record_id" 
+        x-init="() => {$store.record_id = $el.querySelector('option:not([disabled])').value; }"
+        class="bg-gray-200 p-2">
     <option value="" disabled>Select a Record</option>
 
     {% for option in options %}
