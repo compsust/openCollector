@@ -66,23 +66,23 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     },
     SensorCodeEnum.TSL2561: {
         "name": "TSL2561",
-        "values": [{"name": "Luminosity", "record_id": "lux0", "unit": "Lux"}],
+        "values": [{"name": "Luminosity", "record_id": "lux", "unit": "Lux"}],
     },
     SensorCodeEnum.PMS5003: {
         "name": "PMS5003",
         "values": [
             {
-                "name": "Particulate Matter Concentration 1.0",
+                "name": "PM Concentration 1.0",
                 "record_id": "PM1.0",
                 "unit": "PM1.0",
             },
             {
-                "name": "Particulate Matter Concentration 2.5",
+                "name": "PM Concentration 2.5",
                 "record_id": "PM2.5",
                 "unit": "PM2.5",
             },
             {
-                "name": "Particulate Matter Concentration 10",
+                "name": "PM Concentration 10",
                 "record_id": "PM10",
                 "unit": "PM10",
             },

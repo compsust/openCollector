@@ -1,6 +1,6 @@
 [project]
 name = "common"
-version = "0.1.4"
+version = "0.1.5"
 description = "Python definitions common to both collector and storage nodes."
 dependencies = []
 requires-python = ">= 3.12"

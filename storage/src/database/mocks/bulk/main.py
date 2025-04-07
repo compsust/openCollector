@@ -1,6 +1,5 @@
 from questdb.ingress import Sender
 from tap import Tap
-from dataclasses import dataclass
 from datetime import datetime, timedelta
 import uuid
 import random
@@ -12,7 +11,14 @@ from common import (
     collector_metadata_table_name,
     sensor_metadata_table_name,
 )
-
+from database.mocks.datastructures import (
+    MockCollector,
+    MockCollectorMetadata,
+    MockSensor,
+    MockSensorMetadata,
+    MockRecord,
+    MockError,
+)
 
 # The first available time for data to be generated at.
 default_base_timestamp = datetime(year=2025, month=1, day=1)
@@ -33,81 +39,6 @@ class CliArguments(Tap):
     span_seconds = (
         60 * 60 * 24 * 30
     )  # The default number of seconds over which to generate data.
-
-
-@dataclass
-class MockCollector:
-    """
-    Represents a collector's attributes.
-    """
-
-    collector_id: str
-    collector_name: str
-    device_model: str
-    polling_interval: int
-
-
-@dataclass
-class MockSensor:
-    """
-    Represents a sensor's attributes.
-    """
-
-    collector_id: str
-    sensor_id: str
-    sensor_code: SensorCodeEnum
-    sensor_name: str
-
-
-@dataclass
-class MockCollectorMetadata:
-    """
-    Represents a collector's attributes as inserted into the DB table.
-    """
-
-    timestamp: datetime
-    collector_id: str
-    collector_name: str
-    device_model: str
-    polling_interval: int
-
-
-@dataclass
-class MockSensorMetadata:
-    """
-    Represents a sensor's attributes as inserted into the DB table.
-    """
-
-    timestamp: datetime
-    collector_id: str
-    sensor_id: str
-    sensor_code: SensorCodeEnum
-    sensor_name: str
-
-
-@dataclass
-class MockRecord:
-    """
-    Represents a record's attributes as inserted into the DB table.
-    """
-
-    timestamp: datetime
-    collector_id: str
-    sensor_id: str
-    record_id: str
-    value: float
-
-
-@dataclass
-class MockError:
-    """
-    Represents an error's attributes as inserted into the DB table.
-    """
-
-    timestamp: datetime
-    collector_id: str
-    sensor_id: str | None
-    error_message: str
 
 
 def generate_timestamp(generation_span_seconds: int) -> datetime:
