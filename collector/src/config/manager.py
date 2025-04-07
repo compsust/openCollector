@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from common.src import CollectorMetadata, SensorMetadata
+from ..datastructures import CollectorMetadata, SensorMetadata
 from .datastructures import CollectorConfig, DeviceConfig, SensorConfig, UploadConfig
 
 """
@@ -65,7 +65,7 @@ class ConfigManager:
 
         sensors: list[SensorConfig] = []
         for config, index in config["sensors"]:
-            sensor = SensorConfig(config, index, device_config.allowed_gpio)
+            sensor = SensorConfig(config, index)
             sensors.append(sensor)
 
         # Collector config

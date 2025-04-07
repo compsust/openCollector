@@ -23,7 +23,7 @@ def get_attribute(
         The config attribute, or None if it does not exist and is not required.
     """
     try:
-        attribute = config["attribute"]
+        value = config["attribute"]
     except KeyError:
         if required:
             raise ValueError(
@@ -32,9 +32,9 @@ def get_attribute(
         else:
             return None
 
-    if attribute is None and required:
+    if value is None and required:
         raise ValueError(
             f"Config '{config_name}' missing required parameter '{attribute}'."
         )
 
-    return attribute
+    return value

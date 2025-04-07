@@ -32,7 +32,9 @@ class SensorManager:
 
         for sensor_config in config_manager.config.sensors:
             # Retrieve the driver class for this sensor.
-            DriverClass = get_sensor_driver_from_code(sensor_config.sensor_code)
+            DriverClass = get_sensor_driver_from_code(
+                sensor_config.sensor_code, config_manager.micropython
+            )
 
             driver = DriverClass(config=sensor_config)
             self.drivers.append(driver)

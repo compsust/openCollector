@@ -5,12 +5,12 @@ import utime
 import machine
 from datastructures import SensorData
 from config import SensorConfig
-from ..driver import AbstractSensorDriver
+from ...driver import AbstractSensorDriver
 
 
-class TSL2561SensorDriver(AbstractSensorDriver):
+class TSL2561SensorDriverMicropython(AbstractSensorDriver):
     """
-    Implementation of the Tsl2561 Sensor Driver.
+    Implementation of the Tsl2561 Sensor Driver for micropython.
     """
 
     def __init__(self, config: SensorConfig):

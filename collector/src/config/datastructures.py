@@ -1,6 +1,6 @@
 from typing import Any
 
-from common.src import SensorCodeEnum
+from common import SensorCodeEnum
 from .utils import get_attribute
 
 
@@ -12,17 +12,12 @@ class DeviceConfig:
     Attributes:
         model: A string representing the type of device,
             for example "Raspberry Pi 3."
-        allowed_gpio: A list of GPIO pins on the
-            device that the collector node is able to access.
-            Used to validate sensor configuration, ie., that the
-            sensor is configured to a valid GPIO pin.
         requires_micropython: If true, the program will
             not enable a start unless it is being run in a
             micropython environment.
     """
 
     model: str
-    allowed_gpio: list[int]
     requires_micropython: bool
 
     def __init__(self, config: dict[str, Any], micropython: bool):
@@ -35,7 +30,6 @@ class DeviceConfig:
             micropython: Whether the current environment is micropython
         """
         self.model = get_attribute(config, "model", "device")
-        self.allowed_gpio = get_attribute(config, "allowed_gpio", "device")
         self.requires_micropython = get_attribute(
             config, "requires_micropython", "device"
         )
@@ -104,12 +98,9 @@ class SensorConfig:
         self,
         config: dict[str, Any],
         index: int,
-        allowed_gpio: list[int],
     ):
         """
         Initializes the config and ensures the required attributes are present.
-        Also, validates that the configured GPIO pins match those specified in the
-        device config.
 
         Args:
             config: The sensor config object, ie. a
@@ -118,19 +109,14 @@ class SensorConfig:
             allowed_gpio: The allowed GPIO pins as configured in the device config.
         """
         self.sensor_id = get_attribute(config, "sensor_id", f"sensor[{index}]")
-        self.sensor_code = get_attribute(config, "sensor_code", f"sensor[{index}]")
+        self.sensor_code = SensorCodeEnum[
+            get_attribute(config, "sensor_code", f"sensor[{index}]")
+        ]
         self.name = get_attribute(config, "name", f"sensor[{index}]")
         self.gpio = get_attribute(config, "gpio", f"sensor[{index}]")
         self.attributes = get_attribute(
             config, "attributes", f"sensor[{index}]", required=False
         )
-
-        # Validate that the configured GPIO pins are allowed on this device.
-        for pin in self.gpio:
-            if self.gpio[pin] not in allowed_gpio:
-                raise ValueError(
-                    f"Error when configuring sensor ID {self.sensor_id} with name {self.name}: gpio pin {self.gpio}, {self.gpio[pin]} not included in allowed gpio pins: {allowed_gpio}"
-                )
 
 
 class CollectorConfig:
@@ -140,6 +126,10 @@ class CollectorConfig:
     Attributes:
         collector_id: An ID associated with the node.
         node_name: A name associated with the node.
+        ssid_name: If defined, the device will attempt to connect
+            to this SSID.
+        ssid_password: If defined, the device will attempt to connect
+            to this SSID.
         polling_interval: The number of miliseconds to wait
             between sensor polls. Must not be negative.
         device: The device config.
@@ -150,6 +140,8 @@ class CollectorConfig:
     collector_id: str
     node_name: str
     polling_interval: int
+    ssid_name: str | None
+    ssid_password: str | None
     device: DeviceConfig
     upload: UploadConfig
     sensors: list[SensorConfig]
@@ -177,6 +169,10 @@ class CollectorConfig:
         self.collector_id = get_attribute(config, "collector_id", "config")
         self.node_name = get_attribute(config, "node_name", "config")
         self.polling_interval = get_attribute(config, "polling_interval", "config")
+        self.ssid_name = get_attribute(config, "ssid_name", "config", required=False)
+        self.ssid_password = get_attribute(
+            config, "ssid_password", "config", required=False
+        )
         self.device = device
         self.upload = upload
         self.sensors = sensors

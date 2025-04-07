@@ -5,12 +5,12 @@ import utime
 import machine
 from datastructures import SensorData
 from config import SensorConfig
-from ..driver import AbstractSensorDriver
+from ...driver import AbstractSensorDriver
 
 
-class PMS5003SensorDriver(AbstractSensorDriver):
+class PMS5003SensorDriverMicropython(AbstractSensorDriver):
     """
-    Implementation of the PMS5003 Sensor Driver.
+    Implementation of the PMS5003 Sensor Driver for micropython.
     """
 
     # Command values

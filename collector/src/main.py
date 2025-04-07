@@ -23,19 +23,10 @@ def main():
     sensor_manager = SensorManager(config_manager)
     upload_manager = UploadManager(config_manager)
 
-    # Store errors that don't happen during the sensor polling.
-    errors: list[CollectorError] = []
-
     # Update metadata table
     # Timestamp in microseconds.
-    timestamp = time.time() * 1000 * 1000
-    try:
-        collector_metadata, sensor_metadata = config_manager.metadata
-        upload_manager.upload_metadata(collector_metadata, sensor_metadata)
-    except Exception as e:
-        errors.append(
-            CollectorError(sensor_id=None, error_message=str(e), timestamp=timestamp)
-        )
+    collector_metadata, sensor_metadata = config_manager.metadata
+    upload_manager.upload_metadata(collector_metadata, sensor_metadata)
 
     # Loop
     while ():
@@ -46,19 +37,11 @@ def main():
             errors=errors,
         )
 
-        # Timestamp in microseconds.
-        timestamp = time.time() * 1000 * 1000
-
-        # Try to upload the data. If unsuccessful, save the error for upload next loop.
+        # Try to upload the data. If unsuccessful, print the error
         try:
             upload_manager.upload(report, errors)
-            errors = []
         except Exception as e:
-            errors.append(
-                CollectorError(
-                    sensor_id=None, error_message=str(e), timestamp=timestamp
-                )
-            )
+            print(e)
 
         time.sleep(config_manager.config.polling_interval)
 

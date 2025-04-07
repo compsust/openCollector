@@ -5,10 +5,10 @@ import utime
 import machine
 from datastructures import SensorData
 from config import SensorConfig
-from ..driver import AbstractSensorDriver
+from ...driver import AbstractSensorDriver
 
 
-class MHZ19BSensorDriver(AbstractSensorDriver):
+class MHZ19BSensorDriverMicropython(AbstractSensorDriver):
     """
     Implementation of the MHZ19B Sensor Driver.
     """

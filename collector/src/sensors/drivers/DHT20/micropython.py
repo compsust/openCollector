@@ -5,12 +5,12 @@ import utime
 import machine
 from datastructures import SensorData
 from config import SensorConfig
-from ..driver import AbstractSensorDriver
+from ...driver import AbstractSensorDriver
 
 
-class DHT20SensorDriver(AbstractSensorDriver):
+class DHT20SensorDriverMicropython(AbstractSensorDriver):
     """
-    Implementation of the Dht20 Sensor Driver.
+    Implementation of the Dht20 Sensor Driver for micropython.
     """
 
     def __init__(self, config: SensorConfig):

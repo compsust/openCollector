@@ -1,6 +1,7 @@
-import requests
+from requests.auth import HTTPBasicAuth
+from requests import post
 from config import ConfigManager, UploadConfig
-from common.src import (
+from common import (
     records_table_name,
     errors_table_name,
     collector_metadata_table_name,
@@ -43,7 +44,7 @@ class UploadManager:
 
         # URL for QuestDB data POST. See: https://questdb.com/docs/reference/api/rest
         self.endpoint = "http://" + self.config.host + ":" + self.config.port + "/imp"
-        self.auth = requests.HTTPBasicAuth(self.config.user, self.config.password)
+        self.auth = HTTPBasicAuth(self.config.user, self.config.password)
 
     def upload(
         self, report: CollectorReport, additional_errors: list[CollectorError] = []
@@ -65,12 +66,12 @@ class UploadManager:
         records = self._construct_records(report.records)
 
         # Upload the errors.
-        response = requests.post(self.endpoint, files=errors, auth=self.auth)
+        response = post(self.endpoint, files=errors, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
         # Upload the records.
-        response = requests.post(self.endpoint, files=records, auth=self.auth)
+        response = post(self.endpoint, files=records, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
@@ -92,12 +93,12 @@ class UploadManager:
         sensors = self._construct_sensor_metadata(sensor_metadata)
 
         # Upload the collector metadata.
-        response = requests.post(self.endpoint, files=collector, auth=self.auth)
+        response = post(self.endpoint, files=collector, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
         # Upload the sensor metadata.
-        response = requests.post(self.endpoint, files=sensors, auth=self.auth)
+        response = post(self.endpoint, files=sensors, auth=self.auth)
         # Raises an exception for any non-successful response.
         response.raise_for_status()
 
@@ -117,9 +118,9 @@ class UploadManager:
 
         records_csv_lines = ["timestamp,collector_id,sensor_id,record_id,value"]
         for record in records:
-            for record_id, datapoint in record.data:
+            for record_id, value in record.data:
                 records_csv_lines.append(
-                    f"{record.timestamp},{self.collector_id},{record.sensor_id},{record_id},{datapoint}"
+                    f"{record.timestamp},{self.collector_id},{record.sensor_id},{record_id},{value}"
                 )
         csv = "\n".join(records_csv_lines)
         return {"data": (records_table_name, csv)}
