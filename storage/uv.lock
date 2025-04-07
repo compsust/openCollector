@@ -93,7 +93,7 @@ wheels = [
 
 [[package]]
 name = "common"
-version = "0.1.5"
+version = "0.1.6"
 source = { directory = "../common" }
 
 [package.metadata]

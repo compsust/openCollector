@@ -2,6 +2,7 @@ from litestar import Controller, get
 from litestar.plugins.htmx import HTMXTemplate, HTMXRequest
 from litestar.response import Template
 from bokeh.plotting import figure
+from bokeh.models import Range1d
 from bokeh.embed import components
 
 from common import get_record_ids
@@ -183,6 +184,10 @@ class BrowserSnippetsController(Controller):
             x_axis_type="datetime",
             y_axis_label=f"{timeline.record_name} ({timeline.unit})",
             sizing_mode="stretch_both",
+            x_range=Range1d(
+                start=timeline.timestamps[len(timeline.timestamps) - 10],
+                end=timeline.timestamps[-1],
+            ),
         )
         graph.line(x=timeline.timestamps, y=timeline.values)
 

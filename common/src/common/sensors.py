@@ -16,6 +16,7 @@ class SensorCodeEnum(StrEnum):
     AbstractSensorDriver.
     """
 
+    MOCK = "MOCK"
     DHT20 = "DHT20"
     TSL2561 = "TSL2561"
     PMS5003 = "PMS5003"
@@ -57,6 +58,13 @@ class SensorMetadata(TypedDict):
 Stores metadata for each type of sensor code.
 """
 sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
+    SensorCodeEnum.MOCK: {
+        "name": "Mock Sensor",
+        "values": [
+            {"name": "Temperature", "record_id": "temperature", "unit": "°C"},
+            {"name": "Humiditiy", "record_id": "humidity", "unit": "%"},
+        ],
+    },
     SensorCodeEnum.DHT20: {
         "name": "DHT20",
         "values": [
