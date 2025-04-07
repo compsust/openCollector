@@ -1,5 +1,5 @@
 from datetime import datetime
-from common import records_table_name, RecordID
+from common import records_table_name
 from asyncpg import Connection
 from typing import TypedDict
 
@@ -17,7 +17,7 @@ latest_record_from_sensor_query_string = f"""--sql
 class LatestRecordFromSensorQueryRow(TypedDict):
     collector_id: str
     sensor_id: str
-    record_id: RecordID
+    record_id: str
     value: float
     timestamp: datetime
 

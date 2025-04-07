@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
-from gc import collect
 from asyncpg.connection import Connection
-from common import SensorCodeEnum, get_unit_from_record_id, RecordID
+from common import SensorCodeEnum, get_unit_from_record_id
 from datastructures import (
     SensorSummary,
     CollectorSummary,
@@ -31,10 +30,30 @@ class Repository:
 
     async def get_network_summary(self) -> NetworkSummary:
         """
-        Retrieves the rnetwork summary from the database.
+        Retrieves the network summary from the database.
 
         Returns:
-            NetworkSummary: A summary of the network, its collectors, and sensors.
+            A summary of the network.
+        """
+        # Retrieve the data from the database.
+        total_collectors = await queries.collector_count_query(self.connection)
+        total_sensors = await queries.sensor_count_query(self.connection)
+        total_records = await queries.total_records_query(self.connection)
+        total_errors = await queries.total_errors_query(self.connection)
+
+        return NetworkSummary(
+            total_collectors=total_collectors[0]["count_distinct"],
+            total_sensors=total_sensors[0]["count_distinct"],
+            total_records=total_records[0]["count"],
+            total_errors=total_errors[0]["count"],
+        )
+
+    async def get_collector_summaries(self) -> list[CollectorSummary]:
+        """
+        Retrieves the collector summaries from the database.
+
+        Returns:
+            A summary of the collectors, and sensors.
         """
         # Retrieve the data from the database.
         latest_collector_metadata = await queries.latest_collector_metadata_query(
@@ -45,10 +64,6 @@ class Repository:
         )
         latest_records = await queries.latest_records_query(self.connection)
         latest_errors = await queries.latest_errors_query(self.connection)
-        total_collectors = await queries.collector_count_query(self.connection)
-        total_sensors = await queries.sensor_count_query(self.connection)
-        total_records = await queries.total_records_query(self.connection)
-        total_errors = await queries.total_errors_query(self.connection)
 
         # Initialize the collector summaries.
         collector_summaries: list[CollectorSummary] = []
@@ -57,7 +72,6 @@ class Repository:
                 CollectorSummary(
                     id=collector["collector_id"],
                     name=collector["collector_name"],
-                    status=StatusEnum.UNKNOWN,
                     sensors=[],
                 )
             )
@@ -107,18 +121,26 @@ class Repository:
                     id=record["sensor_id"],
                     name=sensor_metadata["sensor_name"],
                     status=StatusEnum.UNKNOWN,
-                    last_value={},
+                    last_value=[],
                 )
                 collector_summary.sensors.append(sensor_summary)
 
             # Add the record value to the sensor data.
-            if not sensor_summary.last_value:
-                sensor_summary.last_value = {}
-            sensor_summary.last_value[record["record_id"]] = record["value"]
+            name, unit = get_unit_from_record_id(
+                sensor_code=SensorCodeEnum[sensor_metadata["sensor_code"]],
+                record_id=record["record_id"],
+            )
+            sensor_summary.last_value.append(
+                CollectorRecord(
+                    record_id=record["record_id"],
+                    record_name=name,
+                    value=record["value"],
+                    unit=unit,
+                    timestamp=record["timestamp"],
+                )
+            )
 
         # Populate the status field on the summaries.
-        collectors_reporting = 0
-        sensors_reporting = 0
         for collector_summary in collector_summaries:
             # Retrieve the collector metadata of the sensor responsible for this record.
             collector_metadata = next(
@@ -134,7 +156,6 @@ class Repository:
                     "Collector detected with a collector ID that isn't found in the collector metadata."
                 )
 
-            collector_summary.status = StatusEnum.OPERATIONAL
             for sensor_summary in collector_summary.sensors:
                 # Retrieve the latest record returned by this sensor.
                 # Note that there may be multiple records per sensor,
@@ -165,7 +186,6 @@ class Repository:
                 # If there are no latest records and no latest errors the status is UNKNOWN.
                 if not latest_record and not latest_error:
                     sensor_summary.status = StatusEnum.UNKNOWN
-                    collector_summary.status = StatusEnum.UNKNOWN
                     continue
 
                 # If the latest record or error is long ago enough, determined
@@ -185,7 +205,6 @@ class Repository:
                 )
                 if latest_timestamp < (datetime.now() - active_threshold):
                     sensor_summary.status = StatusEnum.DROPPED
-                    collector_summary.status = StatusEnum.DROPPED
                     continue
 
                 # If the error is more recent than the record, the status is ERROR.
@@ -195,31 +214,12 @@ class Repository:
                     and latest_error["timestamp"] > latest_record["timestamp"]
                 ):
                     sensor_summary.status = StatusEnum.ERROR
-                    collector_summary.status = StatusEnum.ERROR
-                    sensors_reporting += 1
                     continue
 
                 # Otherwise, it is OPERATIONAL.
                 sensor_summary.status = StatusEnum.OPERATIONAL
-                sensors_reporting += 1
 
-            if (
-                collector_summary.status == StatusEnum.ERROR
-                or collector_summary.status == StatusEnum.OPERATIONAL
-            ):
-                collectors_reporting += 1
-
-        # Create and return the node summary
-
-        return NetworkSummary(
-            total_collectors=total_collectors[0]["count_distinct"],
-            collectors_reporting=collectors_reporting,
-            total_sensors=total_sensors[0]["count_distinct"],
-            sensors_reporting=sensors_reporting,
-            records_reported=total_records[0]["count"],
-            errors_reported=total_errors[0]["count"],
-            collectors=collector_summaries,
-        )
+        return collector_summaries
 
     async def get_collector_details(
         self, collector_id: str, errors_page: int, errors_page_size: int
@@ -301,17 +301,26 @@ class Repository:
                     id=record["sensor_id"],
                     name=sensor_metadata["sensor_name"],
                     status=StatusEnum.UNKNOWN,
-                    last_value={},
+                    last_value=[],
                 )
                 sensor_summaries.append(sensor_summary)
 
             # Add the record value to the sensor data.
-            if not sensor_summary.last_value:
-                sensor_summary.last_value = {}
-            sensor_summary.last_value[record["record_id"]] = record["value"]
+            name, unit = get_unit_from_record_id(
+                sensor_code=SensorCodeEnum[sensor_metadata["sensor_code"]],
+                record_id=record["record_id"],
+            )
+            sensor_summary.last_value.append(
+                CollectorRecord(
+                    record_id=record["record_id"],
+                    record_name=name,
+                    value=record["value"],
+                    unit=unit,
+                    timestamp=record["timestamp"],
+                )
+            )
 
         # Populate the status field on the summaries.
-        status = StatusEnum.OPERATIONAL
         for sensor_summary in sensor_summaries:
             # Retrieve the latest record returned by this sensor.
             # Note that there may be multiple records per sensor,
@@ -342,7 +351,6 @@ class Repository:
             # If there are no latest records and no latest errors the status is UNKNOWN.
             if not latest_record and not latest_error:
                 sensor_summary.status = StatusEnum.UNKNOWN
-                status = StatusEnum.UNKNOWN
                 continue
 
             # If the latest record or error is long ago enough, determined
@@ -362,7 +370,6 @@ class Repository:
             )
             if latest_timestamp < (datetime.now() - active_threshold):
                 sensor_summary.status = StatusEnum.DROPPED
-                status = StatusEnum.DROPPED
                 continue
 
             # If the error is more recent than the record, the status is ERROR.
@@ -372,7 +379,6 @@ class Repository:
                 and latest_error["timestamp"] > latest_record["timestamp"]
             ):
                 sensor_summary.status = StatusEnum.ERROR
-                status = StatusEnum.ERROR
                 continue
 
             # Otherwise, it is OPERATIONAL.
@@ -411,7 +417,6 @@ class Repository:
             name=collector_metadata["collector_name"],
             device_model=collector_metadata["device_model"],
             polling_interval=collector_metadata["polling_interval"],
-            status=status,
             total_sensors=collector_stats[0]["total_sensors"],
             latest_record=collector_stats[0]["latest_record"],
             earliest_record=collector_stats[0]["earliest_record"],
@@ -529,19 +534,21 @@ class Repository:
         # Otherwise, it is OPERATIONAL.
         status = StatusEnum.OPERATIONAL
 
-        records: list[CollectorRecord] = [
-            CollectorRecord(
-                sensor_id=record["sensor_id"],
+        records: list[CollectorRecord] = []
+        for record in sensor_records:
+            name, unit = get_unit_from_record_id(
+                sensor_code=SensorCodeEnum[sensor_metadata["sensor_code"]],
                 record_id=record["record_id"],
-                unit=get_unit_from_record_id(
-                    sensor_code=sensor_metadata["sensor_code"],
-                    record_id=record["record_id"],
-                ),
-                value=record["value"],
-                timestamp=record["timestamp"],
             )
-            for record in sensor_records
-        ]
+            records.append(
+                CollectorRecord(
+                    record_id=record["record_id"],
+                    record_name=name,
+                    unit=unit,
+                    value=record["value"],
+                    timestamp=record["timestamp"],
+                )
+            )
         errors: list[CollectorError] = [
             CollectorError(
                 message=error["error_message"],
@@ -555,7 +562,7 @@ class Repository:
             id=sensor_metadata["sensor_id"],
             name=sensor_metadata["sensor_name"],
             status=status,
-            code=sensor_metadata["sensor_code"],
+            code=SensorCodeEnum[sensor_metadata["sensor_code"]],
             latest_record=sensor_stats[0]["latest_record"],
             earliest_record=sensor_stats[0]["earliest_record"],
             total_records=sensor_stats[0]["total_records"],
@@ -566,11 +573,21 @@ class Repository:
         )
 
     async def get_sensor_code(self, sensor_id: str) -> SensorCodeEnum:
+        """
+        Retrieves the sensor code for a sensor ID.
+
+        Args:
+            sensor_id: The ID of the sensor.
+
+        Raises:
+            RepositoryError: Raised if the sensor does not exist.
+
+        Returns:
+            The sensor code.
+        """
         sensor_metadata = await queries.latest_sensor_metadata_query(
             self.connection, sensor_id
         )
-        print("sensor_metadata")
-        print(sensor_metadata)
         try:
             sensor_code = sensor_metadata[0]["sensor_code"]
             return SensorCodeEnum[sensor_code]
@@ -578,15 +595,30 @@ class Repository:
             raise RepositoryError("Sensor ID does not exist.")
 
     async def get_collector_ids(self):
+        """
+        Retrieves a list of existing collector IDs.
+
+        Returns:
+            A list of collector IDs.
+        """
         return await queries.collector_ids_query(self.connection)
 
     async def get_sensor_ids(self, collector_id: str):
+        """
+        Retrieves a list of sensor IDs for a collector.
+
+        Args:
+            collector_id: The collector to get the sensor IDs on.
+
+        Returns:
+            A list of sensor IDs.
+        """
         return await queries.sensor_ids_query(
             self.connection, collector_id=collector_id
         )
 
     async def get_timeline(
-        self, collector_id: str, sensor_id: str, record_id: RecordID
+        self, collector_id: str, sensor_id: str, record_id: str
     ) -> SensorTimeline:
         timeline = await queries.sensor_timeline_query(
             self.connection,
@@ -600,12 +632,15 @@ class Repository:
             *[(record["timestamp"], record["value"]) for record in timeline]
         )
 
-        unit = get_unit_from_record_id(sensor_code=sensor_code, record_id=record_id)
+        name, unit = get_unit_from_record_id(
+            sensor_code=sensor_code, record_id=record_id
+        )
 
         return SensorTimeline(
             collector_id=collector_id,
             sensor_id=sensor_id,
             record_id=record_id,
+            record_name=name,
             unit=unit,
             timestamps=list(timestamps),
             values=list(values),

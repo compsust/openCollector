@@ -1,52 +1,69 @@
 <script>
+    /** 
+     * We define reactive variables using Alpine's store 
+     * so that the HTMX requests can have access to them.
+     */
     document.addEventListener('alpine:init', () => {
+        /** The collector, sensor, and record ID selected for display on the graph. */
         Alpine.store('collector_id', '')
         Alpine.store('sensor_id', '')
         Alpine.store('record_id', '')
+    
+        /** If false, the graph will stop being updated, allowing it to be interactive. */
+        Alpine.store('graph_refresh_enabled', true)
     })
-</script>
-
-<!-- 
-   We need to query the graph using HTMX, with query that is parametrized by
-   three datapoints: a collector ID, a sensor ID, and a record ID to display on
-   the graph.
-   
-   The options for selecting collectors, sensors, and record IDs are dynamic and so must
-   be queried as well.
-   
-   The steps are as follows:
-      1. Populate a select component with options for collectors queries from the backend.
-      2. Use the selected collector to populate a second select for sensors.
-      3. Use the selected sensor to populate a third select for record IDs.
-      4. Use the selected options to query the graph.
-   -->
-   <div class="flex flex-col bg-gray-100 p-4 rounded-lg border border-gray-500">
-
+ </script>
+ <!-- 
+    We need to query the graph using HTMX, with query that is parametrized by
+    three datapoints: a collector ID, a sensor ID, and a record ID to display on
+    the graph.
+    
+    The options for selecting collectors, sensors, and record IDs are dynamic and so must
+    be queried as well.
+    
+    The steps are as follows:
+       1. Populate a select component with options for collectors queries from the backend.
+       2. Use the selected collector to populate a second select for sensors.
+       3. Use the selected sensor to populate a third select for record IDs.
+       4. Use the selected options to query the graph.
+    -->
+ <div class="flex flex-col bg-gray-100 p-4 rounded-lg border border-gray-500">
     <div
        hx-get="/snippets/collector_select_options" 
        hx-target="#collector_select_container" 
        hx-trigger="load"
-       class="flex justify-between">
-
-       <div id="collector_select_container" class="rounded-lg p-2 bg-gray-200 border border-gray-400">
+       class="flex justify-between gap-2">
+       <div id="collector_select_container" class="rounded-lg p-1 bg-gray-200 border border-gray-400">
           <!-- Collector select will be injected here-->
        </div>
-
-       <div id="sensor_select_container" class="rounded-lg p-2 bg-gray-200 border border-gray-400">
+       <div id="sensor_select_container" class="rounded-lg p-1 bg-gray-200 border border-gray-400">
           <!-- Default select. -->
-          <select id="sensor_select" class="bg-gray-200 p-2">
+          <select id="sensor_select" class="bg-gray-200 p-1">
              <option value="" disabled>Select a Sensor</option>
           </select>
        </div>
-
-       <div id="record_select_container" class="rounded-lg p-2 bg-gray-200 border border-gray-400">
-           <!-- Default select. -->
-          <select id="record_select" class="bg-gray-200 p-2">
+       <div id="record_select_container" class="rounded-lg p-1 bg-gray-200 border border-gray-400">
+          <!-- Default select. -->
+          <select id="record_select" class="bg-gray-200 p-1">
              <option value="" disabled>Select a Record</option>
           </select>
        </div>
+       <!-- Button to disable the graph refresh. -->
+       <button x-data @click="$store.graph_refresh_enabled = !$store.graph_refresh_enabled" class="w-10 h-10  flex items-center justify-center rounded-lg border border-gray-400 p-1" :class="[$store.graph_refresh_enabled ? 'bg-gray-300' : 'bg-gray-200']">
+          <svg fill="#000000" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+             viewBox="0 0 489.645 489.645" xml:space="preserve">
+             <g>
+                <path d="M460.656,132.911c-58.7-122.1-212.2-166.5-331.8-104.1c-9.4,5.2-13.5,16.6-8.3,27c5.2,9.4,16.6,13.5,27,8.3
+                   c99.9-52,227.4-14.9,276.7,86.3c65.4,134.3-19,236.7-87.4,274.6c-93.1,51.7-211.2,17.4-267.6-70.7l69.3,14.5
+                   c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-122.8-25c-20.6-2-25,16.6-23.9,22.9l15.6,123.8
+                   c1,10.4,9.4,17.7,19.8,17.7c12.8,0,20.8-12.5,19.8-23.9l-6-50.5c57.4,70.8,170.3,131.2,307.4,68.2
+                   C414.856,432.511,548.256,314.811,460.656,132.911z"/>
+             </g>
+          </svg>
+       </button>
     </div>
-</div>
-<div id="graph_container" hx-get="/snippets/graph" hx-trigger="every {{ refresh_s }}s" hx-vals="js:{collector_id: Alpine.store('collector_id'), sensor_id: Alpine.store('sensor_id'), record_id: Alpine.store('record_id')}">
+ </div>
+ <div id="graph_container" hx-get="/snippets/graph" hx-trigger="every {{ refresh_s }}s [Alpine.store('graph_refresh_enabled')]" hx-vals="js:{collector_id: Alpine.store('collector_id'), sensor_id: Alpine.store('sensor_id'), record_id: Alpine.store('record_id')}" class="mt-4">
     <!-- The result from the graph query will be injected here -->
-</div>
+ </div>
+ 

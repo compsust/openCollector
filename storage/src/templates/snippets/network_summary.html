@@ -5,10 +5,10 @@
     <div class="flex flex-col">
         <div class="flex justify-between w-full">
             <span>
-                Collectors Reporting
+                Total Collectors
             </span>
             <span>
-                {{ network_summary.collectors_reporting }} / {{ network_summary.total_collectors }}
+                {{ network_summary.total_collectors }}
             </span>
         </div>
         <span class="w-full h-[1px] bg-gray-300 rounded-sm mt-1 mb-2"></span>
@@ -16,10 +16,10 @@
     <div class="flex flex-col">
         <div class="flex justify-between">
             <span>
-                Sensors Reporting
+                Total Sensors
             </span>
             <span>
-                {{ network_summary.sensors_reporting }} / {{ network_summary.total_sensors }}
+                {{ network_summary.total_sensors }}
             </span>
         </div>
         <span class="w-full h-[1px] bg-gray-300 rounded-sm mt-1 mb-2"></span>
@@ -30,7 +30,7 @@
                 Total Records
             </span>
             <span>
-                {{ network_summary.records_reported }}
+                {{ network_summary.total_records }}
             </span>
         </div>
         <span class="w-full h-[1px] bg-gray-300 rounded-sm mt-1 mb-2"></span>
@@ -41,7 +41,7 @@
                 Total Errors
             </span>
             <span>
-                {{ network_summary.errors_reported }}
+                {{ network_summary.total_errors }}
             </span>
         </div>
     </div>

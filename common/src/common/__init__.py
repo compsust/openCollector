@@ -1,7 +1,6 @@
 from .sensors import (
     SensorCodeEnum,
     sensor_metadata,
-    RecordID,
     get_unit_from_record_id,
     get_record_ids,
 )
@@ -15,7 +14,6 @@ from .database import (
 __all__ = [
     "SensorCodeEnum",
     "sensor_metadata",
-    "RecordID",
     "get_unit_from_record_id",
     "get_record_ids",
     "records_table_name",

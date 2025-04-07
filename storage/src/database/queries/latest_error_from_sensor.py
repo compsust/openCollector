@@ -1,5 +1,5 @@
 from datetime import datetime
-from common import errors_table_name, RecordID
+from common import errors_table_name
 from asyncpg import Connection
 from typing import TypedDict
 

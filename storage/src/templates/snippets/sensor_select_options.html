@@ -1,10 +1,9 @@
 <select id="sensor_select" x-model="$store.sensor_id" 
-        x-init="() => {$store.sensor_id = $el.querySelector('option:not([disabled])').value; }"
         hx-get="/snippets/record_select_options" 
         hx-target="#record_select_container"
         hx-vals="js:{sensor_id: Alpine.store('sensor_id')}"
         hx-trigger="change"
-        class="bg-gray-200 p-2">
+        class="bg-gray-200 p-1">
     <option value="" disabled>Select a Sensor</option>
 
     {% for option in options %}

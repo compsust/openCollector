@@ -55,9 +55,6 @@ class SensorMetadata(TypedDict):
 
 """
 Stores metadata for each type of sensor code.
-
-Note that when adding new sensors, the RecordID type below must be
-updated for valid type inference.
 """
 sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     SensorCodeEnum.DHT20: {
@@ -95,7 +92,7 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
         "name": "MHZ19B",
         "values": [
             {
-                "name": "CO2_Concentration",
+                "name": "CO2 Concentration",
                 "record_id": "CO2",
                 "unit": "PPM",
             },
@@ -103,30 +100,20 @@ sensor_metadata: dict[SensorCodeEnum, SensorMetadata] = {
     },
 }
 
-"""
-Types the record_ids we expect to see for type safety.    
-"""
-RecordID = Literal[
-    "CO2",
-    "humidity",
-    "lux0",
-    "PM1.0",
-    "PM10",
-    "PM2.5",
-    "temperature",
-]
 
-
-def get_unit_from_record_id(sensor_code: SensorCodeEnum, record_id: RecordID) -> str:
+def get_unit_from_record_id(
+    sensor_code: SensorCodeEnum, record_id: str
+) -> tuple[str, str]:
     """
-    Retrieves the unit string for a record_id.
+    Retrieves the unit strings for a record_id.
 
     Args:
         sensor_code: The type of sensor.
         record_id: The record ID of the value type.
 
     Returns:
-        str: The unit describing the record_id.
+        A tuple where the first value is the name of the value type
+            and the second value is the name of the unit.
     """
     value_metadata = next(
         (
@@ -141,7 +128,7 @@ def get_unit_from_record_id(sensor_code: SensorCodeEnum, record_id: RecordID) ->
             f"Combination of sensor code {sensor_code} and record_id {record_id} does not exist in the sensor metadata."
         )
 
-    return value_metadata["unit"]
+    return value_metadata["name"], value_metadata["unit"]
 
 
 def get_record_ids(sensor_code: SensorCodeEnum) -> list[str]:

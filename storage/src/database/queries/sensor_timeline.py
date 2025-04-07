@@ -36,10 +36,6 @@ async def sensor_timeline_query(
     Returns:
         The database results.
     """
-    print("parameters")
-    print(collector_id)
-    print(sensor_id)
-    print(record_id)
     return await connection.fetch(
         sensor_timeline_query_string, collector_id, sensor_id, record_id
     )

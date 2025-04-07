@@ -4,7 +4,7 @@ from litestar.response import Template
 from bokeh.plotting import figure
 from bokeh.embed import components
 
-from common import RecordID, get_unit_from_record_id, get_record_ids
+from common import get_unit_from_record_id, get_record_ids
 from database.repository import Repository
 from datastructures import CollectorSummary, NetworkSummary, SensorSummary
 
@@ -22,6 +22,17 @@ class BrowserSnippetsController(Controller):
     async def network_summary(
         self, repository: Repository, request: HTMXRequest
     ) -> Template:
+        """
+        Retrieves the network summary HTML snippet
+
+        Args:
+            repository: Database interface. Provided through
+                Litestar's dependency injection.
+            request: HTTP Request instance.
+
+        Returns:
+            HTML.
+        """
         summary = await repository.get_network_summary()
 
         context = {"request": request, "network_summary": summary}
@@ -39,9 +50,18 @@ class BrowserSnippetsController(Controller):
     async def collector_select_options(
         self, repository: Repository, request: HTMXRequest
     ) -> Template:
-        print("collector_ids")
+        """
+        Retrieves the collector select options HTML snippet.
+
+        Args:
+            repository: Database interface. Provided through
+                Litestar's dependency injection.
+            request: HTTP Request instance.
+
+        Returns:
+            HTML.
+        """
         collector_ids = await repository.get_collector_ids()
-        print(collector_ids)
         options = [
             {"value": collector["collector_id"], "label": collector["collector_name"]}
             for collector in collector_ids
@@ -62,8 +82,19 @@ class BrowserSnippetsController(Controller):
     async def sensor_select_options(
         self, collector_id: str, repository: Repository, request: HTMXRequest
     ) -> Template:
-        print("collector id:::")
-        print(collector_id)
+        """
+        Retrieves the sensor select options HTML snippet.
+
+        Args:
+            collector_id: The collector to retrieve sensors for.
+                Provided through Litestar as a query parameter.
+            repository: Database interface. Provided through
+                Litestar's dependency injection.
+            request: HTTP Request instance.
+
+        Returns:
+            HTML.
+        """
         sensor_ids = await repository.get_sensor_ids(collector_id)
         options = [
             {"value": sensor["sensor_id"], "label": sensor["sensor_name"]}
@@ -85,9 +116,20 @@ class BrowserSnippetsController(Controller):
     async def record_select_options(
         self, sensor_id: str, repository: Repository, request: HTMXRequest
     ) -> Template:
+        """
+        Retrieves the record select options HTML snippet.
+
+        Args:
+            sensor_id: The sensor to retrieve record IDs for.
+                Provided through Litestar as a query parameter.
+            repository: Database interface. Provided through
+                Litestar's dependency injection.
+            request: HTTP Request instance.
+
+        Returns:
+            HTML.
+        """
         sensor_code = await repository.get_sensor_code(sensor_id)
-        print("sensor code")
-        print(sensor_code)
         record_ids = get_record_ids(sensor_code)
         options = [{"value": record_id, "label": record_id} for record_id in record_ids]
 
@@ -111,21 +153,43 @@ class BrowserSnippetsController(Controller):
         repository: Repository,
         request: HTMXRequest,
     ) -> Template:
+        """
+        Retrieves the graph HTML snippet.
+
+        Args:
+            collector_id: The collector to retrieve the graph for.
+                Provided through Litestar as a query parameter.
+            sensor_id: The sensor to retrieve the graph for.
+                Provided through Litestar as a query parameter.
+            record_id: The record ID to retrieve the graph for.
+                Provided through Litestar as a query parameter.
+            repository: Database interface. Provided through
+                Litestar's dependency injection.
+            request: HTTP Request instance.
+
+        Returns:
+            HTML.
+        """
         if not collector_id or not sensor_id or not record_id:
             return HTMXTemplate(template_name="snippets/bokeh_failed.html")
 
-        timeline = await repository.get_timeline(
-            collector_id=collector_id, sensor_id=sensor_id, record_id=record_id
-        )
-        sensor_code = await repository.get_sensor_code(sensor_id)
-        unit = get_unit_from_record_id(sensor_code=sensor_code, record_id=record_id)
+        try:
+            timeline = await repository.get_timeline(
+                collector_id=collector_id, sensor_id=sensor_id, record_id=record_id
+            )
+        except:
+            return HTMXTemplate(template_name="snippets/bokeh_failed.html")
 
-        graph = figure(sizing_mode="stretch_both")
+        graph = figure(
+            x_axis_type="datetime",
+            y_axis_label=f"{timeline.record_name} ({timeline.unit})",
+            sizing_mode="stretch_both",
+        )
         graph.line(x=timeline.timestamps, y=timeline.values)
 
         script, div = components(graph)
 
-        context = {"script": script, "div": div}
+        context = {"request": request, "script": script, "div": div}
         return HTMXTemplate(template_name="snippets/bokeh.html", context=context)
 
     @get(
@@ -135,26 +199,23 @@ class BrowserSnippetsController(Controller):
         status_code=200,
         include_in_schema=False,
     )
-    async def collector_summary(self, request: HTMXRequest) -> Template:
-        summary = NetworkSummary(
-            total_collectors=5,
-            collectors_reporting=2,
-            total_sensors=7,
-            sensors_reporting=3,
-            records_reported=111,
-            errors_reported=12,
-            collectors=[
-                CollectorSummary(
-                    id=f"collector_id{index}",
-                    name=f"collector_{index}",
-                    status="OPERATIONAL",
-                    sensors=[],
-                )
-                for index in range(50)
-            ],
-        )
+    async def collector_summary(
+        self, repository: Repository, request: HTMXRequest
+    ) -> Template:
+        """
+        Retrieves the collector summary HTML snippet.
 
-        context = {"request": request, "network_summary": summary}
+        Args:
+            repository: Database interface. Provided through
+                Litestar's dependency injection.
+            request: HTTP Request instance.
+
+        Returns:
+            HTML.
+        """
+        summaries = await repository.get_collector_summaries()
+
+        context = {"request": request, "summaries": summaries}
         return HTMXTemplate(
             template_name="snippets/collector_summary.html", context=context
         )
