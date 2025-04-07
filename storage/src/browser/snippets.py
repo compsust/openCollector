@@ -4,9 +4,8 @@ from litestar.response import Template
 from bokeh.plotting import figure
 from bokeh.embed import components
 
-from common import get_unit_from_record_id, get_record_ids
+from common import get_record_ids
 from database.repository import Repository
-from datastructures import CollectorSummary, NetworkSummary, SensorSummary
 
 
 class BrowserSnippetsController(Controller):
