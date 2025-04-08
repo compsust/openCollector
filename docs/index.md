@@ -1,6 +1,5 @@
 # OpenCollector - Open Source Data Collection
 
-*TODO: Replace this with a screenshot of the finished dashboard.*
 ![Alt: a screenshot of the data monitoring dashboard](images/dashboard.png)
 
 OpenCollector is an open source Raspberry-Pi based data collection platform. Partnered with the [Simon Fraser University Computational Sustainability Lab](https://compsust.fas.sfu.ca/), this project is intended to create the foundation for a user-friendly IoT system that allows individuals and organizations to safely measure the impacts on their environment and monitor them for analysis and forecasting.
