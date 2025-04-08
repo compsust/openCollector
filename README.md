@@ -1,7 +1,5 @@
 # OpenCollector - Open Source Data Collection
 
-
-*TODO: Replace this with a screenshot of the finished dashboard.*
 ![Alt: a screenshot of the data monitoring dashboard](docs/images/dashboard.png)
 
 <div  align="center">
