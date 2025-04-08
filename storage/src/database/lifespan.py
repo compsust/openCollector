@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
 import asyncpg
 from litestar import Litestar
-from .tables import records_table_init_command, errors_table_init_command
+from .tables import records_table_init_command, errors_table_init_command, collector_metadata_table_init_command, sensor_metadata_table_init_command
 import config
 
 """
@@ -36,6 +36,8 @@ async def db_connection(app: Litestar) -> AsyncGenerator[None, None]:
 
     await connection.execute(records_table_init_command)
     await connection.execute(errors_table_init_command)
+    await connection.execute(collector_metadata_table_init_command)
+    await connection.execute(sensor_metadata_table_init_command)
 
     try:
         yield
