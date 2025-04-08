@@ -2,7 +2,7 @@
 
 
 *TODO: Replace this with a screenshot of the finished dashboard.*
-![Alt: a screenshot of the data monitoring dashboard](docs/developer-guide/images/ui-sketches/dashboard.excalidraw.png)
+![Alt: a screenshot of the data monitoring dashboard](docs/images/dashboard.png)
 
 <div  align="center">
     <a href="https://compsust.fas.sfu.ca/openCollector/">
