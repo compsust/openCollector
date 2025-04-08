@@ -78,7 +78,7 @@ collector_metadata_table_init_command = (
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     "collector_name VARCHAR, "
     "device_model VARCHAR, "
-    "polling_interval INT, "
+    "polling_interval INT"
     ") TIMESTAMP(timestamp) partition by WEEK"
 )
 
@@ -94,7 +94,7 @@ sensor_metadata_table_init_command = (
     "timestamp TIMESTAMP, "
     f"collector_id SYMBOL CAPACITY {config.COLLECTOR_CAPACITY}, "
     f"sensor_id SYMBOL CAPACITY {config.TOTAL_SENSOR_CAPACITY}, "
-    "sensor_code INT, "
-    "sensor_name VARCHAR, "
+    "sensor_code SYMBOL CAPACITY 256, "
+    "sensor_name VARCHAR"
     ") TIMESTAMP(timestamp) partition by WEEK"
 )
