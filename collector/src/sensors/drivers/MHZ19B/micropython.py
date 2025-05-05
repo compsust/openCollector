@@ -1,6 +1,6 @@
 # MC: 02/21/2025, new file complete implementation
 # MC: 04/04/2025, update implmentation
-
+# MC: 05/04/2025, update poll to use PWM
 import utime
 import machine
 from datastructures import SensorData
@@ -21,12 +21,13 @@ class MHZ19BSensorDriverMicropython(AbstractSensorDriver):
         if config.attributes and config.attributes["baudrate"]:
             baudrate = config.attributes["baudrate"]
 
-        self.uart = machine.UART(
+        """self.uart = machine.UART(
             0,
             baudrate=baudrate,
             tx=machine.Pin(config.gpio["TX"]),
             rx=machine.Pin(config.gpio["RX"]),
-        )
+        )"""
+        self.pwm = machine.Pin(2, machine.Pin.IN)
 
     max_retries = 30
 
@@ -34,30 +35,17 @@ class MHZ19BSensorDriverMicropython(AbstractSensorDriver):
         """
         collects sensor data from MHZ19C
         Args:
-            UART object. Ex: uart_mhz = UART(0, baudrate=9600, tx=Pin(22), rx=Pin(21))
+            Pin Object
         Returns:
             SensorData: The CO2 data returned by the sensor.
         """
-        # Flush any leftover junk
-        for attempt in range(max_retries):
-            while self.uart.any():
-                self.uart.read()
+        high_time = machine.time_pulse_us(self.pwm, 1)  # measure HIGH duration in microseconds
+        low_time = machine.time_pulse_us(self.pwm, 0)   # measure LOW duration in microseconds
 
-            self.uart.write(
-                bytearray([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
-            )  # Command to read CO2
-            timeout = 100
-            start = utime.ticks_ms()
-            while (
-                self.uart.any() < 9
-                and utime.ticks_diff(utime.ticks_ms(), start) < timeout
-            ):
-                utime.sleep_ms(5)
-            raw = self.uart.read(9)
-            # print(raw)
-            if raw and raw[0] == 0xFF:
-                co2 = raw[3] * 256 + raw[4]
-                return co2
+        total_time = high_time + low_time
+        if total_time > 0:
+            co2 = 5000 * (high_time / 1000 - 2) / ((total_time / 1000) - 4)
+            return(co2)
 
         raise Exception("MHZ91B Failed to return data")
 
