@@ -79,9 +79,28 @@ Devcontainers should work with other IDEs such as Neovim, but setup instructions
 
 ### Manual
 
-*TODO add manual installation instructoins*
-Manual installation instructions aren't fully formed yet, but they will require the following steps:
-Installing uv, installing and running questdb, installing dependencies, running in venv
+Use a manual environment when Docker is unavailable or when you only need one sub-project.
+
+1. Install Git, Python 3.13 or later, and [uv](https://docs.astral.sh/uv/getting-started/installation/).
+2. Clone the repository and install the root development dependencies:
+
+    ```bash
+    git clone https://github.com/compsust/openCollector.git
+    cd openCollector
+    uv sync --dev
+    ```
+
+3. When working on a sub-project, change into `collector` or `storage` and run `uv sync --active` so uv installs that sub-project's dependencies and its local dependency on `common`.
+4. Install and start [QuestDB](https://questdb.com/docs/quick-start/) if the work requires database integration. Copy `storage/.env.example` to `storage/.env` and make its PostgreSQL connection settings match the QuestDB instance.
+5. Run the checks used by the project before submitting a change:
+
+    ```bash
+    uv run ruff format --check .
+    uv run ruff check .
+    uv run mkdocs build --strict
+    ```
+
+To preview documentation locally, run `uv run mkdocs serve` from the repository root and open the address printed in the terminal. See the [user setup guide](../user-guide/setup.md) for starting the storage application and database.
 
 ## Supporting New Sensors
 

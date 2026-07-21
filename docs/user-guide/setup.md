@@ -1,68 +1,101 @@
 # Setup
 
-This section of the documentation provides instructions for setting up and using the OpenCollector system to collect data.
+This guide explains how to assemble a small OpenCollector deployment. OpenCollector is currently a prototype, so begin on a trusted local network and validate the system before using it for unattended or production monitoring.
+
+## Before You Begin
+
+You will need:
+
+- A computer capable of running QuestDB and the Python storage service.
+- One or more collector devices, such as a Raspberry Pi Pico W, and supported sensors.
+- Network connectivity from every collector to QuestDB's HTTP endpoint and from the storage service to QuestDB's PostgreSQL endpoint.
+- [Git](https://git-scm.com/), [Python](https://www.python.org/) 3.13 or later, and the [uv package manager](https://docs.astral.sh/uv/getting-started/installation/) for a manual installation.
+- Docker and an editor with Development Containers support if you use the repository's development container.
 
 ## Identify Devices
 
-The first step to deploying the OpenCollector stack is to determine which devices will be hosting which services. The following considerations apply.
+First decide which devices will host each service.
 
-- **Collector** nodes may be deployed on any device capable of reading from sensors and connecting to the internet. All collector code is compatible with *[micropython](https://micropython.org/)*, meaning the collector program may be run on a compatible microcontroller such as a Raspberry Pi Pico W. 
-- **Storage** nodes may be deployed on any device that is capable of hosting a webserver. It may be run on the same device as the collector node, provided that the collector node is not running using *micropython*, as the storage node code is not compatible with *micropython*.
-- **QuestDB** may be hosted on the same device as the **Storage** node, however the device must be capable of storing the desired volume of data at the desired intake bandwidth. If a large amount of data is to be stored, or many simultaneous collector streams are required, it may be best to host the database instance on a seperate device or on the cloud.
+- **Collector** nodes may be deployed on any device capable of reading the sensors and reaching the database. The collector is designed to support MicroPython devices such as the Raspberry Pi Pico W.
+- The **storage** node may run on any computer capable of hosting a Python web server. It may share a computer with QuestDB.
+- **QuestDB** may run beside the storage node or on another host. Size that host for the required data retention, collector count, and sampling frequency.
 
-A list of which sensors are supported by the software is contained within the [Sensors](./collector/sensors.md) page. 
+See [Supported Sensors](./collector/sensors.md) before selecting hardware.
 
 ### Network Considerations
 
-The database is required to be reachable over the network by both the collector and storage nodes. The collector nodes use *HTTP* to upload their data, and the storage node uses *HTTP* to display the user interface in the browser. The storage node uses the *PostgreSQL* protocol for reading data from the database, which by default uses *TCP/IP*.
+Collectors send data to QuestDB over HTTP, normally on port `9000`. The storage service reads QuestDB using the PostgreSQL wire protocol, normally on port `8812`, and serves the browser interface over HTTP, normally on port `8000`. If the components are on separate devices, use the database host's LAN address rather than `localhost` and allow only the required ports through the host firewall.
 
-## Deploy QuestDB and Storage Node
+Do not expose this prototype directly to the public internet. The browser and REST interfaces do not currently enforce authentication or TLS. Use a trusted private network or place the service behind an authenticated HTTPS reverse proxy.
 
-QuestDB and the storage node may be deployed together or seperately. The instructions included below support deploying them through *Docker* or through manual installation.
+## Deploy QuestDB and the Storage Node
 
-##### Things to mention
+The storage service creates the OpenCollector tables when it first starts and successfully connects to QuestDB. Start QuestDB before starting the storage service.
 
-*TODO integrate this into the other sections*
-The database tables are created upon the storage node fisrt starting and connecting to the database.
+### Development Container (Recommended for Evaluation)
 
-### Together
+The repository includes a development Compose configuration that starts QuestDB and a Python development container together. It is intended for local development, not production deployment.
 
-The following instructions are for self-hosting QuestDB together along with the storage node on the same device.
+1. Clone `https://github.com/compsust/openCollector`.
+2. Open the repository in an editor that supports [Development Containers](https://containers.dev/), then choose **Reopen in Container**. Docker starts both the `open-collector` and `database` services, and `uv sync` installs the Python dependencies.
+3. Copy `storage/.env.example` to `storage/.env` and set `QUESTDB_HOST=database`, `QUESTDB_USER=pguser`, and `QUESTDB_PASSWORD=quest` to match `.devcontainer/docker-compose.yml`.
+4. In the development-container terminal, start the storage service:
 
-#### Docker
+    ```bash
+    cd /workspace/storage/src
+    uv run litestar run --app app:app --host 0.0.0.0 --port 8000
+    ```
 
-*TODO*
+5. Forward port `8000` in your editor and open `http://localhost:8000/dashboard`.
 
-#### Manually
+QuestDB's web console is available on port `9000`. Stop the Compose project when it is no longer needed. Database data is retained under `.devcontainer/data/`.
 
-*TODO*
+### Manual Installation on One Host
 
-### Seperate
+1. Install and start QuestDB using its [installation guide](https://questdb.com/docs/quick-start/). Configure an HTTP user for collectors and a PostgreSQL user for the storage service.
+2. Clone the repository and install the storage dependencies:
 
-The following instructions are for hosting QuestDB seperately from the storage node.
+    ```bash
+    git clone https://github.com/compsust/openCollector.git
+    cd openCollector/storage
+    uv sync --active
+    cp .env.example .env
+    ```
 
-#### QuestDB
+3. Edit `.env`. For a database on the same host, use `QUESTDB_HOST=localhost`; set the PostgreSQL username and password to the values configured in QuestDB. See [Storage Config](./storage/config.md) for every setting.
+4. Start the service from the source directory:
 
-Instructions for installing QuestDB are included in its [documentation](https://questdb.com/docs/quick-start/#install-questdb).
+    ```bash
+    cd src
+    uv run litestar run --app app:app --host 0.0.0.0 --port 8000
+    ```
 
-#### Docker
+5. Open `http://localhost:8000/dashboard`. On first startup, check the terminal for database connection or table-creation errors.
 
-*TODO*
+For a lasting deployment, run QuestDB and the storage process under a service manager, restrict network access, and put the web service behind an HTTPS reverse proxy. The repository does not yet provide a production Docker image or service definitions.
 
-#### Manually
+### Separate Database and Storage Hosts
 
-*TODO*
+Install QuestDB on the database host and the storage service on the application host using the manual steps above. In `storage/.env`, set `QUESTDB_HOST` to the database host name or IP address. In each collector's `config.json`, set `upload.host` to that same reachable address and `upload.port` to QuestDB's HTTP port. Confirm connectivity to ports `8812` and `9000` before troubleshooting the application.
 
 ## Assemble Collectors
 
-The wiring used to connect each collector node to its sensors, as well as how each collector node is situated in its environment, does not affect the operating of the system and thus may be achived however the user wishes. However, this project includes both a PCB that may be used to facilitate clean wiring of multiple sensors to a Raspberry Pi Pico W, as well as a 3D printable enclosure. See the [PCB and Enclosure](./collector/pcb.md) page for more information. 
+The wiring and physical placement depend on the deployment. The repository includes an optional PCB for connecting multiple sensors to a Raspberry Pi Pico W and a matching enclosure. See [PCB and Enclosure](./collector/pcb.md) and verify every connection against the sensor documentation before applying power.
 
 ## Configure Collectors
 
-Each collector must be configured with the information required to connect to its sensors and upload its data. See the [Collector Config](./collector/config.md) for information on how to configure a collector.
+Copy `collector/src/config.example.json` to `collector/src/config.json`, assign unique collector and sensor UUIDs, enter the Wi-Fi and QuestDB connection details, and describe each attached sensor. See [Collector Config](./collector/config.md) for all properties and [Supported Sensors](./collector/sensors.md) for sensor-specific pins and attributes.
+
+Do not commit `config.json`: it can contain Wi-Fi and database credentials.
 
 ## Deploy Collectors
 
-*TODO*
+Collector deployment is currently a development workflow rather than a packaged installer.
 
+1. Install a current MicroPython build on the target board using the board vendor's instructions.
+2. Copy the collector source, the required `common` modules, and the completed `config.json` to the board's filesystem using a MicroPython-capable tool such as Thonny or `mpremote`.
+3. Arrange for the collector entry point to run `main()` at boot. The exact file layout and boot file depend on the board and MicroPython tool you use.
+4. Connect the sensors while the board is unpowered, then power the collector and monitor its serial output.
+5. Confirm that the collector and sensors appear on the dashboard and become `OPERATIONAL`. If they do not, check the serial log, IDs, GPIO assignments, Wi-Fi credentials, QuestDB HTTP credentials, and database address.
 
+The current repository does not include a release image or a tested one-command flashing process. Treat the MicroPython deployment steps as experimental and test the complete boot and upload cycle before installing a collector remotely.

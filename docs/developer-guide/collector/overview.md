@@ -82,4 +82,16 @@ Abstract classes are be implemented with Python's `Protocol` type.
 
 ## Development
 
-**TODO: information here on how to flash the software for development**
+The collector is designed to run under both CPython and MicroPython, but MicroPython deployment is currently experimental and the repository does not include an automated flashing script or release image.
+
+For development on a Raspberry Pi Pico W:
+
+1. Flash a current Pico W MicroPython firmware image using the [Raspberry Pi documentation](https://www.raspberrypi.com/documentation/microcontrollers/micropython.html).
+2. Copy `collector/src/config.example.json` to `collector/src/config.json` and replace the example IDs, network credentials, database address, GPIO assignments, and sensor settings.
+3. Copy the collector modules, required modules from `common/src/common`, and `config.json` to the board using Thonny, `mpremote`, or another MicroPython filesystem tool.
+4. Add a small board-level `main.py` that imports the collector entry point and calls `main()`, adjusting the import path to match the layout copied to the board.
+5. Reset the board while a serial console is attached. Confirm initialization, metadata upload, repeated polling, and error reporting before disconnecting it.
+
+Keep secrets and deployment-specific configuration out of version control. When changing collector code, test configuration parsing and sensor drivers under CPython first where practical, then repeat the test on real MicroPython hardware: module availability, filesystem paths, timing, and networking behavior differ between the runtimes.
+
+There is not yet a canonical on-device file layout or a continuous-integration hardware test. If you establish a repeatable flashing layout for a board, document the firmware version and exact copy command alongside the change.
