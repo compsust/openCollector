@@ -26,7 +26,8 @@ jobs:
       - name: "Set up Python"
         uses: actions/setup-python@v6
         with:
-          python-version-file: "pyproject.toml"
+          # The documentation plugin stack is not yet compatible with Python 3.14.
+          python-version: "3.13"
 
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
       - uses: actions/cache@v5
@@ -37,7 +38,7 @@ jobs:
             mkdocs-material-
 
       - name: "Install dependencies"
-        run: uv sync --dev
+        run: uv sync --dev --python 3.13
 
       - name: "Deploy Docs"
         run: uv run mkdocs gh-deploy --force

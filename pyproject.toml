@@ -6,8 +6,8 @@ dependencies = [
     "neoteroi-mkdocs>=1.1.0",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "mkdocs>=1.6.1",
     "mkdocs-include-markdown-plugin>=7.1.5",
     "mkdocs-material>=9.6.9",
