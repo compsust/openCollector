@@ -1,64 +1,42 @@
 from datetime import datetime
-from common import (
-    collector_metadata_table_name,
-    errors_table_name,
-    records_table_name,
-)
-from asyncpg import Connection
 from typing import TypedDict
 
+from asyncpg import Connection
+
+from common import (
+    errors_table_name,
+    records_table_name,
+    sensor_metadata_table_name,
+)
+
 # Query string.
-collector_stats_query_string = f"""--sql 
-WITH 
+collector_stats_query_string = f"""--sql
+WITH
 total_sensors AS (
-    SELECT COUNT(DISTINCT sensor_id) count 
-    FROM {collector_metadata_table_name}
+    SELECT COUNT(DISTINCT sensor_id) count
+    FROM {sensor_metadata_table_name}
     WHERE collector_id = $1
 ),
 total_records AS (
-    SELECT COUNT(*) count 
+    SELECT COUNT(*) count
     FROM {records_table_name}
     WHERE collector_id = $1
 ),
 total_errors AS (
-    SELECT COUNT(*) count 
+    SELECT COUNT(*) count
     FROM {errors_table_name}
     WHERE collector_id = $1
-),
-latest_record AS (
-    (
-        SELECT *
-        FROM {records_table_name}
-        LATEST ON timestamp PARTITION BY collector_id
-    ) WHERE collector_id = $1
-),
-earliest_record AS (
-    SELECT *
-    FROM {records_table_name}
-    WHERE collector_id = $1
-    ORDER BY timestamp ASC
-    LIMIT 1
-),
-latest_error AS (
-    (
-        SELECT *
-        FROM {errors_table_name}
-        LATEST ON timestamp PARTITION BY collector_id
-    ) WHERE collector_id = $1
 )
-SELECT 
+SELECT
     total_sensors.count AS total_sensors,
     total_records.count AS total_records,
     total_errors.count AS total_errors,
-    latest_record.timestamp AS latest_record,
-    earliest_record.timestamp AS earliest_record,
-    latest_error.timestamp AS latest_error
+    (SELECT max(timestamp) FROM {records_table_name} WHERE collector_id = $1) AS latest_record,
+    (SELECT min(timestamp) FROM {records_table_name} WHERE collector_id = $1) AS earliest_record,
+    (SELECT max(timestamp) FROM {errors_table_name} WHERE collector_id = $1) AS latest_error
 FROM total_sensors
 CROSS JOIN total_records
 CROSS JOIN total_errors
-CROSS JOIN latest_record
-CROSS JOIN earliest_record
-CROSS JOIN latest_error
 """
 
 

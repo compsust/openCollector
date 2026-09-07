@@ -1,10 +1,12 @@
 from datetime import datetime
-from common import records_table_name
-from asyncpg import Connection
 from typing import TypedDict
 
+from asyncpg import Connection
+
+from common import records_table_name
+
 # Query string.
-records_from_sensor_query_string = """--sql 
+records_from_sensor_query_string = f"""--sql
 SELECT *
 FROM {records_table_name}
 WHERE sensor_id = $1

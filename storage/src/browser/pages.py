@@ -1,7 +1,8 @@
-from litestar import Controller, get, Request
-from litestar.plugins.htmx import HTMXTemplate, HTMXRequest
-from litestar.response import Template
 import config
+from database.repository import Repository
+from litestar import Controller, Request, get
+from litestar.plugins.htmx import HTMXRequest, HTMXTemplate
+from litestar.response import Template
 
 
 class BrowserPagesController(Controller):
@@ -59,10 +60,15 @@ class BrowserPagesController(Controller):
         status_code=200,
         include_in_schema=False,
     )
-    async def collector(self, collector_id: str, request: Request) -> Template:
+    async def collector(
+        self, collector_id: str, repository: Repository, request: Request
+    ) -> Template:
+        details = await repository.get_collector_details(
+            collector_id=collector_id, errors_page=0, errors_page_size=50
+        )
         context = {
             "request": request,
-            collector_id: collector_id,
+            "collector": details,
         }
         return Template(template_name="collector.html", context=context)
 
@@ -74,7 +80,22 @@ class BrowserPagesController(Controller):
         include_in_schema=False,
     )
     async def sensor(
-        self, collector_id: str, sensor_id: str, request: Request
+        self,
+        collector_id: str,
+        sensor_id: str,
+        repository: Repository,
+        request: Request,
     ) -> Template:
-        context = {"request": request, collector_id: collector_id, sensor_id: sensor_id}
+        details = await repository.get_sensor_details(
+            sensor_id=sensor_id,
+            records_page=0,
+            records_page_size=100,
+            errors_page=0,
+            errors_page_size=50,
+        )
+        context = {
+            "request": request,
+            "collector_id": collector_id,
+            "sensor": details,
+        }
         return Template(template_name="sensor.html", context=context)

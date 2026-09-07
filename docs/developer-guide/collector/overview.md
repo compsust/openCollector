@@ -28,8 +28,8 @@ The main control loop has the following behavior:
 3. On an endless loop:
     1. Collects sensor data.
     2. Uploads sensor data.
-    3. If the data could not be uploaded, saves the data in-memory to re-try next loop.
-    4. Waits a length of time determined by the `polling_interval` configuration parameter.
+    3. If the upload fails, logs the exception locally and proceeds to the next cycle; the failed report is not retried.
+    4. Waits for the configured `polling_interval`, expressed in milliseconds.
 
 ```mermaid
 
@@ -82,16 +82,15 @@ Abstract classes are be implemented with Python's `Protocol` type.
 
 ## Development
 
-The collector is designed to run under both CPython and MicroPython, but MicroPython deployment is currently experimental and the repository does not include an automated flashing script or release image.
+The collector is designed to run under both CPython and MicroPython. Packaging is automated, while deployment on physical hardware remains experimental and must be validated with the target sensors and firmware.
 
 For development on a Raspberry Pi Pico W:
 
 1. Flash a current Pico W MicroPython firmware image using the [Raspberry Pi documentation](https://www.raspberrypi.com/documentation/microcontrollers/micropython.html).
 2. Copy `collector/src/config.example.json` to `collector/src/config.json` and replace the example IDs, network credentials, database address, GPIO assignments, and sensor settings.
-3. Copy the collector modules, required modules from `common/src/common`, and `config.json` to the board using Thonny, `mpremote`, or another MicroPython filesystem tool.
-4. Add a small board-level `main.py` that imports the collector entry point and calls `main()`, adjusting the import path to match the layout copied to the board.
-5. Reset the board while a serial console is attached. Confirm initialization, metadata upload, repeated polling, and error reporting before disconnecting it.
+3. Install `mpremote`, connect one board, and run `./scripts/flash_pico.sh collector/src/config.json` from the repository root.
+4. Reset the board while a serial console is attached. Confirm initialization, metadata upload, repeated polling, and error reporting before disconnecting it.
 
 Keep secrets and deployment-specific configuration out of version control. When changing collector code, test configuration parsing and sensor drivers under CPython first where practical, then repeat the test on real MicroPython hardware: module availability, filesystem paths, timing, and networking behavior differ between the runtimes.
 
-There is not yet a canonical on-device file layout or a continuous-integration hardware test. If you establish a repeatable flashing layout for a board, document the firmware version and exact copy command alongside the change.
+The **Pico W package** workflow validates the canonical on-device layout without hardware. The manually dispatched **Pico W hardware-in-the-loop** workflow requires a self-hosted runner labelled `self-hosted`, `micropython`, and `pico-w`, plus a `PICO_CONFIG_JSON` repository secret. Record the MicroPython firmware version and attached sensor models with each physical test run.

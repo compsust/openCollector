@@ -1,12 +1,12 @@
 # Usage
 
-This page explains how to monitor an OpenCollector deployment through the browser and REST interfaces.
+This page explains how to monitor an openCollector deployment through the browser and REST interfaces.
 
 ## Data Display
 
 ### Data Types
 
-OpenCollector stores two categories of information from a collector:
+openCollector stores two categories of information from a collector:
 
 1. **Records** are numerical readings measured by a sensor. A single sensor can produce several record types, such as temperature and humidity.
 2. **Errors** describe exceptions raised while initializing or reading a sensor, or while the collector performs other work.
@@ -24,17 +24,17 @@ A collector's status is derived from its own errors and the status of its sensor
 
 ### Errors
 
-Sensor errors occur while reading a sensor. Collector errors occur during initialization, upload, or other collector-level work. When an upload fails, the collector attempts to retain the error for a later successful upload; an active network failure can therefore delay the error appearing in the interface.
+Sensor errors occur while reading a sensor. The current collector provides best-effort, at-most-once delivery: each report is submitted once during its polling cycle. If an upload fails, the exception is printed locally and polling continues. The failed report is neither buffered nor retried, so measurements produced during a communication failure are permanently absent from QuestDB. Sensor polling errors can be stored when communication is available, but communication failures themselves are not persisted remotely.
 
-Record retry and durable offline buffering are not yet complete. A collector interruption or extended network outage may result in missing readings, so do not rely on the prototype as the only copy of safety-critical data.
+Durable offline buffering and bounded retry are future work. Do not rely on this research prototype as the only copy of safety-critical data.
 
 ## Web Interface
 
-Start the storage service, then open its address in a browser (for a local default deployment, `http://localhost:8000`). The navigation bar links to the home page, dashboard, login placeholder, and project information.
+Start the storage service, then open its address in a browser (for a local default deployment, `http://localhost:8000`). The navigation bar links to the home page, dashboard, authentication information, and project information.
 
 ### Authentication
 
-Authentication is not implemented in the current browser interface. The `/login` route is a placeholder, and the `INTERFACE_USER` and `INTERFACE_PASSWORD` configuration values are not enforced. Keep the interface on a trusted network or protect it with an authenticated HTTPS reverse proxy.
+Browser and REST routes use HTTP Basic authentication when `AUTH_ENABLED=true`, which is the default. Enter `INTERFACE_USER` and `INTERFACE_PASSWORD` when prompted. Basic authentication does not encrypt traffic, so production deployments must use HTTPS. The production Compose configuration includes Caddy for TLS termination.
 
 ### Dashboard
 
@@ -51,11 +51,11 @@ The page refresh interval is controlled by `INTERFACE_REFRESH_SECONDS` in the st
 
 ### Collector Page
 
-Collector detail routes use `/collectors/{collector_id}`. The route exists, but its page is not implemented in the current prototype. Use the dashboard or REST API for collector information.
+Select a collector name on the dashboard, or open `/collectors/{collector_id}`, to view device metadata, totals, latest sensor values, sensor status, and recent errors. Select a sensor card to open its detail page.
 
 ### Sensor Page
 
-Sensor detail routes use `/collectors/{collector_id}/sensors/{sensor_id}`. The route exists, but its page is not implemented in the current prototype. Use the dashboard graph or REST API for sensor information.
+Open `/collectors/{collector_id}/sensors/{sensor_id}` to view the sensor type, current status, recent records, and recent errors. The page displays the first 100 records and 50 errors returned by the detail query.
 
 ## REST API
 
@@ -63,7 +63,7 @@ The storage service exposes a read-only JSON API under `/api/query`. The generat
 
 ### Authentication
 
-The REST API does not currently enforce authentication. Apply the same network restrictions or reverse-proxy authentication used for the browser interface.
+The REST API uses the same HTTP Basic credentials as the browser. Always use HTTPS outside a trusted local network.
 
 ### Endpoints
 
@@ -74,11 +74,11 @@ The REST API does not currently enforce authentication. Apply the same network r
 For example:
 
 ```bash
-curl "http://localhost:8000/api/query/summary"
+curl --user "admin:YOUR_PASSWORD" "http://localhost:8000/api/query/summary"
 ```
 
 ```bash
-curl "http://localhost:8000/api/query/collectors/COLLECTOR_ID?errors_page=1&errors_page_size=25"
+curl --user "admin:YOUR_PASSWORD" "http://localhost:8000/api/query/collectors/COLLECTOR_ID?errors_page=1&errors_page_size=25"
 ```
 
 Use IDs from the collector configuration or a previous API response. Pagination values must be positive integers. API routes under `/api/command` are reserved for future functionality and currently expose no operations.

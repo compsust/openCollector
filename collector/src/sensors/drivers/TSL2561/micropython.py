@@ -1,10 +1,10 @@
 # MC: 02/21/2025, new file complete implementation
 # MC: 03/07/2025, Update to calculate Lux
 
-import utime
 import machine
-from datastructures import SensorData
-from config import SensorConfig
+
+from ....config import SensorConfig
+from ....datastructures import SensorData
 from ...driver import AbstractSensorDriver
 
 
@@ -54,4 +54,4 @@ class TSL2561SensorDriverMicropython(AbstractSensorDriver):
             lux = 0.00338 * ch0 - 0.00260 * ch1
         else:
             lux = 0
-        return {"Luminosity": lux}
+        return {"lux": lux}

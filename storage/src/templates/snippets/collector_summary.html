@@ -8,18 +8,18 @@
         {% for collector in summaries %}
             <li>
                 <div class="flex justify-between">
-                    <span class="text-lg font-bold">
+                    <a class="text-lg font-bold hover:underline" href="/collectors/{{ collector.id }}">
                         {{ collector.name }}
-                    </span>
+                    </a>
                 </div>
                 <ul class="w-full px-2">
 
                     {% for sensor in collector.sensors %}
                         <li class="mt-2">
                             <div class="flex justify-between">
-                                <span class="text-md font-semibold">
+                                <a class="text-md font-semibold hover:underline" href="/collectors/{{ collector.id }}/sensors/{{ sensor.id }}">
                                     {{ sensor.name }}
-                                </span>
+                                </a>
                                 {% with status=sensor.status %}
                                     {% include 'snippets/status.html' %}
                                 {% endwith %}

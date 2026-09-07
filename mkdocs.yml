@@ -45,6 +45,7 @@ nav:
   - User Guide:
     - Usage: user-guide/usage.md
     - Setup: user-guide/setup.md
+    - Troubleshooting: user-guide/troubleshooting.md
     - Collector:
       - PCB and Case: user-guide/collector/pcb.md
       - Config: user-guide/collector/config.md

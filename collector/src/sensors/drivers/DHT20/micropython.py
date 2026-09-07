@@ -1,10 +1,11 @@
 # MC: 02/21/2025, Complete implmentation
 # MC: 03/07/2025, Added initilization
 
-import utime
 import machine
-from datastructures import SensorData
-from config import SensorConfig
+import utime
+
+from ....config import SensorConfig
+from ....datastructures import SensorData
 from ...driver import AbstractSensorDriver
 
 

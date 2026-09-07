@@ -1,17 +1,26 @@
-from requests.auth import HTTPBasicAuth
-from requests import post
-from config import ConfigManager, UploadConfig
+try:
+    import requests
+except ImportError:
+    import urequests as requests
+
+try:
+    import base64
+except ImportError:
+    import ubinascii as base64
+
 from common import (
-    records_table_name,
-    errors_table_name,
     collector_metadata_table_name,
+    errors_table_name,
+    records_table_name,
     sensor_metadata_table_name,
 )
-from datastructures import (
-    CollectorReport,
+
+from ..config import ConfigManager, UploadConfig
+from ..datastructures import (
     CollectorError,
-    CollectorRecord,
     CollectorMetadata,
+    CollectorRecord,
+    CollectorReport,
     SensorMetadata,
 )
 
@@ -43,11 +52,42 @@ class UploadManager:
         self.config = config_manager.config.upload
 
         # URL for QuestDB data POST. See: https://questdb.com/docs/reference/api/rest
-        self.endpoint = "http://" + self.config.host + ":" + self.config.port + "/imp"
-        self.auth = HTTPBasicAuth(self.config.user, self.config.password)
+        self.endpoint = f"http://{self.config.host}:{self.config.port}/imp"
+        credentials = f"{self.config.user}:{self.config.password}".encode()
+        encoder = (
+            base64.b64encode if hasattr(base64, "b64encode") else base64.b2a_base64
+        )
+        encoded = encoder(credentials).decode().strip()
+        self.headers = {"Authorization": f"Basic {encoded}"}
+
+    def _post_files(self, files: dict[str, tuple[str, str]]):
+        """POST one CSV file as multipart data on CPython or MicroPython."""
+        _, (filename, csv) = next(iter(files.items()))
+        boundary = "----openCollectorBoundary"
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="data"; filename="{filename}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{csv}\r\n--{boundary}--\r\n"
+        ).encode()
+        headers = dict(self.headers)
+        headers["Content-Type"] = f"multipart/form-data; boundary={boundary}"
+        response = requests.post(self.endpoint, data=body, headers=headers)
+        try:
+            if hasattr(response, "raise_for_status"):
+                response.raise_for_status()
+            elif response.status_code < 200 or response.status_code >= 300:
+                raise RuntimeError(
+                    f"QuestDB upload failed: HTTP {response.status_code}"
+                )
+        finally:
+            if hasattr(response, "close"):
+                response.close()
 
     def upload(
-        self, report: CollectorReport, additional_errors: list[CollectorError] = []
+        self,
+        report: CollectorReport,
+        additional_errors: list[CollectorError] | None = None,
     ):
         """
         Uploads a collector report.
@@ -57,7 +97,7 @@ class UploadManager:
             additional_errors: Any additional errors to attach.
         """
         # Join any additional errors.
-        errors = [*report.errors, *additional_errors]
+        errors = [*report.errors, *(additional_errors or [])]
 
         # Construct a CSV version of the errors.
         errors = self._construct_errors(errors)
@@ -66,14 +106,10 @@ class UploadManager:
         records = self._construct_records(report.records)
 
         # Upload the errors.
-        response = post(self.endpoint, files=errors, auth=self.auth)
-        # Raises an exception for any non-successful response.
-        response.raise_for_status()
+        self._post_files(errors)
 
         # Upload the records.
-        response = post(self.endpoint, files=records, auth=self.auth)
-        # Raises an exception for any non-successful response.
-        response.raise_for_status()
+        self._post_files(records)
 
     def upload_metadata(
         self,
@@ -93,14 +129,10 @@ class UploadManager:
         sensors = self._construct_sensor_metadata(sensor_metadata)
 
         # Upload the collector metadata.
-        response = post(self.endpoint, files=collector, auth=self.auth)
-        # Raises an exception for any non-successful response.
-        response.raise_for_status()
+        self._post_files(collector)
 
         # Upload the sensor metadata.
-        response = post(self.endpoint, files=sensors, auth=self.auth)
-        # Raises an exception for any non-successful response.
-        response.raise_for_status()
+        self._post_files(sensors)
 
     def _construct_records(
         self, records: list[CollectorRecord]
@@ -118,7 +150,7 @@ class UploadManager:
 
         records_csv_lines = ["timestamp,collector_id,sensor_id,record_id,value"]
         for record in records:
-            for record_id, value in record.data:
+            for record_id, value in record.data.items():
                 records_csv_lines.append(
                     f"{record.timestamp},{self.collector_id},{record.sensor_id},{record_id},{value}"
                 )

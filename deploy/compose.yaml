@@ -1,0 +1,88 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: opencollector
+
+services:
+  database:
+    image: questdb/questdb:9.4.3
+    restart: unless-stopped
+    environment:
+      QDB_PG_USER: ${QUESTDB_USER:?Set QUESTDB_USER}
+      QDB_PG_PASSWORD: ${QUESTDB_PASSWORD:?Set QUESTDB_PASSWORD}
+      QDB_HTTP_USER: ${COLLECTOR_USER:?Set COLLECTOR_USER}
+      QDB_HTTP_PASSWORD: ${COLLECTOR_PASSWORD:?Set COLLECTOR_PASSWORD}
+    volumes:
+      - questdb-data:/var/lib/questdb
+    ports:
+      # Collector ingestion. Keep the default loopback binding unless a
+      # firewall-restricted collector network must reach this host.
+      - "${QUESTDB_BIND_ADDRESS:-127.0.0.1}:9000:9000"
+    expose:
+      - "8812"
+      - "9003"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:9003 >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+
+  storage:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      QUESTDB_HOST: database
+      QUESTDB_PORT: "8812"
+      QUESTDB_USER: ${QUESTDB_USER:?Set QUESTDB_USER}
+      QUESTDB_PASSWORD: ${QUESTDB_PASSWORD:?Set QUESTDB_PASSWORD}
+      QUESTDB_DB_NAME: qdb
+      AUTH_ENABLED: "true"
+      INTERFACE_USER: ${INTERFACE_USER:?Set INTERFACE_USER}
+      INTERFACE_PASSWORD: ${INTERFACE_PASSWORD:?Set INTERFACE_PASSWORD}
+      NODE_NAME: ${NODE_NAME:-openCollector}
+      DEBUG: "false"
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+  proxy:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    depends_on:
+      storage:
+        condition: service_healthy
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN to the public DNS name}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  questdb-data:
+  caddy-data:
+  caddy-config:

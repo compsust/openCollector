@@ -1,8 +1,12 @@
-name: ci 
+name: ci
 on:
   push:
     branches:
       - master 
+      - main
+  pull_request:
+    branches:
+      - master
       - main
 permissions:
   contents: write
@@ -29,16 +33,34 @@ jobs:
           # The documentation plugin stack is not yet compatible with Python 3.14.
           python-version: "3.13"
 
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
       - uses: actions/cache@v5
         with:
           key: mkdocs-material-${{ env.cache_id }}
-          path: .cache 
+          path: .cache
           restore-keys: |
             mkdocs-material-
 
       - name: "Install dependencies"
         run: uv sync --dev --python 3.13
 
+      - name: "Test collector polling and packaging"
+        run: |
+          cd collector
+          uv sync --no-dev --python 3.13
+          uv run python -m unittest discover -s tests
+          cd ..
+          uv run --python 3.13 scripts/package_pico.py --config collector/src/config.example.json
+
+      - name: "Test storage authentication"
+        run: |
+          cd storage
+          uv sync --no-dev --python 3.13
+          PYTHONPATH=src uv run python -m unittest discover -s tests
+
+      - name: "Build documentation"
+        run: uv run mkdocs build
+
       - name: "Deploy Docs"
+        if: github.event_name == 'push'
         run: uv run mkdocs gh-deploy --force

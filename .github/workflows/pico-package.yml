@@ -1,0 +1,35 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: Pico W package
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "collector/**"
+      - "common/**"
+      - "scripts/package_pico.py"
+      - ".github/workflows/pico-package.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Build Pico package with example configuration
+        run: python scripts/package_pico.py --config collector/src/config.example.json
+      - name: Upload Pico package
+        uses: actions/upload-artifact@v7
+        with:
+          name: openCollector-pico
+          path: dist/pico.zip
+          if-no-files-found: error

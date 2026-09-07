@@ -1,0 +1,37 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: Pico W hardware-in-the-loop
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pico-w-hil
+  cancel-in-progress: false
+
+jobs:
+  pico:
+    runs-on: [self-hosted, micropython, pico-w]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Install board tooling
+        run: python -m pip install "mpremote==1.26.1"
+      - name: Create hardware configuration
+        env:
+          PICO_CONFIG_JSON: ${{ secrets.PICO_CONFIG_JSON }}
+        run: python -c "import os, pathlib; pathlib.Path('pico-config.json').write_text(os.environ['PICO_CONFIG_JSON'])"
+      - name: Package and flash
+        run: ./scripts/flash_pico.sh pico-config.json "${PICO_DEVICE:-auto}"
+      - name: Run one-cycle hardware smoke test
+        run: mpremote connect "${PICO_DEVICE:-auto}" run scripts/pico_hil_test.py | tee pico-hil.log
+      - name: Verify result
+        run: grep -q HIL_OK pico-hil.log

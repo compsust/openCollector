@@ -23,7 +23,7 @@ def get_attribute(
         The config attribute, or None if it does not exist and is not required.
     """
     try:
-        value = config["attribute"]
+        value = config[attribute]
     except KeyError:
         if required:
             raise ValueError(
