@@ -45,32 +45,32 @@ class ConfigManager:
         """
         # Load config into a dictionary.
         with open("config.json") as f:
-            config: dict[str, Any] = json.load(f)
+            raw_config: dict[str, Any] = json.load(f)
 
         # Initialize all configs
 
         # Device config
-        if "device" not in config:
+        if "device" not in raw_config:
             raise ValueError("Config missing device config.")
-        device_config = DeviceConfig(config["device"], self.micropython)
+        device_config = DeviceConfig(raw_config["device"], self.micropython)
 
         # Upload config
-        if "upload" not in config:
+        if "upload" not in raw_config:
             raise ValueError("Config missing upload config.")
-        upload_config = UploadConfig(config["upload"])
+        upload_config = UploadConfig(raw_config["upload"])
 
         # Sensor configs
-        if "sensors" not in config:
+        if "sensors" not in raw_config:
             raise ValueError("Config missing sensors config.")
 
         sensors: list[SensorConfig] = []
-        for config, index in config["sensors"]:
-            sensor = SensorConfig(config, index)
+        for index, sensor_config in enumerate(raw_config["sensors"]):
+            sensor = SensorConfig(sensor_config, index)
             sensors.append(sensor)
 
         # Collector config
         collector_config = CollectorConfig(
-            config, device_config, upload_config, sensors
+            raw_config, device_config, upload_config, sensors
         )
 
         self._config = collector_config

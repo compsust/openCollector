@@ -1,19 +1,22 @@
 from datetime import datetime, timedelta
+
+import config
 from asyncpg.connection import Connection
-from common import SensorCodeEnum, get_unit_from_record_id
 from datastructures import (
-    SensorSummary,
-    CollectorSummary,
-    NetworkSummary,
     CollectorDetails,
-    SensorDetails,
     CollectorError,
     CollectorRecord,
-    StatusEnum,
+    CollectorSummary,
+    NetworkSummary,
+    SensorDetails,
+    SensorSummary,
     SensorTimeline,
+    StatusEnum,
 )
+
+from common import SensorCodeEnum, get_unit_from_record_id
+
 from . import queries
-import config
 
 
 class RepositoryError(Exception):
@@ -394,7 +397,7 @@ class Repository:
                     (
                         sensor
                         for sensor in latest_sensor_metadata
-                        if sensor["sensor_id"] == record["sensor_id"]
+                        if sensor["sensor_id"] == error["sensor_id"]
                     ),
                     None,
                 )
@@ -503,16 +506,13 @@ class Repository:
         if not latest_record and not latest_error:
             status = StatusEnum.UNKNOWN
 
-        elif latest_record and latest_error:
+        else:
             # If the latest record or error is long ago enough, determined
             # by active_device_polling_threshold, is is considered DROPPED.
-            latest_timestamp = max(
-                (
-                    item["timestamp"]
-                    for item in (latest_record[0], latest_error[0])
-                    if item is not None
-                )
-            )
+            latest_items = [
+                items[0] for items in (latest_record, latest_error) if items
+            ]
+            latest_timestamp = max(item["timestamp"] for item in latest_items)
             active_threshold = timedelta(
                 milliseconds=(
                     collector_metadata["polling_interval"]
@@ -521,18 +521,15 @@ class Repository:
             )
             if latest_timestamp < (datetime.now() - active_threshold):
                 status = StatusEnum.DROPPED
-
-        else:
             # If the error is more recent than the record, the status is ERROR.
-            if (latest_error and not latest_record) or (
+            elif (latest_error and not latest_record) or (
                 latest_error
                 and latest_record
                 and latest_error[0]["timestamp"] > latest_record[0]["timestamp"]
             ):
                 status = StatusEnum.ERROR
-
-        # Otherwise, it is OPERATIONAL.
-        status = StatusEnum.OPERATIONAL
+            else:
+                status = StatusEnum.OPERATIONAL
 
         records: list[CollectorRecord] = []
         for record in sensor_records:

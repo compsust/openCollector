@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Authentication - openCollector{% endblock %}
+{% set page_heading = "Authentication" %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto p-8 space-y-4">
+  <p>openCollector protects the browser and REST interfaces with HTTP Basic authentication when <code>AUTH_ENABLED=true</code>.</p>
+  <p>Your browser requests the configured <code>INTERFACE_USER</code> and <code>INTERFACE_PASSWORD</code> before loading a protected page. Use HTTPS outside a trusted network because Basic authentication does not encrypt credentials.</p>
+  <p>Browsers may cache credentials. Close all browser windows for this site, or use a private window, after changing the password.</p>
+</div>
+{% endblock body %}

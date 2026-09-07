@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ collector.name }} - openCollector{% endblock %}
+{% set page_heading = collector.name %}
+
+{% block body %}
+<div class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4" aria-label="Collector statistics">
+    <div class="bg-gray-100 border border-gray-300 rounded-lg p-4"><div class="text-sm text-gray-600">Device</div><div class="font-bold">{{ collector.device_model }}</div></div>
+    <div class="bg-gray-100 border border-gray-300 rounded-lg p-4"><div class="text-sm text-gray-600">Polling interval</div><div class="font-bold">{{ collector.polling_interval }} ms</div></div>
+    <div class="bg-gray-100 border border-gray-300 rounded-lg p-4"><div class="text-sm text-gray-600">Records</div><div class="font-bold">{{ collector.total_records }}</div></div>
+    <div class="bg-gray-100 border border-gray-300 rounded-lg p-4"><div class="text-sm text-gray-600">Errors</div><div class="font-bold">{{ collector.total_errors }}</div></div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-bold mb-4">Sensors</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      {% for sensor in collector.sensors %}
+      <a class="block bg-gray-100 border border-gray-300 rounded-lg p-4 hover:border-sky-500" href="/collectors/{{ collector.id }}/sensors/{{ sensor.id }}">
+        <div class="flex justify-between items-center"><span class="font-bold">{{ sensor.name }}</span>{% with status=sensor.status %}{% include 'snippets/status.html' %}{% endwith %}</div>
+        <div class="text-xs text-gray-500 mt-1">{{ sensor.id }}</div>
+        {% for record in sensor.last_value %}<div class="flex justify-between mt-2"><span>{{ record.record_name }}</span><span>{{ "%.2f"|format(record.value) }} {{ record.unit }}</span></div>{% endfor %}
+      </a>
+      {% else %}<p>No sensor records have been received.</p>{% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-bold mb-4">Recent errors</h2>
+    <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="text-left bg-gray-100"><th class="p-3">Time</th><th class="p-3">Source</th><th class="p-3">Message</th></tr></thead><tbody>
+      {% for error in collector.errors %}<tr class="border-t"><td class="p-3 whitespace-nowrap">{{ error.timestamp }}</td><td class="p-3">{{ error.source }}</td><td class="p-3">{{ error.message }}</td></tr>
+      {% else %}<tr><td class="p-3" colspan="3">No errors reported.</td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+</div>
+{% endblock body %}

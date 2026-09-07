@@ -2,6 +2,7 @@
 name = "storage"
 version = "0.1.0"
 description = "The component of openCollector which interfaces with the database and provides data access."
+license = "MPL-2.0"
 dependencies = [
     "common",
     "litestar[standard]>=2.13.0",
@@ -11,8 +12,8 @@ dependencies = [
 ]
 requires-python = ">= 3.12"
 
-[tool.uv]
-dev-dependencies = ["questdb", "typed-argument-parser"]
+[dependency-groups]
+dev = ["questdb", "typed-argument-parser"]
 
 [tool.uv.sources]
 common = { path = "../common" }

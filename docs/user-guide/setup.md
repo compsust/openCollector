@@ -1,6 +1,6 @@
 # Setup
 
-This guide explains how to assemble a small OpenCollector deployment. OpenCollector is currently a prototype, so begin on a trusted local network and validate the system before using it for unattended or production monitoring.
+This guide explains how to assemble a small openCollector deployment. openCollector is currently a research prototype, so validate the complete system before using it for unattended monitoring.
 
 ## Before You Begin
 
@@ -26,11 +26,11 @@ See [Supported Sensors](./collector/sensors.md) before selecting hardware.
 
 Collectors send data to QuestDB over HTTP, normally on port `9000`. The storage service reads QuestDB using the PostgreSQL wire protocol, normally on port `8812`, and serves the browser interface over HTTP, normally on port `8000`. If the components are on separate devices, use the database host's LAN address rather than `localhost` and allow only the required ports through the host firewall.
 
-Do not expose this prototype directly to the public internet. The browser and REST interfaces do not currently enforce authentication or TLS. Use a trusted private network or place the service behind an authenticated HTTPS reverse proxy.
+The browser and REST interfaces enforce HTTP Basic authentication by default, but Basic credentials are safe only when transported over HTTPS. Use the production Caddy configuration or another HTTPS reverse proxy before exposing the interface outside a trusted network. Keep QuestDB's ingestion port limited to intended collector networks.
 
 ## Deploy QuestDB and the Storage Node
 
-The storage service creates the OpenCollector tables when it first starts and successfully connects to QuestDB. Start QuestDB before starting the storage service.
+The storage service creates the openCollector tables when it first starts and successfully connects to QuestDB. Start QuestDB before starting the storage service.
 
 ### Development Container (Recommended for Evaluation)
 
@@ -72,7 +72,23 @@ QuestDB's web console is available on port `9000`. Stop the Compose project when
 
 5. Open `http://localhost:8000/dashboard`. On first startup, check the terminal for database connection or table-creation errors.
 
-For a lasting deployment, run QuestDB and the storage process under a service manager, restrict network access, and put the web service behind an HTTPS reverse proxy. The repository does not yet provide a production Docker image or service definitions.
+### Production Compose Deployment
+
+The `deploy/compose.yaml` stack runs a pinned QuestDB release, the openCollector storage image, and Caddy as an HTTPS reverse proxy. It includes persistent volumes, health checks, restart policies, an unprivileged read-only storage container, and required credentials.
+
+1. Point a DNS name at the server and allow inbound ports `80` and `443`. Keep port `9000` bound to loopback unless collectors must reach it; if they do, set `QUESTDB_BIND_ADDRESS` to the appropriate host address and restrict the port with a firewall.
+2. Copy `deploy/.env.example` to `deploy/.env` and replace every example credential with a different long, randomly generated value. Set `DOMAIN` to the public DNS name.
+3. Build and start the stack from the repository root:
+
+    ```bash
+    docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build
+    docker compose --env-file deploy/.env -f deploy/compose.yaml ps
+    ```
+
+4. Open `https://YOUR_DOMAIN/dashboard` and enter `INTERFACE_USER` and `INTERFACE_PASSWORD`.
+5. Back up the `questdb-data` Docker volume and the deployment `.env` through secure, access-controlled processes.
+
+For a non-container storage deployment, `deploy/opencollector-storage.service` is a hardened systemd starting point. Adjust its paths and create `/etc/opencollector/storage.env` with permissions readable only by the service account.
 
 ### Separate Database and Storage Hosts
 
@@ -90,12 +106,13 @@ Do not commit `config.json`: it can contain Wi-Fi and database credentials.
 
 ## Deploy Collectors
 
-Collector deployment is currently a development workflow rather than a packaged installer.
+Collector deployment uses the packaging and flashing scripts in `scripts/`.
 
 1. Install a current MicroPython build on the target board using the board vendor's instructions.
-2. Copy the collector source, the required `common` modules, and the completed `config.json` to the board's filesystem using a MicroPython-capable tool such as Thonny or `mpremote`.
-3. Arrange for the collector entry point to run `main()` at boot. The exact file layout and boot file depend on the board and MicroPython tool you use.
-4. Connect the sensors while the board is unpowered, then power the collector and monitor its serial output.
-5. Confirm that the collector and sensors appear on the dashboard and become `OPERATIONAL`. If they do not, check the serial log, IDs, GPIO assignments, Wi-Fi credentials, QuestDB HTTP credentials, and database address.
+2. Install the host tool with `python -m pip install mpremote`.
+3. Connect one Pico W over USB and run `./scripts/flash_pico.sh collector/src/config.json`. Pass an `mpremote` device identifier as the second argument if auto-detection is ambiguous.
+4. The script validates the configuration, creates `dist/pico.zip`, copies the collector and common packages plus a boot `main.py`, and resets the board.
+5. Connect the sensors while the board is unpowered, then power the collector and monitor its serial output.
+6. Confirm that the collector and sensors appear on the dashboard and become `OPERATIONAL`. See [Troubleshooting](./troubleshooting.md) if they do not.
 
-The current repository does not include a release image or a tested one-command flashing process. Treat the MicroPython deployment steps as experimental and test the complete boot and upload cycle before installing a collector remotely.
+The **Pico W package** workflow creates a downloadable package on changes to the collector. The manually dispatched **Pico W hardware-in-the-loop** workflow flashes a physically attached board and runs one sensor polling cycle. The HIL workflow requires a suitably labelled, secured self-hosted runner; it cannot run on GitHub-hosted hardware.

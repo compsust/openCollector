@@ -1,9 +1,9 @@
 import time
 
-from config import ConfigManager
-from collector.src.sensors.driver import AbstractSensorDriver
-from sensors.sensor_codes import get_sensor_driver_from_code
-from datastructures import CollectorRecord, CollectorError
+from ..config import ConfigManager
+from ..datastructures import CollectorError, CollectorRecord
+from .driver import AbstractSensorDriver
+from .sensor_codes import get_sensor_driver_from_code
 
 
 class SensorManager:
@@ -18,7 +18,7 @@ class SensorManager:
     """
 
     collector_id: str
-    drivers: list[AbstractSensorDriver] = []
+    drivers: list[AbstractSensorDriver]
 
     def __init__(self, config_manager: ConfigManager):
         """
@@ -29,6 +29,7 @@ class SensorManager:
                 used to retrieve the sensor configs.
         """
         self.collector_id = config_manager.config.collector_id
+        self.drivers = []
 
         for sensor_config in config_manager.config.sensors:
             # Retrieve the driver class for this sensor.

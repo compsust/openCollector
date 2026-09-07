@@ -1,8 +1,7 @@
 from common import SensorCodeEnum
 
-from .driver import AbstractSensorDriver
 from . import drivers
-
+from .driver import AbstractSensorDriver
 
 sensor_drivers = {
     SensorCodeEnum.MOCK: {

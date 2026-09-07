@@ -1,0 +1,25 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+[Unit]
+Description=openCollector storage web service
+After=network-online.target questdb.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=opencollector
+Group=opencollector
+WorkingDirectory=/opt/opencollector/storage/src
+EnvironmentFile=/etc/opencollector/storage.env
+ExecStart=/opt/opencollector/storage/.venv/bin/litestar run --app app:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

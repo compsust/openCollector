@@ -1,10 +1,11 @@
 # MC: 02/21/2025, new file complete implementation
 # MC: 04/04/2025, update implementation
 
-import utime
 import machine
-from datastructures import SensorData
-from config import SensorConfig
+import utime
+
+from ....config import SensorConfig
+from ....datastructures import SensorData
 from ...driver import AbstractSensorDriver
 
 
@@ -63,7 +64,7 @@ class PMS5003SensorDriverMicropython(AbstractSensorDriver):
 
         raise Exception("PMS5003 Failed to return data")
 
-    def pms5003_build_frame(cmd_bytes):
+    def pms5003_build_frame(self, cmd_bytes):
         """
         Build command byte array
         Args:
@@ -74,7 +75,7 @@ class PMS5003SensorDriverMicropython(AbstractSensorDriver):
         if len(cmd_bytes) != 3:
             raise RuntimeError("Malformed command frame")
         cmd_frame = bytearray()
-        cmd_frame.extend(PMS5003_SOF)
+        cmd_frame.extend(self.PMS5003_SOF)
         cmd_frame.extend(cmd_bytes)
 
         cmd_frame.extend(sum(cmd_frame).to_bytes(2, "big"))

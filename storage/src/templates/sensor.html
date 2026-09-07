@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ sensor.name }} - openCollector{% endblock %}
+{% set page_heading = sensor.name %}
+
+{% block body %}
+<div class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+  <a class="text-sky-700 underline" href="/collectors/{{ collector_id }}">← Back to collector</a>
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4" aria-label="Sensor statistics">
+    <div class="bg-gray-100 border rounded-lg p-4"><div class="text-sm text-gray-600">Type</div><div class="font-bold">{{ sensor.code }}</div></div>
+    <div class="bg-gray-100 border rounded-lg p-4"><div class="text-sm text-gray-600">Status</div><div class="flex gap-2 items-center font-bold">{% with status=sensor.status %}{% include 'snippets/status.html' %}{% endwith %} {{ sensor.status }}</div></div>
+    <div class="bg-gray-100 border rounded-lg p-4"><div class="text-sm text-gray-600">Records</div><div class="font-bold">{{ sensor.total_records }}</div></div>
+    <div class="bg-gray-100 border rounded-lg p-4"><div class="text-sm text-gray-600">Errors</div><div class="font-bold">{{ sensor.total_errors }}</div></div>
+  </section>
+
+  <section><h2 class="text-2xl font-bold mb-4">Recent records</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="text-left bg-gray-100"><th class="p-3">Time</th><th class="p-3">Measurement</th><th class="p-3">Value</th></tr></thead><tbody>
+    {% for record in sensor.records %}<tr class="border-t"><td class="p-3 whitespace-nowrap">{{ record.timestamp }}</td><td class="p-3">{{ record.record_name }}</td><td class="p-3">{{ record.value }} {{ record.unit }}</td></tr>{% else %}<tr><td class="p-3" colspan="3">No records received.</td></tr>{% endfor %}
+  </tbody></table></div></section>
+
+  <section><h2 class="text-2xl font-bold mb-4">Recent errors</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="text-left bg-gray-100"><th class="p-3">Time</th><th class="p-3">Message</th></tr></thead><tbody>
+    {% for error in sensor.errors %}<tr class="border-t"><td class="p-3 whitespace-nowrap">{{ error.timestamp }}</td><td class="p-3">{{ error.message }}</td></tr>{% else %}<tr><td class="p-3" colspan="2">No errors reported.</td></tr>{% endfor %}
+  </tbody></table></div></section>
+</div>
+{% endblock body %}

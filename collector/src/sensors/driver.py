@@ -1,7 +1,7 @@
 from typing import Protocol
 
-from config import SensorConfig
-from datastructures import SensorData
+from ..config import SensorConfig
+from ..datastructures import SensorData
 
 
 class AbstractSensorDriver(Protocol):

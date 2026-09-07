@@ -1,1 +1,13 @@
+.git
+.github
 .venv
+**/.venv
+**/__pycache__
+**/.pytest_cache
+.devcontainer/data
+site
+paper
+PCBs
+Enclosure_Design
+Website_Development
+archived_files

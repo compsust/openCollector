@@ -1,6 +1,7 @@
 from typing import Any
 
 from common import SensorCodeEnum
+
 from .utils import get_attribute
 
 
@@ -106,7 +107,6 @@ class SensorConfig:
             config: The sensor config object, ie. a
                 dictionary contained within the "sensors" array in the config file.
             index: The index of the sensor config within the "sensors" array.
-            allowed_gpio: The allowed GPIO pins as configured in the device config.
         """
         self.sensor_id = get_attribute(config, "sensor_id", f"sensor[{index}]")
         self.sensor_code = SensorCodeEnum[

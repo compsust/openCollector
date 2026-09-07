@@ -2,7 +2,7 @@ from typing import NamedTuple
 
 from common import SensorCodeEnum
 
-type SensorData = dict[str, float | int]
+SensorData = dict[str, float | int]
 """Alias for data returned by a sensor. The keys must be values of record_id in the sensor metadata and the values are numerical."""
 
 

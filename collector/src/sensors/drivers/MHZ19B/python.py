@@ -1,5 +1,5 @@
-from config import SensorConfig
-from datastructures import SensorData
+from ....config import SensorConfig
+from ....datastructures import SensorData
 from ...driver import AbstractSensorDriver
 
 
