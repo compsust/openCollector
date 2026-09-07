@@ -1,0 +1,711 @@
+{
+    "info": {
+        "title": "Litestar API",
+        "version": "1.0.0"
+    },
+    "openapi": "3.1.0",
+    "servers": [
+        {
+            "url": "/"
+        }
+    ],
+    "paths": {
+        "/api/query/collectors/{collector_id}": {
+            "get": {
+                "summary": "GetCollectorDetails",
+                "description": "Returns the details for all data contained in a collector node.",
+                "operationId": "ApiQueryCollectorsCollectorIdGetCollectorDetails",
+                "parameters": [
+                    {
+                        "name": "collector_id",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "deprecated": false
+                    },
+                    {
+                        "name": "errors_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "errors_page_size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CollectorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request syntax or unsupported method",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "extra": {
+                                            "additionalProperties": {},
+                                            "type": [
+                                                "null",
+                                                "object",
+                                                "array"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object",
+                                    "required": [
+                                        "detail",
+                                        "status_code"
+                                    ],
+                                    "description": "Validation Exception",
+                                    "examples": [
+                                        {
+                                            "status_code": 400,
+                                            "detail": "Bad Request",
+                                            "extra": {}
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/api/query/summary": {
+            "get": {
+                "summary": "GetNetworkSummary",
+                "description": "Returns the summary for all data contained in this storage node.",
+                "operationId": "ApiQuerySummaryGetNetworkSummary",
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NetworkSummary"
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/api/query/collectors/sensors/{sensor_id}": {
+            "get": {
+                "summary": "GetSensorDetails",
+                "description": "Returns the details for all data contained in a sensor.",
+                "operationId": "ApiQueryCollectorsSensorsSensorIdGetSensorDetails",
+                "parameters": [
+                    {
+                        "name": "sensor_id",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "deprecated": false
+                    },
+                    {
+                        "name": "records_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "records_page_size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "errors_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    },
+                    {
+                        "name": "errors_page_size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SensorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request syntax or unsupported method",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "extra": {
+                                            "additionalProperties": {},
+                                            "type": [
+                                                "null",
+                                                "object",
+                                                "array"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object",
+                                    "required": [
+                                        "detail",
+                                        "status_code"
+                                    ],
+                                    "description": "Validation Exception",
+                                    "examples": [
+                                        {
+                                            "status_code": 400,
+                                            "detail": "Bad Request",
+                                            "extra": {}
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/collectors/{collector_id}": {
+            "get": {
+                "summary": "Collector",
+                "operationId": "CollectorsCollectorIdCollector",
+                "parameters": [
+                    {
+                        "name": "collector_id",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "deprecated": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request syntax or unsupported method",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "extra": {
+                                            "additionalProperties": {},
+                                            "type": [
+                                                "null",
+                                                "object",
+                                                "array"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object",
+                                    "required": [
+                                        "detail",
+                                        "status_code"
+                                    ],
+                                    "description": "Validation Exception",
+                                    "examples": [
+                                        {
+                                            "status_code": 400,
+                                            "detail": "Bad Request",
+                                            "extra": {}
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Dashboard",
+                "operationId": "Dashboard",
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/collectors/{collector_id}/sensors/{sensor_id}": {
+            "get": {
+                "summary": "Sensor",
+                "operationId": "CollectorsCollectorIdSensorsSensorIdSensor",
+                "parameters": [
+                    {
+                        "name": "collector_id",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "deprecated": false
+                    },
+                    {
+                        "name": "sensor_id",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "deprecated": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request syntax or unsupported method",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "extra": {
+                                            "additionalProperties": {},
+                                            "type": [
+                                                "null",
+                                                "object",
+                                                "array"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object",
+                                    "required": [
+                                        "detail",
+                                        "status_code"
+                                    ],
+                                    "description": "Validation Exception",
+                                    "examples": [
+                                        {
+                                            "status_code": 400,
+                                            "detail": "Bad Request",
+                                            "extra": {}
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CollectorDetails": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "device_model": {
+                        "type": "string"
+                    },
+                    "polling_interval": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "total_sensors": {
+                        "type": "integer"
+                    },
+                    "latest_record": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "earliest_record": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "total_records": {
+                        "type": "integer"
+                    },
+                    "latest_error": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "total_errors": {
+                        "type": "integer"
+                    },
+                    "sensors": {
+                        "items": {
+                            "$ref": "#/components/schemas/SensorSummary"
+                        },
+                        "type": "array"
+                    },
+                    "errors": {
+                        "items": {
+                            "$ref": "#/components/schemas/CollectorError"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "device_model",
+                    "earliest_record",
+                    "errors",
+                    "id",
+                    "latest_error",
+                    "latest_record",
+                    "name",
+                    "polling_interval",
+                    "sensors",
+                    "status",
+                    "total_errors",
+                    "total_records",
+                    "total_sensors"
+                ],
+                "title": "CollectorDetails"
+            },
+            "CollectorError": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "source": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "message",
+                    "source",
+                    "timestamp"
+                ],
+                "title": "CollectorError"
+            },
+            "CollectorRecord": {
+                "properties": {
+                    "sensor_id": {
+                        "type": "string"
+                    },
+                    "record_id": {
+                        "type": "string"
+                    },
+                    "unit": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "number"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "record_id",
+                    "sensor_id",
+                    "timestamp",
+                    "unit",
+                    "value"
+                ],
+                "title": "CollectorRecord"
+            },
+            "CollectorSummary": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "sensors": {
+                        "items": {
+                            "$ref": "#/components/schemas/SensorSummary"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "sensors",
+                    "status"
+                ],
+                "title": "CollectorSummary"
+            },
+            "NetworkSummary": {
+                "properties": {
+                    "total_collectors": {
+                        "type": "integer"
+                    },
+                    "collectors_reporting": {
+                        "type": "integer"
+                    },
+                    "total_sensors": {
+                        "type": "integer"
+                    },
+                    "sensors_reporting": {
+                        "type": "integer"
+                    },
+                    "records_reported": {
+                        "type": "integer"
+                    },
+                    "errors_reported": {
+                        "type": "integer"
+                    },
+                    "collectors": {
+                        "items": {
+                            "$ref": "#/components/schemas/CollectorSummary"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "collectors",
+                    "collectors_reporting",
+                    "errors_reported",
+                    "records_reported",
+                    "sensors_reporting",
+                    "total_collectors",
+                    "total_sensors"
+                ],
+                "title": "NetworkSummary"
+            },
+            "SensorCodeEnum": {
+                "type": "string",
+                "enum": [
+                    "DHT20",
+                    "TSL2561",
+                    "PMS5003",
+                    "MH-Z19B"
+                ],
+                "title": "SensorCodeEnum",
+                "description": "\nContains an enumerated value\nfor all supported sensor types.\n\nEach value will be mapped to a\nspecific implementation of\nAbstractSensorDriver.\n"
+            },
+            "SensorDetails": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "code": {
+                        "$ref": "#/components/schemas/SensorCodeEnum"
+                    },
+                    "latest_record": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "earliest_record": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "total_records": {
+                        "type": "integer"
+                    },
+                    "latest_error": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "total_errors": {
+                        "type": "integer"
+                    },
+                    "records": {
+                        "items": {
+                            "$ref": "#/components/schemas/CollectorRecord"
+                        },
+                        "type": "array"
+                    },
+                    "errors": {
+                        "items": {
+                            "$ref": "#/components/schemas/CollectorError"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "code",
+                    "earliest_record",
+                    "errors",
+                    "id",
+                    "latest_error",
+                    "latest_record",
+                    "name",
+                    "records",
+                    "status",
+                    "total_errors",
+                    "total_records"
+                ],
+                "title": "SensorDetails"
+            },
+            "SensorSummary": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "last_value": {
+                        "oneOf": [
+                            {
+                                "additionalProperties": {},
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "status"
+                ],
+                "title": "SensorSummary"
+            },
+            "StatusEnum": {
+                "type": "string",
+                "enum": [
+                    "Unknown",
+                    "Operational",
+                    "Dropped",
+                    "Error"
+                ],
+                "title": "StatusEnum",
+                "description": "\nDescribes the knowledge that the storage node\nhas about how a collector node or sensor is functioning.\n\nStatuses are stored in-memory, and thus a restart of the\nserver process will result in statuses being reset.\n\nOptions:\n    Unknown: No data has been received from the\n        node or sensor.\n    Operational: Data has been received from the node or\n        sensor recently.\n    Dropped: Data has been received from the node or sensor\n        since but it is less recent than a threshold\n        determined by a set multiple of the collector's\n        polling interval.\n    Error: The sensor has an error and it is more recent than\n        the most recent data received.\n"
+            }
+        }
+    }
+}
